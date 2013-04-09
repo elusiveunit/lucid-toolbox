@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html class="no-touch">
+<head>
+<meta charset="utf-8">
+<title>Lucid Toolbox Readme</title>
+<link href="http://fonts.googleapis.com/css?family=Neuton:400,400italic,700|Source+Sans+Pro" rel="stylesheet">
+<link rel="stylesheet" href="../assets/doc.min.css">
+</head>
+<body id="intro">
+
+<h1>Lucid_Settings</h1>
+<p>Simple settings page generation, using the Settings API.</p>
+<p>Setup is simple, create a new settings object with a unique ID and a heading:</p>
+<pre><code>$example_settings = new Lucid_Settings( &#39;example_settings_id&#39; );
+$example_settings-&gt;page_heading = __( &#39;My settings&#39;, &#39;TEXTDOMAIN&#39; );</code></pre>
+<p>Then add each part with:</p>
+<ul>
+<li><code>$example_settings-&gt;submenu( [...] );</code></li>
+<li><code>$example_settings-&gt;section( [...] );</code></li>
+<li><code>$example_settings-&gt;field( [...] );</code></li>
+</ul>
+<p>Finally initialize the page with <code>$example_settings-&gt;init();</code>.</p>
+<p>Settings are accessed with the ID (<code>get_option( &#39;example_settings_id&#39; )</code>) when using a single page and tab ID when using tabs. To use a tabbed settings page, simply add a &#39;tabs&#39; array to <code>submenu()</code>, see below.</p>
+<h2>Submenu</h2>
+<p>The submenu method requires a menu label text, and accepts some optional arguments through an array:</p>
+<ul>
+<li><code>&#39;add_to&#39;</code> <strong>(string)</strong> Slug for the parent menu, or the file name of a standard WordPress admin page (wp-admin/<file_name>). Includes .php extension and defaults to <code>&#39;options-general.php&#39;</code>.</li>
+<li><code>&#39;title&#39;</code> <strong>(string)</strong> HTML <code>&lt;title&gt;</code> text, defaults to the menu label.</li>
+<li><code>&#39;tabs&#39;</code> <strong>(array)</strong> Tabs to add, format <code>&#39;unique_id&#39; =&gt; &#39;Tab label&#39;</code>.</li>
+<li><code>&#39;capability&#39;</code> <strong>(string)</strong> Capability needed to edit the settings. If not set, the $capability property is used, which defaults to <code>manage_options</code>.</li>
+</ul>
+<p>Example:</p>
+<pre><code>$example_settings-&gt;submenu( __( &#39;Menu label&#39;, &#39;TEXTDOMAIN&#39; ), array(
+    &#39;title&#39; =&gt; __( &#39;HTML title element text&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;add_to&#39; =&gt; &#39;themes.php&#39;,
+    &#39;tabs&#39; =&gt; array(
+        &#39;my_general_settings&#39; =&gt; __( &#39;General&#39;, &#39;TEXTDOMAIN&#39; ),
+        &#39;my_advanced_settings&#39; =&gt; __( &#39;Advanced&#39;, &#39;TEXTDOMAIN&#39; )
+    )
+) );</code></pre>
+<p>When using tabs, each tab is saved as a separate option (<code>get_option( &#39;my_advanced_settings&#39; )</code>).</p>
+<h2>Section</h2>
+<p>Fields are added to sections, so at least one section must be added. The section method requires an ID, and accepts some optional arguments through an array:</p>
+<ul>
+<li><code>&#39;heading&#39;</code> <strong>(string)</strong> Section heading.</li>
+<li><code>&#39;tab&#39;</code> <strong>(string)</strong> Tab to add section to. Tabs are defined with <code>submenu()</code>. Defaults to first tab if there are any.</li>
+<li><code>&#39;output&#39;</code> <strong>(string)</strong> HTML to display at the top of the section, below the heading.</li>
+</ul>
+<h2>Field</h2>
+<p>The field method requires an ID and a label, and accepts additional arguments through an array (see the pattern?):</p>
+<ul>
+<li><code>&#39;type&#39;</code> <strong>(string)</strong> Type of field. Unsupported types will fall back to &#39;text&#39;, which is also the default. Supported types:<ul>
+<li><code>&#39;text&#39;</code></li>
+<li><code>&#39;text_monospace&#39;</code></li>
+<li><code>&#39;textarea&#39;</code></li>
+<li><code>&#39;textarea_large&#39;</code></li>
+<li><code>&#39;textarea_monospace&#39;</code></li>
+<li><code>&#39;textarea_large_monospace&#39;</code></li>
+<li><code>&#39;checkbox&#39;</code></li>
+<li><code>&#39;checklist&#39;</code> (List of checkboxes)</li>
+<li><code>&#39;radios&#39;</code></li>
+<li><code>&#39;select&#39;</code></li>
+<li><code>&#39;button_field&#39;</code> (Text field with a button beside it)</li>
+<li><code>&#39;button_field_monospace&#39;</code></li>
+</ul>
+</li>
+<li><code>&#39;section&#39;</code> <strong>(string)</strong> Section to add the field to, defined with <code>section()</code>.</li>
+<li><code>&#39;default&#39;</code> <strong>(mixed)</strong> Default field value. Is only set if options don&#39;t exist, so will probably only run on theme/plugin activation.</li>
+<li><code>&#39;description&#39;</code> <strong>(string)</strong> A help text to show under the field. Prints unfiltered, so beware if user input is somehow involved.</li>
+<li><code>&#39;inline_label&#39;</code> <strong>(string)</strong> Field label for checkbox and radio button.</li>
+<li><code>&#39;options&#39;</code> <strong>(array)</strong> Options for types <code>&#39;select&#39;</code>, <code>&#39;radios&#39;</code>, and <code>&#39;checklist&#39;</code>, format: <code>value =&gt; text</code>.</li>
+<li><code>&#39;button_text&#39;</code> <strong>(string)</strong> Text for the button when using button_field.</li>
+<li><code>&#39;validate&#39;</code> <strong>(string)</strong> Validate value against predefined functions, see below.</li>
+<li><code>&#39;must_match&#39;</code> <strong>(regex string)</strong> A regular expression that is matched against the value, i.e. <code>&#39;/^\d{3}$/&#39;</code> to require exactly three digits.</li>
+<li><code>&#39;must_not_match&#39;</code> <strong>(regex string)</strong> A regular expression that is matched against the value, where the result is reversed. So something like <code>&#39;/\d{3}/&#39;</code> would mean the value can not contain three digits in a row.</li>
+<li><code>&#39;error_message&#39;</code> <strong>(string)</strong> Message for when validation fails.</li>
+<li><code>&#39;sanitize&#39;</code> <strong>(string)</strong> Sanitize value against predefined functions, see below. Defaults to <code>&#39;checkbox&#39;</code> for checkboxes.</li>
+<li><code>&#39;sanitize_custom&#39;</code> <strong>(regex string)</strong> Sanitize value with a regular expression. Value will go through preg_replace.</li>
+</ul>
+<p>When the data is passed through the required checks, an explicitly defined sanitize value of <code>&#39;none&#39;</code> is required to save unfiltered data. Any sanitize or validate values take precedence. If no sanitation or validation is defined, the default action is stripping illegal tags with <a href="http://codex.wordpress.org/Function_Reference/wp_kses_post">wp_kses_post</a>.</p>
+<h3>Predefined validation</h3>
+<p>There are a few predefined validation options:</p>
+<ul>
+<li><code>&#39;email&#39;</code> Email address, uses the PHP <code>FILTER_VALIDATE_EMAIL</code></li>
+<li><code>&#39;url&#39;</code> URL, uses a modified regex by <a href="http://daringfireball.net/2010/07/improved_regex_for_matching_urls">John Gruber</a></li>
+<li><code>&#39;hex_color&#39;</code> Hexadecimal color (like 101 or bada55, hash is stripped before checking)</li>
+</ul>
+<h3>Predefined sanitation</h3>
+<p>There are a few predefined sanitation options:</p>
+<ul>
+<li><code>&#39;checkbox&#39;</code> Always 1 or 0.</li>
+<li><code>&#39;int&#39;</code> Integer, positive or negative.</li>
+<li><code>&#39;absint&#39;</code> Non-negative integer through <a href="http://codex.wordpress.org/Function_Reference/absint">absint</a>.</li>
+<li><code>&#39;float&#39;</code> Floating point number through <a href="http://php.net/floatval">floatval</a>.</li>
+<li><code>&#39;alphanumeric&#39;</code> Letters, numbers, underscore and dash.</li>
+<li><code>&#39;url&#39;</code> Escapes a URL with <a href="http://codex.wordpress.org/Function_Reference/esc_url_raw">esc_url_raw</a>.</li>
+<li><code>&#39;no_html&#39;</code> Strips HTML with <a href="http://php.net/strip_tags">strip_tags</a>.</li>
+<li><code>&#39;shortcode&#39;</code> Removes greater/less than and forces enclosing square brackets.</li>
+<li><code>&#39;empty&#39;</code> No value. Useful for fields acting as &#39;tools&#39; that shouldn&#39;t save anything.</li>
+</ul>
+<h2>Complete examples</h2>
+<p>Since there are quite a bit of options, here are some examples.</p>
+<pre><code>// Setup
+$example_settings = new Lucid_Settings( &#39;example_settings&#39;, __( &#39;My example settings&#39;, &#39;TEXTDOMAIN&#39; ) );
+
+$example_settings-&gt;submenu( &#39;Example settings&#39;, array(
+    &#39;tabs&#39; =&gt; array(
+        &#39;my_general_settings&#39; =&gt; _x( &#39;General&#39;, &#39;Settings tab&#39;, &#39;TEXTDOMAIN&#39; ),
+        &#39;my_advanced_settings&#39; =&gt; _x( &#39;Advanced&#39;, &#39;Settings tab&#39;, &#39;TEXTDOMAIN&#39; )
+    )
+) );
+
+// Sections
+$example_settings-&gt;section( &#39;first_section&#39;, array(
+    &#39;heading&#39; =&gt; __( &#39;My first section&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;tab&#39; =&gt; &#39;my_general_settings&#39;
+) );
+
+$example_settings-&gt;section( &#39;second_section&#39;, array(
+    &#39;heading&#39; =&gt; __( &#39;My second section&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;tab&#39; =&gt; &#39;my_advanced_settings&#39;
+) );
+
+// Fields
+$example_settings-&gt;field(
+    &#39;my_text&#39;,
+    __( &#39;Text field&#39;, &#39;TEXTDOMAIN&#39; ),
+    array(
+        &#39;section&#39; =&gt; &#39;first_section&#39;,
+        &#39;description&#39; =&gt; __( &#39;must_not_match says value cannot contain numbers 0-5.&#39;, &#39;TEXTDOMAIN&#39; ),
+        &#39;must_not_match&#39; =&gt; &#39;/[0-5]/&#39;
+    )
+);
+
+$example_settings-&gt;field(
+    &#39;my_monospaced&#39;,
+    __( &#39;Monospaced text field&#39;, &#39;TEXTDOMAIN&#39; ),
+    array(
+        &#39;type&#39; =&gt; &#39;text_monospace&#39;,
+        &#39;section&#39; =&gt; &#39;first_section&#39;,
+        &#39;description&#39; =&gt; __( &#39;must_match says value must be 3 letters long.&#39;, &#39;TEXTDOMAIN&#39; ),
+        &#39;must_match&#39; =&gt; &#39;/^[a-z]{3}$/&#39;
+    )
+);
+
+$example_settings-&gt;field(
+    &#39;my_checkbox&#39;,
+    __( &#39;Checkbox&#39;, &#39;TEXTDOMAIN&#39; ),
+    array(
+        &#39;type&#39; =&gt; &#39;checkbox&#39;,
+        &#39;section&#39; =&gt; &#39;first_section&#39;,
+        &#39;inline_label&#39; =&gt; __( &#39;Checkboxes need inline labels&#39;, &#39;TEXTDOMAIN&#39; ),
+        &#39;default&#39; =&gt; 1
+    )
+);
+
+$example_settings-&gt;field(
+    &#39;my_select&#39;,
+    __( &#39;Select list&#39;, &#39;TEXTDOMAIN&#39; ),
+    array(
+        &#39;type&#39; =&gt; &#39;select&#39;,
+        &#39;section&#39; =&gt; &#39;second_section&#39;,
+        &#39;options&#39; =&gt; array(
+            &#39;red&#39; =&gt; __( &#39;This is red&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;blue&#39; =&gt; __( &#39;Blue is cool&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;green&#39; =&gt; __( &#39;Green is... green&#39;, &#39;TEXTDOMAIN&#39; )
+        ),
+        &#39;default&#39; =&gt; &#39;blue&#39;
+    )
+);
+
+$example_settings-&gt;field(
+    &#39;my_radio_buttons&#39;,
+    __( &#39;Radio buttons&#39;, &#39;TEXTDOMAIN&#39; ),
+    array(
+        &#39;type&#39; =&gt; &#39;radios&#39;,
+        &#39;section&#39; =&gt; &#39;second_section&#39;,
+        &#39;description&#39; =&gt; __( &#39;Description goes below.&#39;, &#39;TEXTDOMAIN&#39; ),
+        &#39;options&#39; =&gt; array(
+            &#39;black&#39; =&gt; __( &#39;Black as the night&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;white&#39; =&gt; __( &#39;White as an angel&#39;, &#39;TEXTDOMAIN&#39; )
+        )
+    )
+);
+
+$example_settings-&gt;field(
+    &#39;my_checklist&#39;,
+    __( &#39;List of checkboxes&#39;, &#39;TEXTDOMAIN&#39; ),
+    array(
+        &#39;type&#39; =&gt; &#39;checklist&#39;,
+        &#39;section&#39; =&gt; &#39;second_section&#39;,
+        &#39;options&#39; =&gt; array(
+            &#39;strawberries&#39; =&gt; __( &#39;Strawberries&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;blueberries&#39; =&gt; __( &#39;Blueberries&#39;, &#39;TEXTDOMAIN&#39; )
+        )
+    )
+);
+
+$example_settings-&gt;init();</code></pre>
+<h2>Changelog</h2>
+<h3>1.3.1: Mar 27, 2013</h3>
+<ul>
+<li>Initial public release.</li>
+</ul>
+
+
+<script src="../assets/doc.min.js"></script>
+</body>
+</html>

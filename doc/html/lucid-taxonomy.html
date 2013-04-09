@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html class="no-touch">
+<head>
+<meta charset="utf-8">
+<title>Lucid Toolbox Readme</title>
+<link href="http://fonts.googleapis.com/css?family=Neuton:400,400italic,700|Source+Sans+Pro" rel="stylesheet">
+<link rel="stylesheet" href="../assets/doc.min.css">
+</head>
+<body id="intro">
+
+<h1>Lucid_Taxonomy</h1>
+<p>Handles custom taxonomies; registering, admin columns etc.</p>
+<p>The format is very similar to the standard way of registering, with some additional arguments:</p>
+<pre><code>$taxonomy_name = new Lucid_Taxonomy(
+    &#39;NAME&#39;,
+    array( &#39;POST_TYPE_1&#39;, &#39;POST_TYPE_2&#39; ),
+    array(
+        &#39;taxonomy_args&#39; =&gt; array(
+            [...]
+        )
+    )
+);</code></pre>
+<p>The <code>taxonomy_args</code> array contains standard <code>register_taxonomy</code> arguments, see <a href="http://codex.wordpress.org/Function_Reference/register_taxonomy#Arguments">the codex</a>.</p>
+<h2>Additional arguments</h2>
+<p>In addition to the standard <code>register_taxonomy</code> arguments, there are some additional customizations.</p>
+<ul>
+<li><code>&#39;default_terms&#39;</code> <strong>(array)</strong> Default terms to set if none is chosen, just like &#39;uncategorized&#39; for categories. Leave out to not set defaults. Hierarchical terms must always pass the ID rather than the term name to avoid confusion where there may be another child with the same name.</li>
+<li><code>&#39;taxonomy_args&#39;</code> <strong>(array)</strong> The standard arguments for <code>register_taxonomy</code>, like <code>&#39;hierarchical&#39;</code>, <code>&#39;labels&#39;</code>, <code>&#39;rewrite&#39;</code> etc. See WordPress Codex link above.</li>
+</ul>
+<h2>Labels</h2>
+<p>The labels argument in <code>taxonomy_args</code> accepts:</p>
+<pre><code>&#39;labels&#39; =&gt; array(
+
+    // menu_name default, use plural
+    &#39;name&#39; =&gt;            _x( &#39;Genres&#39;, &#39;taxonomy general name&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;singular_name&#39; =&gt;   _x( &#39;Genre&#39;, &#39;taxonomy singular name&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;all_items&#39; =&gt;       __( &#39;All genres&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;edit_item&#39; =&gt;       __( &#39;Edit genre&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;view_item&#39; =&gt;       __( &#39;View genre&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;update_item&#39; =&gt;     __( &#39;Update genre&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;add_new_item&#39; =&gt;    __( &#39;Add new genre&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;new_item_name&#39; =&gt;   __( &#39;New genre name&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;search_items&#39; =&gt;    __( &#39;Search genres&#39;, &#39;TEXTDOMAIN&#39; ),
+
+    // Hierarchical only
+    &#39;parent_item&#39; =&gt;       __( &#39;Parent genre&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;parent_item_colon&#39; =&gt; __( &#39;Parent genre:&#39;, &#39;TEXTDOMAIN&#39; ),
+
+    // Non-hierarchical only
+    &#39;popular_items&#39; =&gt;              __( &#39;Popular genres&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;add_or_remove_items&#39; =&gt;        __( &#39;Add or remove genres&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;separate_items_with_commas&#39; =&gt; __( &#39;Separate genres with commas&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;choose_from_most_used&#39; =&gt;      __( &#39;Choose from the most used genres&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;not_found&#39; =&gt;                  __( &#39;No genres found&#39;, &#39;TEXTDOMAIN&#39; )
+)</code></pre>
+<h2>Complete example</h2>
+<p>To get an easier overview, here&#39;s a complete example.</p>
+<pre><code>$my_genre_taxonomy = new Lucid_Taxonomy(
+    &#39;genre&#39;,
+    array( &#39;movie&#39; ),
+    array(
+        &#39;taxonomy_args&#39; =&gt; array(
+            &#39;hierarchical&#39; =&gt; false,
+            &#39;labels&#39; =&gt; array(
+
+                // menu_name default, use plural
+                &#39;name&#39; =&gt;            _x( &#39;Genres&#39;, &#39;taxonomy general name&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;singular_name&#39; =&gt;   _x( &#39;Genre&#39;, &#39;taxonomy singular name&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;all_items&#39; =&gt;       __( &#39;All genres&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;edit_item&#39; =&gt;       __( &#39;Edit genre&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;view_item&#39; =&gt;       __( &#39;View genre&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;update_item&#39; =&gt;     __( &#39;Update genre&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;add_new_item&#39; =&gt;    __( &#39;Add new genre&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;new_item_name&#39; =&gt;   __( &#39;New genre name&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;search_items&#39; =&gt;    __( &#39;Search genres&#39;, &#39;TEXTDOMAIN&#39; ),
+
+                // Non-hierarchical only
+                &#39;popular_items&#39; =&gt;              __( &#39;Popular genres&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;add_or_remove_items&#39; =&gt;        __( &#39;Add or remove genres&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;separate_items_with_commas&#39; =&gt; __( &#39;Separate genres with commas&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;choose_from_most_used&#39; =&gt;      __( &#39;Choose from the most used genres&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;not_found&#39; =&gt;                  __( &#39;No genres found&#39;, &#39;TEXTDOMAIN&#39; )
+            ),
+            &#39;show_admin_column&#39; =&gt; true,
+            &#39;update_count_callback&#39; =&gt; &#39;_update_post_term_count&#39;
+        )
+    )
+);</code></pre>
+<h2>Changelog</h2>
+<h3>1.1.0: Mar 27, 2013</h3>
+<ul>
+<li>Initial public release.</li>
+</ul>
+
+
+<script src="../assets/doc.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html class="no-touch">
+<head>
+<meta charset="utf-8">
+<title>Lucid Toolbox Readme</title>
+<link href="http://fonts.googleapis.com/css?family=Neuton:400,400italic,700|Source+Sans+Pro" rel="stylesheet">
+<link rel="stylesheet" href="../assets/doc.min.css">
+</head>
+<body id="intro">
+
+<h1>Lucid_Post_Type</h1>
+<p>Handles custom post types; registering, update messages etc.</p>
+<p>The format is very similar to the standard way of registering, with some additional arguments:</p>
+<pre><code>$post_type_name = new Lucid_Post_Type( &#39;NAME&#39;, array(
+    &#39;small_menu_icon_url&#39; =&gt; &#39;[path_to_image_directory]/16x40_sprite.png&#39;,
+    &#39;large_menu_icon_url&#39; =&gt; &#39;[path_to_image_directory]/32x32.png&#39;,
+    &#39;post_type_args&#39; =&gt; array(
+        [...]
+    ),
+    &#39;update_messages&#39; =&gt; array(
+        [...]
+    )
+) );</code></pre>
+<p>The <code>post_type_args</code> array contains standard <code>register_post_type</code> arguments, see <a href="http://codex.wordpress.org/Function_Reference/register_post_type#Arguments">the codex</a>.</p>
+<h2>Additional arguments</h2>
+<p>In addition to the standard <code>register_post_type</code> arguments, there are some additional customizations.</p>
+<ul>
+<li><code>&#39;small_menu_icon_url&#39;</code> <strong>(string)</strong> Absolute url to to a 16x40 pixels sprite image to use as admin menu icon for the post type. The hover state should be on top of the regular state in the image.</li>
+<li><code>&#39;large_menu_icon_url&#39;</code> <strong>(string)</strong> Absolute url to a 32x32 image to use as the icon beside the heading in the post edit screen.</li>
+<li><code>&#39;post_type_args&#39;</code> <strong>(array)</strong> The standard arguments for <code>register_post_type</code>, like <code>&#39;hierarchical&#39;</code>, <code>&#39;labels&#39;</code>, <code>&#39;supports&#39;</code> etc. See WordPress Codex link above.</li>
+<li><code>&#39;update_messages&#39;</code> <strong>(array)</strong> Update messages to display instead of the standard <code>&#39;post updated&#39;</code> etc. See below for examples.</li>
+<li><code>&#39;update_messages_no_links&#39;</code> <strong>(array)</strong> Same as <code>update_messages</code>, but without show/preview links to the post. This can be appropriate if the post isn&#39;t supposed to be viewed in itself (probably has <code>&#39;public&#39;</code> set to false), like a post type for gallery images. See below for examples.</li>
+</ul>
+<h2>Labels</h2>
+<p>The labels argument in <code>post_type_args</code> accepts:</p>
+<pre><code>&#39;labels&#39; =&gt; array(
+
+    // menu_name default, use plural
+    &#39;name&#39; =&gt;               _x( &#39;Movies&#39;, &#39;post type general name&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;singular_name&#39; =&gt;      _x( &#39;Movie&#39;, &#39;post type singular name&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;all_items&#39; =&gt;          __( &#39;All movies&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;add_new&#39; =&gt;            __( &#39;Add new&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;add_new_item&#39; =&gt;       __( &#39;Add new movie&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;edit_item&#39; =&gt;          __( &#39;Edit movie&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;new_item&#39; =&gt;           __( &#39;New movie&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;view_item&#39; =&gt;          __( &#39;View movie&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;search_items&#39; =&gt;       __( &#39;Search movies&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;not_found&#39; =&gt;          __( &#39;No movies found&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;not_found_in_trash&#39; =&gt; __( &#39;No movies found in trash&#39;, &#39;TEXTDOMAIN&#39; ),
+
+    // Hierarchical only
+    &#39;parent_item_colon&#39; =&gt;  __( &#39;Parent movie:&#39;, &#39;TEXTDOMAIN&#39; )
+)</code></pre>
+<h2>Update messages</h2>
+<p>There are two possible variants for update messages. The regular <code>&#39;update_messages&#39;</code> takes precedence, should both be provided.</p>
+<p>Regular messages:</p>
+<pre><code>&#39;update_messages&#39; =&gt; array(
+    &#39;updated_view&#39; =&gt; __( &#39;Movie updated. &lt;a href=&quot;%s&quot;&gt;View movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;updated&#39;      =&gt; __( &#39;Movie updated.&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;revision&#39;     =&gt; __( &#39;Movie restored to revision from %s.&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;published&#39;    =&gt; __( &#39;Movie published. &lt;a href=&quot;%s&quot;&gt;View movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;saved&#39;        =&gt; __( &#39;Movie saved.&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;submitted&#39;    =&gt; __( &#39;Movie submitted. &lt;a target=&quot;_blank&quot; href=&quot;%s&quot;&gt;Preview movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;scheduled&#39;    =&gt; __( &#39;Movie scheduled for: &lt;strong&gt;%1$s&lt;/strong&gt;. &lt;a target=&quot;_blank&quot; href=&quot;%2$s&quot;&gt;Preview movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;draft&#39;        =&gt; __( &#39;Movie draft updated. &lt;a href=&quot;%s&quot;&gt;Preview movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; )
+)</code></pre>
+<p>Messages without links:</p>
+<pre><code>&#39;update_messages_no_links&#39; =&gt; array(
+    &#39;updated&#39;   =&gt; __( &#39;Movie updated.&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;revision&#39;  =&gt; __( &#39;Movie restored to revision from %s.&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;published&#39; =&gt; __( &#39;Movie published.&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;saved&#39;     =&gt; __( &#39;Movie saved.&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;submitted&#39; =&gt; __( &#39;Movie submitted.&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;scheduled&#39; =&gt; __( &#39;Movie scheduled for: &lt;strong&gt;%1$s&lt;/strong&gt;.&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;draft&#39;     =&gt; __( &#39;Movie draft updated.&#39;, &#39;TEXTDOMAIN&#39; )
+)</code></pre>
+<h2>Complete example</h2>
+<p>To get an easier overview, here&#39;s a complete example.</p>
+<pre><code>$my_movie_post_type = new Lucid_Post_Type( &#39;movie&#39;, array(
+    &#39;small_menu_icon_url&#39; =&gt; $my_plugin_url . &#39;img/icon-movie.png&#39;,
+    &#39;post_type_args&#39; =&gt; array(
+        &#39;hierarchical&#39; =&gt; true,
+        &#39;labels&#39; =&gt; array(
+            // menu_name default, use plural
+            &#39;name&#39; =&gt;               _x( &#39;Movies&#39;, &#39;post type general name&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;singular_name&#39; =&gt;      _x( &#39;Movie&#39;, &#39;post type singular name&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;all_items&#39; =&gt;          __( &#39;All movies&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;add_new&#39; =&gt;            __( &#39;Add new&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;add_new_item&#39; =&gt;       __( &#39;Add new movie&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;edit_item&#39; =&gt;          __( &#39;Edit movie&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;new_item&#39; =&gt;           __( &#39;New movie&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;view_item&#39; =&gt;          __( &#39;View movie&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;search_items&#39; =&gt;       __( &#39;Search movies&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;not_found&#39; =&gt;          __( &#39;No movies found&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;not_found_in_trash&#39; =&gt; __( &#39;No movies found in trash&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;parent_item_colon&#39; =&gt;  __( &#39;Parent movie:&#39;, &#39;TEXTDOMAIN&#39; )
+        ),
+        &#39;show_in_nav_menus&#39; =&gt; false,
+        &#39;menu_position&#39; =&gt; 5,
+        &#39;supports&#39; =&gt; array(
+            &#39;title&#39;,
+            &#39;editor&#39;,
+            &#39;author&#39;,
+            &#39;thumbnail&#39;,
+            &#39;excerpt&#39;,
+            &#39;revisions&#39;,
+            &#39;page-attributes&#39;
+        ),
+        &#39;taxonomies&#39; =&gt; array( &#39;category&#39;, &#39;post_tag&#39; )
+    ),
+    &#39;update_messages&#39; =&gt; array(
+        &#39;updated_view&#39; =&gt; __( &#39;Movie updated. &lt;a href=&quot;%s&quot;&gt;View movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; ),
+        &#39;updated&#39;      =&gt; __( &#39;Movie updated.&#39;, &#39;TEXTDOMAIN&#39; ),
+        &#39;revision&#39;     =&gt; __( &#39;Movie restored to revision from %s.&#39;, &#39;TEXTDOMAIN&#39; ),
+        &#39;published&#39;    =&gt; __( &#39;Movie published. &lt;a href=&quot;%s&quot;&gt;View movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; ),
+        &#39;saved&#39;        =&gt; __( &#39;Movie saved.&#39;, &#39;TEXTDOMAIN&#39; ),
+        &#39;submitted&#39;    =&gt; __( &#39;Movie submitted. &lt;a target=&quot;_blank&quot; href=&quot;%s&quot;&gt;Preview movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; ),
+        &#39;scheduled&#39;    =&gt; __( &#39;Movie scheduled for: &lt;strong&gt;%1$s&lt;/strong&gt;. &lt;a target=&quot;_blank&quot; href=&quot;%2$s&quot;&gt;Preview movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; ),
+        &#39;draft&#39;        =&gt; __( &#39;Movie draft updated. &lt;a href=&quot;%s&quot;&gt;Preview movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; )
+    )
+) );</code></pre>
+<h2>Changelog</h2>
+<h3>1.1.0: Mar 27, 2013</h3>
+<ul>
+<li>Initial public release.</li>
+</ul>
+
+
+<script src="../assets/doc.min.js"></script>
+</body>
+</html>
