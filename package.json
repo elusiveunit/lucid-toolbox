@@ -3,9 +3,13 @@
   "title": "Lucid Toolbox",
   "description": "A small library of WordPress functionality.",
   "version": "1.0.0",
-  "author": {
-    "name": "Jens Lindberg",
-    "url": "http://profiles.wordpress.org/elusiveunit/"
+  "author": "Jens Lindberg",
+  "homepage": "https://github.com/elusiveunit/lucid-toolbox",
+  "bugs": "https://github.com/elusiveunit/lucid-toolbox/issues",
+  "licence": "GPLv2 (or later)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elusiveunit/lucid-toolbox.git"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
