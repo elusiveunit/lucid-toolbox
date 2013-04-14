@@ -67,7 +67,7 @@ module.exports = function(grunt) {
 			doc: {
 				options: {
 					report: 'min',
-					banner: '/*! <%= pkg.title %> - Readme script | build <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+					banner: '/*! <%= pkg.title %> <%= pkg.version %> - Readme script */\n'
 				},
 				files: [{src: ['doc/assets/doc.js'], dest: 'doc/assets/doc.min.js'}]
 			}
@@ -77,7 +77,7 @@ module.exports = function(grunt) {
 		cssmin: {
 			doc: {
 				options: {
-					banner: '/*! <%= pkg.title %> - Readme style | build <%= grunt.template.today("yyyy-mm-dd") %> */'
+					banner: '/*! <%= pkg.title %> <%= pkg.version %> - Readme style */'
 				},
 				files: [{src: ['doc/assets/doc.css'], dest: 'doc/assets/doc.min.css'}]
 			}
