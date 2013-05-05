@@ -17,6 +17,13 @@ Finally initialize the page with `$example_settings->init();`.
 
 Settings are accessed with the ID (`get_option( 'example_settings_id' )`) when using a single page and tab ID when using tabs. To use a tabbed settings page, simply add a 'tabs' array to `submenu()`, see below.
 
+## Properties
+
+Some options are controlled through properties: `$instance->prop = 'value'`.
+
+* `capability` **(string)** Capability required to edit the settings. Defaults to `'manage_options'`.
+* `pass_settings_errors_id` **(bool)** Whether to pass setting ID to `settings_errors`. This is sometimes needed to avoid multiple update messages, other times it causes update messages to not be displayed at all. I have yet to find the reason for the issue. Defaults to true.
+
 ## Submenu
 
 The submenu method requires a menu label text, and accepts some optional arguments through an array:
@@ -204,6 +211,10 @@ Since there are quite a bit of options, here are some examples.
 	$example_settings->init();
 
 ## Changelog
+
+### 1.3.2: Apr 14, 2013
+
+* New: Add `pass_settings_errors_id` property to control `settings_errors`. Passing the ID seems to be needed sometimes to prevent double update messages. Other times, passing it prevents messages from showing up at all. I don't know the reason yet, so this is all trial and error.
 
 ### 1.3.1: Mar 27, 2013
 

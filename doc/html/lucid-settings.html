@@ -21,6 +21,12 @@ $example_settings-&gt;page_heading = __( &#39;My settings&#39;, &#39;TEXTDOMAIN&
 </ul>
 <p>Finally initialize the page with <code>$example_settings-&gt;init();</code>.</p>
 <p>Settings are accessed with the ID (<code>get_option( &#39;example_settings_id&#39; )</code>) when using a single page and tab ID when using tabs. To use a tabbed settings page, simply add a &#39;tabs&#39; array to <code>submenu()</code>, see below.</p>
+<h2>Properties</h2>
+<p>Some options are controlled through properties: <code>$instance-&gt;prop = &#39;value&#39;</code>.</p>
+<ul>
+<li><code>capability</code> <strong>(string)</strong> Capability required to edit the settings. Defaults to <code>&#39;manage_options&#39;</code>.</li>
+<li><code>pass_settings_errors_id</code> <strong>(bool)</strong> Whether to pass setting ID to <code>settings_errors</code>. This is sometimes needed to avoid multiple update messages, other times it causes update messages to not be displayed at all. I have yet to find the reason for the issue. Defaults to true.</li>
+</ul>
 <h2>Submenu</h2>
 <p>The submenu method requires a menu label text, and accepts some optional arguments through an array:</p>
 <ul>
@@ -198,6 +204,10 @@ $example_settings-&gt;field(
 
 $example_settings-&gt;init();</code></pre>
 <h2>Changelog</h2>
+<h3>1.3.2: Apr 14, 2013</h3>
+<ul>
+<li>New: Add <code>pass_settings_errors_id</code> property to control <code>settings_errors</code>. Passing the ID seems to be needed sometimes to prevent double update messages. Other times, passing it prevents messages from showing up at all. I don&#39;t know the reason yet, so this is all trial and error.</li>
+</ul>
 <h3>1.3.1: Mar 27, 2013</h3>
 <ul>
 <li>Initial public release.</li>

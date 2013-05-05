@@ -22,6 +22,22 @@ Lucid Toolbox is currently available in the following languages:
 
 ## Changelog
 
-### 1.0: Mar 27, 2013
+### 1.0.2: Apr 14, 2013
+
+**Lucid_Settings**
+
+* New: Add `pass_settings_errors_id` property to control `settings_errors`. Passing the ID seems to be needed sometimes to prevent double update messages. Other times, passing it prevents messages from showing up at all. I don't know the reason yet, so this is all trial and error.
+
+**Lucid_Taxonomy**
+
+* Tweak: Change the select list width 'algorithm' and prevent double digit result.
+
+### 1.0.1: Apr 14, 2013
+
+**WPAlchemy_MetaBox**
+
+* Tweak: Minify the JS output slightly.
+
+### 1.0.0: Mar 27, 2013
 
 * Initial version.

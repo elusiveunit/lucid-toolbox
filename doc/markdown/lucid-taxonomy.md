@@ -90,6 +90,10 @@ To get an easier overview, here's a complete example.
 
 ## Changelog
 
+### 1.1.1: Apr 14, 2013
+
+* Tweak: Change the select list width 'algorithm' and prevent double digit result.
+
 ### 1.1.0: Mar 27, 2013
 
 * Initial public release.
