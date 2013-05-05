@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
 
 // Plugin constants
 if ( ! defined( 'LUCID_TOOLBOX_VERSION' ) )
-	define( 'LUCID_TOOLBOX_VERSION', '1.0.0' );
+	define( 'LUCID_TOOLBOX_VERSION', '1.0.2' );
 
 if ( ! defined( 'LUCID_TOOLBOX_URL' ) )
 	define( 'LUCID_TOOLBOX_URL', trailingslashit( plugin_dir_url( __FILE__ ) ) );
