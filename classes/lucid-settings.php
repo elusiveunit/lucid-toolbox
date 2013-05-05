@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.3.1
+ * @version 1.3.2
  */
 class Lucid_Settings {
 
@@ -47,6 +47,7 @@ class Lucid_Settings {
 	| $page_heading
 	| $_screen_id
 	| $capability
+	| $pass_settings_errors_id
 	| $_submenu
 	| $_tabs
 	| $_tab_sections
@@ -131,6 +132,19 @@ class Lucid_Settings {
 	 * @link http://codex.wordpress.org/Roles_and_Capabilities
 	 */
 	public $capability = 'manage_options';
+
+	/**
+	 * Pass setting ID to settings_errors().
+	 *
+	 * If true, the current page ID will be passed to settings_errors. This is
+	 * sometimes needed to avoid multiple update messages, other times it
+	 * causes update messages to not be displayed at all. I have yet to find
+	 * the reason for the issue.
+	 *
+	 * @var bool
+	 * @see _display_page()
+	 */
+	public $pass_settings_errors_id = true;
 
 	/**
 	 * The submenu item for the settings page.
@@ -602,8 +616,11 @@ class Lucid_Settings {
 				echo "<h2>{$this->page_heading}</h2>";
 			endif;
 
-			// Pass current page to avoid multiple update messages if tabs are used
-			settings_errors( $settings ); ?>
+			// Different cases for different pages
+			if ( $this->pass_settings_errors_id )
+				settings_errors( $settings );
+			else
+				settings_errors(); ?>
 
 			<form method="post" action="options.php">
 				<?php
