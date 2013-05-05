@@ -8,10 +8,10 @@
 
 /*
 Plugin Name: Lucid Toolbox
-Description: A small library of functionality common to Lucid plugins.
+Plugin URI: https://github.com/elusiveunit/lucid-toolbox
+Description: A small library of commonly needed functionality.
 Author: Jens Lindberg
-Author URI: http://profiles.wordpress.org/elusiveunit/
-Version: 1.0.0
+Version: 1.0.2
 */
 
 // Block direct requests
