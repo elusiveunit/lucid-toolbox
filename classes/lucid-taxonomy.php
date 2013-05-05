@@ -60,7 +60,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.1.0
+ * @version 1.1.1
  */
 class Lucid_Taxonomy {
 
@@ -276,7 +276,6 @@ class Lucid_Taxonomy {
 
 			// No taxonomy term
 			else :
-				//printf( __( 'Inga %s', 'lucid-toolbox' ), str_replace( array( '-', '_' ), ' ', $tax_name ) );
 				echo '&mdash;';
 			endif;
 		endif;
@@ -291,7 +290,9 @@ class Lucid_Taxonomy {
 	 */
 	public function _admin_css() {
 		$tax = $this->name;
-		$count = strlen( $tax ) - 5;
+		$len = strlen( $tax );
+		$count = $len - round( ( sqrt( $len ) ) * 2.25 );
+		if ( $count > 9 ) $count = 9;
 
 		$css = ".tablenav select#{$tax} {min-width: 1{$count}em !important;}";
 
