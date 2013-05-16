@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.3.2
+ * @version 1.3.3
  */
 class Lucid_Settings {
 
@@ -548,15 +548,14 @@ class Lucid_Settings {
 			$method = '_add_' . $args['type'];
 
 			// Checklist handling. Check for current page.
-			if ( $page == $settings_id
-			  && 'checklist' == $args['type'] ) :
+			if ( $page == $settings_id && 'checklist' == $args['type'] ) :
 
 				// Checklist options are stored by each option value, since the
 				// checkboxes are not related to each other other than visually.
 				// Thus the key for $field_ids can not be used.
 				$value = array();
 				foreach ( $args['options'] as $id => $label ) :
-					$value[$id] = $options[$id];
+					$value[$id] = ( ! empty( $options[$id] ) ) ? $options[$id] : 0;
 				endforeach;
 
 				// Only add the checklist fields once. See $this->_checklists.
