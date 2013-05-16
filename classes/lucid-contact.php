@@ -14,8 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * Not particularly pretty or flexible, but it gets the job done.
  *
- * $to_address and $message_template or $message_format are required properties
- * and _send() will throw errors if they are empty.
+ * $to_address and some template ($message_format, $message_template or
+ * $html_template) are required properties and _send() will throw errors if
+ * they are empty.
  *
  * Usage:
  *
@@ -29,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.4.1
+ * @version 1.5.0
  */
 class Lucid_Contact {
 
@@ -52,6 +53,10 @@ class Lucid_Contact {
 	| $html_template
 	| $subject_label
 	| $subject_text
+	| $extra_headers
+	| $extra_recipients
+	| $extras_from_name
+	| $extras_from_address
 	| $_fields
 	| $field_wrap
 	| $_ignore_field_attrs
@@ -104,15 +109,16 @@ class Lucid_Contact {
 	| _filter_tag
 	| _get_message
 	| _get_html_message
+	| _get_field_post
 	| _get_headers
 	| _get_attachments
 	| _get_unique_file_path
 	| _send
 	| _has_required_send_data
 	| _clear_send
-	| assemble_form
 	|
 	| [=Misc. functions and utilities]
+	| assemble_form
 	| render_form
 	| _debug_filter
 	| _get_attributes_string
@@ -124,6 +130,7 @@ class Lucid_Contact {
 	| filter_name
 	| filter_email
 	| filter_other
+	| normalize_line_break
 	| get_words_from_string
 	| _array_insert
 	| _preg_grep_keys
@@ -214,6 +221,7 @@ class Lucid_Contact {
 	 * Address here: {{address}}
 	 * Use if_block for whole and/or multiple lines, since an extra line break
 	 * needs to be removed.
+	 * In most cases pointless when using an HTML template.
 	 * {{/if_block}}
 	 * ';
 	 * </code>
@@ -290,6 +298,36 @@ class Lucid_Contact {
 	 * @var string
 	 */
 	public $subject_text = '';
+
+	/**
+	 * Extra headers to use, one full header per item.
+	 *
+	 * @var array
+	 */
+	public $extra_headers = array();
+
+	/**
+	 * Extra recipients to send to, in addition to the to_address.
+	 *
+	 * @var array
+	 */
+	public $extra_recipients = array();
+
+	/**
+	 * Sender's name for extra recipients. Set to a field name like 'name' to
+	 * use the data from that field.
+	 *
+	 * @var string
+	 */
+	public $extras_from_name = '';
+
+	/**
+	 * Sender's address for extra recipients. Set to a field name like 'email'
+	 * to use the data from that field.
+	 *
+	 * @var string
+	 */
+	public $extras_from_address = '';
 
 	/**
 	 * The form fields.
@@ -493,6 +531,8 @@ class Lucid_Contact {
 	 * - 'honeypot' If the only problem was a filled-in honeypot field.
 	 * - 'not_sent' If there was a problem during the sending process. Not
 	 *   something the user can do anything about.
+	 * - 'some_sent' If sending to multiple recipients and there was a problem
+	 *   with some, but not all, during the sending process.
 	 *
 	 * @param array $messages Associative array of messages.
 	 */
@@ -501,7 +541,8 @@ class Lucid_Contact {
 			'success'  => __( 'Thank you for your message!', 'lucid-toolbox' ),
 			'error'    => __( 'There seems to be a problem with your information.', 'lucid-toolbox' ),
 			'honeypot' => __( 'To send the message, the last field must be empty. Maybe it was filled by mistake, delete the text and try again.', 'lucid-toolbox' ),
-			'not_sent' => __( 'Due to a technical issue, the message could not be sent, we apologize.', 'lucid-toolbox' )
+			'not_sent' => __( 'Due to a technical issue, the message could not be sent, we apologize.', 'lucid-toolbox' ),
+			'some_sent' => __( 'There was an isuue sending the message, some recipients may not receive it properly.', 'lucid-toolbox' )
 		);
 
 		$this->_form_messages = array_merge( $defaults, $messages );
@@ -1257,7 +1298,7 @@ class Lucid_Contact {
 		foreach ( $this->message_format as $part ) :
 
 			// If string is a field ID
-			if ( isset( $_POST[$part] ) ) :
+			if ( isset( $this->_fields[$part] ) && isset( $_POST[$part] ) ) :
 
 				// Checkbox gets a <field name: yes> format
 				if ( 'checkbox' == $this->_fields[$part]['type'] ) :
@@ -1304,7 +1345,7 @@ class Lucid_Contact {
 	protected function _get_message_conditionals( $message = '' ) {
 
 		// Only process once
-		if ( ! is_array( $this->_message_conditionals ) ) :
+		if ( empty( $this->_message_conditionals ) ) :
 			$message = ( ! empty( $message ) ) ? $message : $this->message_template;
 
 			// Get conditionals: {{if}}s and {{if_block}}s
@@ -1350,7 +1391,7 @@ class Lucid_Contact {
 	protected function _get_message_tags( $message = '' ) {
 
 		// Only process once
-		if ( ! is_array( $this->_message_tags ) ) :
+		if ( empty( $this->_message_tags ) ) :
 			$message = ( ! empty( $message ) ) ? $message : $this->message_template;
 
 			preg_match_all( '/\{\{[^\}#\/]+\}\}/', $message, $tags );
@@ -1397,7 +1438,7 @@ class Lucid_Contact {
 						? str_replace( $tag, _x( 'yes', 'checkbox yes', 'lucid-toolbox' ), $cond_content )
 						: str_replace( $tag, $post_value, $cond_content );
 
-				elseif ( array_key_exists( $field, $this->custom_template_tags ) && ! empty( $this->custom_template_tags[$field] ) ) :
+				elseif ( ! empty( $this->custom_template_tags[$field] ) ) :
 					$replace = str_replace( $tag, $this->custom_template_tags[$field], $cond_content );
 
 				// Otherwise replace checkbox with 'no' and remove others
@@ -1452,7 +1493,7 @@ class Lucid_Contact {
 				$text = str_replace( $tag, $post_value, $text );
 			endif;
 
-		elseif ( array_key_exists( $field, $this->custom_template_tags ) && ! empty( $this->custom_template_tags[$field] ) ) :
+		elseif ( ! empty( $this->custom_template_tags[$field] ) ) :
 			$text = str_replace( $tag, $this->custom_template_tags[$field], $text );
 
 		// Unchecked checkboxes don't get POSTed, so if string is a checkbox
@@ -1478,8 +1519,7 @@ class Lucid_Contact {
 	protected function _get_message() {
 		if ( empty( $this->message_template ) ) return '';
 
-		// Hopefully normalize line breaks
-		$message = str_replace( array( "\r\n", "\r" ), "\n", $this->message_template );
+		$message = $this->normalize_line_break( $this->message_template );
 		$tags = $this->_get_message_tags( $message );
 
 		// Check every found template tag
@@ -1506,7 +1546,7 @@ class Lucid_Contact {
 		endif;
 
 		// Hopefully normalize line breaks
-		$message = str_replace( array( "\r\n", "\r" ), "\n", ob_get_clean() );
+		$message = $this->normalize_line_break( ob_get_clean() );
 		$tags = $this->_get_message_tags( $message );
 
 		// Check every found template tag
@@ -1514,8 +1554,6 @@ class Lucid_Contact {
 			$message = $this->_filter_conditional_tag( $tag, $message );
 			$message = $this->_filter_tag( $tag, $message );
 		endforeach;
-
-		//echo '<pre>' . htmlspecialchars( str_replace( "\t", '  ', $message ) ) . '</pre>';
 
 		// Remove HTML comments
 		$message = preg_replace( '/\<\!--(?:(?!--\>).)+--\>/ms', '', $message );
@@ -1533,19 +1571,88 @@ class Lucid_Contact {
 	}
 
 	/**
-	 * Put together from and reply-to headers, if data is available.
+	 * Get and filter a field's POST data.
 	 *
+	 * If there is no POST data, the field key is returned as is. Specifically
+	 * made for properties that can be either a field's data or a harcoded
+	 * option.
+	 *
+	 * @param string $field Field ID to check.
+	 * @param string $filter Filter to run on the data. Defaults to 'other',
+	 *   with additional options being 'name', 'email' and 'none'. See
+	 *   corresponding filter_x methods.
+	 * @return string
+	 */
+	protected function _get_field_post( $field, $filter = 'other' ) {
+		$data = ( isset( $this->_fields[$field] ) && isset( $_POST[$field] ) )
+			? $_POST[$field]
+			: $field;
+
+		switch ( $filter ) :
+			case 'name' :
+				$data = $this->filter_name( $data );
+				break;
+
+			case 'email' :
+				$data = $this->filter_email( $data );
+				break;
+
+			case 'other' :
+				$data = $this->filter_other( $data );
+				break;
+		endswitch;
+
+		return $data;
+	}
+
+	/**
+	 * Put together email headers.
+	 *
+	 * What headers to include can be set with the $include array parameter.
+	 *
+	 * - 'regular' From and, depending on 'reply_to', Reply-To headers for the
+	 *   main recipient.
+	 * - 'extra' From and, depending on 'reply_to', Reply-To headers for the
+	 *   extra recipients.
+	 * - 'custom' Any custom headers set to the extra_headers property.
+	 * - 'reply_to' Whether to include Reply-To with the 'regular' and 'extra'
+	 *   headers.
+	 *
+	 * @param array $include Headers to include.
 	 * @return array wp_mail accepts headers as an array.
 	 */
-	protected function _get_headers() {
+	protected function _get_headers( array $include = array() ) {
+		$defaults = array(
+			'regular'  => true,
+			'extra'    => false,
+			'custom'   => true,
+			'reply_to' => true
+		);
+		$include = array_merge( $defaults, $include );
 		$headers = array();
 
-		if ( $this->from_name && $this->from_address ) :
-			$name = $this->filter_name( $_POST[$this->from_name] );
-			$address = $this->filter_email( $_POST[$this->from_address] );
+		// From and Reply-To
+		if ( $include['regular'] && $this->from_name && $this->from_address ) :
+			$name = $this->_get_field_post( $this->from_name, 'name' );
+			$address = $this->_get_field_post( $this->from_address, 'email' );
 
 			$headers[] = "From: {$name} <{$address}>";
-			$headers[] = "Reply-To: {$name} <{$address}>";
+			if ( $include['reply_to'] ) $headers[] = "Reply-To: {$name} <{$address}>";
+		endif;
+
+		// From and Reply-To for extra recipients
+		if ( $include['extra'] && $this->extras_from_name && $this->extras_from_address ) :
+			$extra_name = $this->_get_field_post( $this->extras_from_name, 'name' );
+			$extra_address = $this->_get_field_post( $this->extras_from_address, 'email' );
+
+			$headers[] = "From: {$extra_name} <{$extra_address}>";
+			if ( $include['reply_to'] ) $headers[] = "Reply-To: {$extra_name} <{$extra_address}>";
+		endif;
+
+		// Custom headers
+		if ( $include['custom'] && ! empty( $this->extra_headers ) ) :
+			$this->extra_headers = array_map( array( $this, 'filter_other' ), (array) $this->extra_headers );
+			$header = array_merge( $headers, $extra_headers );
 		endif;
 
 		// HTML email headers
@@ -1664,77 +1771,105 @@ class Lucid_Contact {
 	/**
 	 * Send with wp_mail().
 	 *
+	 * TODO: Separate this a bit.
+	 *
 	 * @link http://codex.wordpress.org/Function_Reference/wp_mail
 	 * @return bool True if wp_mail was successful, false otherwise.
 	 */
 	protected function _send() {
-		$data_valid = $this->_validate();
 
 		// Check posting and data validation
-		if ( 'POST' == $_SERVER['REQUEST_METHOD']
-		  && $this->form_location == $_SERVER['HTTP_REFERER']
-		  && ! empty( $_POST )
-		  && $data_valid
-		  && $this->_has_required_send_data() ) :
+		if ( 'POST' != $_SERVER['REQUEST_METHOD']
+		  || $this->form_location != $_SERVER['HTTP_REFERER']
+		  || empty( $_POST )
+		  || ! $this->_validate()
+		  || ! $this->_has_required_send_data() )
+			return false;
 
-			// Get form data
-			$to = $this->to_address;
-			$subject = $this->_get_subject();
-			$headers = $this->_get_headers();
-			$attachments = $this->_get_attachments();
+		// Get form data
+		$to = $this->to_address;
+		$subject = $this->_get_subject();
+		$headers = $this->_get_headers();
+		$attachments = $this->_get_attachments();
 
-			// Keep old message_format for compatibility
-			if ( ! empty( $this->html_template ) )
-				$message = $this->_get_html_message();
-			elseif ( ! empty( $this->message_template ) )
-				$message = $this->_get_message();
-			else
-				$message = implode( $this->message_format_separator, $this->_get_message_from_format() );
+		// _get_attachments() sets errors and returns false if there is a
+		// problem, so skip further processing if that's the case.
+		if ( ! is_array( $attachments ) )
+			return false;
 
-			// Wrap lines for plain text messages.
-			// Internet Message Format RFC says max line length of 78
-			// (http://www.rfc-editor.org/rfc/rfc5322.txt, [Page 6])
-			// Format of Internet Message Bodies RFC says 76, so let's go with 75.
-			// (http://www.rfc-editor.org/rfc/rfc2045.txt, [Page 19])
-			// RFC 5322 also states lines should be delimited by a carriage return
-			// character, followed immediately by a line feed character. [Page 5]
-			if ( empty( $this->html_template ) )
-				$message = wordwrap( str_replace( "\n", "\r\n", $message ), 75, "\r\n" );
+		// Keep old message_format for compatibility
+		if ( ! empty( $this->html_template ) )
+			$message = $this->_get_html_message();
+		elseif ( ! empty( $this->message_template ) )
+			$message = $this->_get_message();
+		else
+			$message = implode( $this->message_format_separator, $this->_get_message_from_format() );
 
-			// --Debug--
-			// Print headers and message
-			if ( $this->debug_mode ) :
-				$this->_debug_open( 'Message' );
-				echo '<i>To</i>: ' . $to . '<br><br>';
-				echo '<i>Subject</i>: ' . $subject . '<br><br>';
-				echo '<i>Headers</i>:<br>' . htmlspecialchars( implode( "\n", $headers ) ) . '<br><br>';
-				echo '<i>Message</i>:<br>' . htmlspecialchars( $message ) . '<br><br>';
-				$this->_debug_close();
+		// Wrap lines for plain text messages.
+		// Internet Message Format RFC says max line length of 78
+		// (http://www.rfc-editor.org/rfc/rfc5322.txt, [Page 6])
+		// Format of Internet Message Bodies RFC says 76, so let's go with 75.
+		// (http://www.rfc-editor.org/rfc/rfc2045.txt, [Page 19])
+		// RFC 5322 also states lines should be delimited by a carriage return
+		// character, followed immediately by a line feed character. [Page 5]
+		if ( empty( $this->html_template ) )
+			$message = wordwrap( $this->normalize_line_break( $message, "\r\n" ), 75, "\r\n" );
+
+		// --Debug--
+		// Print headers and message
+		if ( $this->debug_mode ) :
+			$this->_debug_open( 'Message' );
+			echo '<i>To</i>: ' . $to . '<br><br>';
+			echo '<i>Subject</i>: ' . $subject . '<br><br>';
+			echo '<i>Headers</i>:<br>' . htmlspecialchars( implode( "\n", $headers ) ) . '<br><br>';
+			echo '<i>Message</i>:<br>' . htmlspecialchars( $message ) . '<br><br>';
+			$this->_debug_close();
+		endif;
+
+		// Send with wp_mail
+		// _get_attachments() returns false if there is a problem, so check
+		// if $attachments is an array.
+		if ( ! empty( $message ) && ! $this->debug_mode ) :
+			$sent = wp_mail( $to, $subject, $message, $headers, $attachments );
+			$extra_sent = true;
+
+			// Send to additional recipients
+			if ( ! empty( $this->extra_recipients )
+			  && ! empty( $this->extras_from_name )
+			  && ! empty( $this->extras_from_address ) ) :
+				$extra_headers = $this->_get_headers( array( 'regular' => false, 'extra' => true, 'custom' => false ) );
+				$this->extra_recipients = array_map( array( $this, 'filter_other' ), (array) $this->extra_recipients );
+
+				foreach ( $this->extra_recipients as $to ) :
+					$extra_mail = wp_mail( $to, $subject, $message, $extra_headers, $attachments );
+
+					// Can't just set $extra_sent = wp_mail(), in case there is a
+					// successful send after a failed one.
+					if ( ! $extra_mail ) $extra_sent = false;
+				endforeach;
 			endif;
 
-			// Send with wp_mail
-			// _get_attachments() returns false if there is a problem, so check
-			// if $attachments is an array.
-			if ( ! empty( $message ) && ! $this->debug_mode && is_array( $attachments ) ) :
-				$sent = wp_mail( $to, $subject, $message, $headers, $attachments );
+			// All sent, clear form
+			if ( $sent && $extra_sent ) :
+				$this->_clear_send();
+				return true;
 
-				// Clear form if sent
-				if ( $sent ) :
-					$this->_clear_send();
-					return true;
-
-				// Not sent
-				else :
-					$this->_form_status = '<p class="error">' . $this->_form_messages['not_sent'] . '</p>';
-					return false;
-				endif;
-
-			else :
+			// None sent
+			elseif ( ! $sent && ! $extra_sent ) :
 				$this->_form_status = '<p class="error">' . $this->_form_messages['not_sent'] . '</p>';
 				return false;
-			endif; // ! debug_mode
 
-		endif; // POST and data valid
+			// Some sent
+			else :
+				$this->_form_status = '<p class="error">' . $this->_form_messages['some_sent'] . '</p>';
+				return false;
+			endif;
+
+		// No message or debug mode on
+		else :
+			$this->_form_status = '<p class="error">' . $this->_form_messages['not_sent'] . '</p>';
+			return false;
+		endif;
 	}
 
 	/**
@@ -1751,7 +1886,9 @@ class Lucid_Contact {
 			$has_data = false;
 		endif;
 
-		if ( empty( $this->message_template ) && empty( $this->message_format ) ) :
+		if ( empty( $this->message_template )
+		  && empty( $this->message_format )
+		  && empty( $this->html_template ) ) :
 			trigger_error( 'No template for the message specified, see message_template or message_format', E_USER_WARNING );
 			$has_data = false;
 		endif;
@@ -1923,7 +2060,7 @@ class Lucid_Contact {
 		foreach ( $attributes as $attr => $val ) :
 			if ( in_array( $attr, $ignored ) ) continue;
 
-			$attr = $this->clean_html( $attr );
+			$attr = sanitize_html_class( $attr );
 			$val = esc_attr( $val );
 
 			$attributes_string .= " {$attr}=\"{$val}\"";
@@ -2102,6 +2239,17 @@ class Lucid_Contact {
 		$forbidden = array( "\r" => '', "\n" => '', "\t" => '' );
 
 		return trim( strtr( $data, $forbidden ) );
+	}
+
+	/**
+	 * Normalize line break characters used in a string.
+	 *
+	 * @param string $input Data to filter.
+	 * @param string $to_character Replacement to insert. Defaults to line feed.
+	 * @return string
+	 */
+	public function normalize_line_break( $input, $to_character = "\n" ) {
+		return preg_replace( '/\r\n?/', $to_character, $input );
 	}
 
 	/**
