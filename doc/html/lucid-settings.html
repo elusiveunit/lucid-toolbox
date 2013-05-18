@@ -204,6 +204,10 @@ $example_settings-&gt;field(
 
 $example_settings-&gt;init();</code></pre>
 <h2>Changelog</h2>
+<h3>1.3.3: May 18, 2013</h3>
+<ul>
+<li>Fix: Prevent notice with unsaved checklists.</li>
+</ul>
 <h3>1.3.2: Apr 14, 2013</h3>
 <ul>
 <li>New: Add <code>pass_settings_errors_id</code> property to control <code>settings_errors</code>. Passing the ID seems to be needed sometimes to prevent double update messages. Other times, passing it prevents messages from showing up at all. I don&#39;t know the reason yet, so this is all trial and error.</li>
@@ -211,6 +215,27 @@ $example_settings-&gt;init();</code></pre>
 <h3>1.3.1: Mar 27, 2013</h3>
 <ul>
 <li>Initial public release.</li>
+<li>Fix: Prevent notices with default values when using checklists by not overwriting the ID variable.</li>
+</ul>
+<h3>1.3.0</h3>
+<ul>
+<li>New: Add &#39;button field&#39;.</li>
+<li>Tweak: A lot of internal restructuring.</li>
+</ul>
+<h3>1.2.0</h3>
+<ul>
+<li>New: Add custom validation and sanitation.</li>
+<li>New: Highlight fields with errors.</li>
+<li>New: Add ability to include general HTML.</li>
+</ul>
+<h3>1.1.0</h3>
+<ul>
+<li>New: Add checklists, a grouped list of checkboxes, as a field type.</li>
+<li>New: Add ability to set default values.</li>
+</ul>
+<h3>1.0.0</h3>
+<ul>
+<li>Initial version.</li>
 </ul>
 
 

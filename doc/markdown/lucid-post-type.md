@@ -132,3 +132,9 @@ To get an easier overview, here's a complete example.
 ### 1.1.0: Mar 27, 2013
 
 * Initial public release.
+* New/tweak: Change the way update messages are handled.
+* Tweak: 'Minify' icon CSS by removing unnecessary whitespace.
+
+### 1.0.0
+
+* Initial version.

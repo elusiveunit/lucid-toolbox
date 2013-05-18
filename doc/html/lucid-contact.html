@@ -34,7 +34,8 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
 <li><code>form_attributes</code> <strong>(array)</strong> Additional form attributes, like class. Format: <code>attr =&gt; value</code>.</li>
 <li><code>form_location</code> <strong>(string)</strong> Referer to check when submitting, for a teeny-weeny bit of spoofable extra CSRF security... Pointless? Maybe. Defaults to the permalink of the form page.</li>
 </ul>
-<p>Some properties concern the message:</p>
+<p>Some properties are covered in their own sections:</p>
+<p>Concerning the message:</p>
 <ul>
 <li><code>message_format</code></li>
 <li><code>message_format_separator</code></li>
@@ -42,20 +43,27 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
 <li><code>custom_template_tags</code></li>
 <li><code>html_template</code></li>
 </ul>
-<p>Some, attachments:</p>
+<p>Concerning attachments:</p>
 <ul>
 <li><code>handle_attachments</code></li>
 <li><code>delete_sent_files</code></li>
 <li><code>max_file_size</code></li>
 </ul>
-<p>They are covered in their own sections.</p>
+<p>Concerning multiple recipients:</p>
+<ul>
+<li><code>$extra_headers</code></li>
+<li><code>$extra_recipients</code></li>
+<li><code>$extras_from_name</code></li>
+<li><code>$extras_from_address</code></li>
+</ul>
 <h2>Form messages</h2>
 <p>Messages appear above the form on submission, to inform the user of the current state. There are set with <code>set_form_messages()</code> and <code>set_file_form_messages</code> (for file uploads). The default regular messages are:</p>
 <pre><code>$defaults = array(
     &#39;success&#39;  =&gt; __( &#39;Thank you for your message!&#39;, &#39;lucid-toolbox&#39; ),
     &#39;error&#39;    =&gt; __( &#39;There seems to be a problem with your information.&#39;, &#39;lucid-toolbox&#39; ),
     &#39;honeypot&#39; =&gt; __( &#39;To send the message, the last field must be empty. Maybe it was filled by mistake, delete the text and try again.&#39;, &#39;lucid-toolbox&#39; ),
-    &#39;not_sent&#39; =&gt; __( &#39;Due to a technical issue, the message could not be sent, we apologize.&#39;, &#39;lucid-toolbox&#39; )
+    &#39;not_sent&#39; =&gt; __( &#39;Due to a technical issue, the message could not be sent, we apologize.&#39;, &#39;lucid-toolbox&#39; ),
+    &#39;some_sent&#39; =&gt; __( &#39;There was an isuue sending the message, some recipients may not receive it properly.&#39;, &#39;lucid-toolbox&#39; )
 );</code></pre>
 <p>To clarify:</p>
 <ul>
@@ -63,6 +71,7 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
 <li><code>&#39;error&#39;</code> Some problem with the information provided by the user, like missing fields and validation errors.</li>
 <li><code>&#39;honeypot&#39;</code> If the only problem was a filled-in honeypot field.</li>
 <li><code>&#39;not_sent&#39;</code> If there was a problem during the sending process. Not something the user can do anything about.</li>
+<li><code>&#39;some_sent&#39;</code> If sending to multiple recipients and there was a problem with some, but not all, during the sending process. Not something the user can do anything about.</li>
 </ul>
 <p>Information about the file upload errors can be found on the <a href="http://www.php.net/manual/en/features.file-upload.errors.php">PHP manual page</a>. The defaults:</p>
 <pre><code>$defaults = array(
@@ -145,7 +154,7 @@ $form-&gt;add_to_field_list( &#39;&lt;/fieldset&gt;&#39; );</code></pre>
 <li>application/vnd.openxmlformats-officedocument.wordprocessingml.document = .docx</li>
 </ul>
 <p>Defaults are only set if the <code>set_allowed_files()</code> parameters are empty (the default values), so adding .bmp with <code>set_allowed_files( array( &#39;.bmp&#39; ) )</code> would get rid of jpg and all the others, only allowing bmp. Same is true for MIME types, so be sure to set everything explicitly when going custom.</p>
-<h2>Email message format</h2>
+<h2>The message</h2>
 <p>There are two ways to specify the format of the message, an old way and a new way.</p>
 <h3>Message format</h3>
 <p>The old way is through the <code>$message_format</code> property. It&#39;s an array of the form field names whose data should be included in the message. Data from the fields will print in the order they appear in the array, with the string set in <code>$message_format_separator</code> between each.</p>
@@ -159,7 +168,7 @@ $form-&gt;add_to_field_list( &#39;&lt;/fieldset&gt;&#39; );</code></pre>
 $form-&gt;message_format_separator = &quot;\n&quot;;</code></pre>
 <h3>Message template</h3>
 <p>The <code>$message_template</code> property is a string with arbitrary text, accepting mustache-style template tags for field data. <code>{{field_name}}</code> is replaced with the field&#39;s POST content.</p>
-<p>Also available are conditional tags wrapping field tags, whose entire content is only displayed if the field POST value is not empty. They start with a hash and end with a slash (groovy!), like <code>{{#if}}content{{/if}}</code>. Tags are different for inline (<code>{{#if}}</code>) and blocks (<code>{{#if_block}}</code>), since an extra line break needs to be removed for blocks. Whitespace is trimmed from begining and end of message.</p>
+<p>Also available are conditional tags wrapping field tags, whose entire content is only displayed if the field POST value is not empty. They start with a hash and end with a slash (groovy!), like <code>{{#if}}content{{/if}}</code>. Tags are different for inline (<code>{{#if}}</code>) and blocks (<code>{{#if_block}}</code>), since an extra line break needs to be removed for blocks (except in HTML where line breaks generally don&#39;t matter). Whitespace is trimmed from the begining and the end of the message.</p>
 <p>Example:</p>
 <pre><code>$form-&gt;message_template = &#39;
 Message:
@@ -176,9 +185,9 @@ Use if_block for whole and/or multiple lines.
 <p>Since this class only handles find and replace for template tags, custom tags can be used when processing of the tag value is needed, like for a total price. These are set with the <code>$custom_template_tags</code> property.</p>
 <pre><code>$form-&gt;custom_template_tags = array(
    &#39;tag_name&#39; =&gt; &#39;tag value&#39;,
-   &#39;price_total&#39; =&gt; 99 * (int) $_POST[&#39;number_products&#39;]
+   &#39;total_price&#39; =&gt; 99 * (int) $_POST[&#39;number_of_products&#39;]
 );</code></pre>
-<p>The custom tags can then be used in the template like any other: <code>{{price_total}}</code>.</p>
+<p>The custom tags can then be used in the template like any other: <code>{{total_price}}</code>.</p>
 <h3>HTML email</h3>
 <p>HTML email can be sent by setting the <code>$html_template</code> property, which should be a full path (for include, so not a URL) to an HTML file. The necessary headers are sent if a template is set.</p>
 <p>The file content is processed like <code>$message_template</code>, so the same template tag rules apply there. Field data is run through <a href="http://php.net/nl2br">nl2br</a>, so line breaks in textareas should display properly.</p>
@@ -189,10 +198,24 @@ Use if_block for whole and/or multiple lines.
 &lt;/head&gt;
 &lt;body&gt;
     &lt;h1&gt;Hello&lt;/h1&gt;
-    {{#if_block}}&lt;p&gt;&lt;b&gt;From:&lt;/b&gt; {{from_name}}&lt;/p&gt;{{/if_block}}
+    {{#if}}&lt;p&gt;&lt;b&gt;From:&lt;/b&gt; {{from_name}}&lt;/p&gt;{{/if}}
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
 <p>HTML emails are completely different from regular web development, so be sure to read up on the proper way of building them (yay tables).</p>
+<h3>Multiple recipients and extra headers</h3>
+<p>Multiple recipients can be set in two ways: through adding CC headers with the <code>$extra_headers</code> property, or through the <code>$extra_recipients</code> property. Using extra headers is just like sending a copy in a regular mail client:</p>
+<pre><code>$form-&gt;extra_headers = array(
+    &#39;Cc: send_carbon_copy@example.com&#39;,
+    &#39;Bcc: send_blind_carbon_copy@example.com&#39;
+);</code></pre>
+<p>Extra headers aren&#39;t limited to carbon copies of course, anything can be added.</p>
+<p>Sometimes you don&#39;t want to send copies though, for example when the form is used for ordering and both you and the customer should get a copy of the order confirmation. It probably looks more professional for the client to receive a confirmation sent to him/her only. They should possibly also have different &#39;from&#39; and/or &#39;reply-to&#39; data. This is done with these properties:</p>
+<ul>
+<li><code>$extra_recipients</code> <strong>(array)</strong> One email address per array item. Each will get a separate mail sent with <code>wp_mail()</code>.</li>
+<li><code>$extras_from_name</code> <strong>(string)</strong> The &#39;from&#39; name to use when sending to the extra recipients.</li>
+<li><code>$extras_from_address</code> <strong>(string)</strong> The &#39;from&#39; email address to use when sending to the extra recipients.</li>
+</ul>
+<p>The only difference between the extra messages and the regular ones will be the &#39;from&#39; headers (unless set to the same of course).</p>
 <h2>Finishing touches</h2>
 <p>Complete the form by calling:</p>
 <pre><code>$form-&gt;render_form();</code></pre>
@@ -220,15 +243,15 @@ $form-&gt;add_to_field_list( &#39;&lt;div class=&quot;text-fields&quot;&gt;&#39;
 
 $form-&gt;add_field( &#39;text&#39;, &#39;from_name&#39;, array(
     &#39;label&#39;       =&gt; __( &#39;Name:&#39;, &#39;TEXTDOMAIN&#39; ),
-    &#39;error_empty&#39; =&gt; __( &#39;Please enter your name&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;error_empty&#39; =&gt; __( &#39;Please enter your name&#39;, &#39;TEXTDOMAIN&#39; )
 ) );
 
 $form-&gt;add_field( &#39;email&#39;, &#39;contact&#39;, array(
-    &#39;label&#39;         =&gt; __( &#39;Email:&#39;, &#39;TEXTDOMAIN&#39; ),
-    &#39;attributes&#39;    =&gt; array( &#39;placeholder&#39; =&gt; __( &#39;i.e. joe@example.com&#39;, &#39;TEXTDOMAIN&#39; ) ),
-    &#39;validation&#39;    =&gt; &#39;email&#39;,
-    &#39;error_empty&#39;   =&gt; __( &#39;Please enter your email address&#39;, &#39;TEXTDOMAIN&#39; ),
-    &#39;error_invalid&#39; =&gt; __( &#39;The email address seems to be invalid&#39;, &#39;TEXTDOMAIN&#39; )
+    &#39;label&#39;            =&gt; __( &#39;Email:&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;field_attributes&#39; =&gt; array( &#39;placeholder&#39; =&gt; __( &#39;i.e. joe@example.com&#39;, &#39;TEXTDOMAIN&#39; ) ),
+    &#39;validation&#39;       =&gt; &#39;email&#39;,
+    &#39;error_empty&#39;      =&gt; __( &#39;Please enter your email address&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;error_invalid&#39;    =&gt; __( &#39;The email address seems to be invalid&#39;, &#39;TEXTDOMAIN&#39; )
 ) );
 
 // Honeypot
@@ -243,7 +266,8 @@ $form-&gt;add_field( &#39;email&#39;, &#39;email&#39;, array(
 $form-&gt;add_to_field_list( &#39;&lt;/div&gt;&lt;div class=&quot;message-field&quot;&gt;&#39; );
 
 $form-&gt;add_field( &#39;textarea&#39;, &#39;message&#39;, array(
-    &#39;label&#39;    =&gt; __( &#39;Message:&#39;, &#39;TEXTDOMAIN&#39; )
+    &#39;label&#39;       =&gt; __( &#39;Message:&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;error_empty&#39; =&gt; __( &#39;Please enter a message&#39;, &#39;TEXTDOMAIN&#39; )
 ) );
 
 $form-&gt;add_to_field_list( &#39;&lt;/div&gt;&#39; );
@@ -252,9 +276,40 @@ $form-&gt;add_submit( __( &#39;Send message&#39;, &#39;TEXTDOMAIN&#39; ) );
 
 $form-&gt;render_form();</code></pre>
 <h2>Changelog</h2>
+<h3>1.5.0: May 18, 2013</h3>
+<ul>
+<li>New: It&#39;s now possible to add extra recipients and extra headers. See documentation for <code>$extra_headers</code>, <code>$extra_recipients</code>, <code>$extras_from_name</code> and <code>$extras_from_address</code>.</li>
+<li>New: Add form message for <code>some_sent</code>. This is displayed when sending to multiple recipients and at least one message, but not all, fail to send.</li>
+<li>Tweak: Improve line break normalization.</li>
+<li>Fix: Allow empty data for template tags, like the number 0.</li>
+</ul>
 <h3>1.4.1: Mar 27, 2013</h3>
 <ul>
 <li>Initial public release.</li>
+<li>Fix: Prevent some notices with the new template system.</li>
+</ul>
+<h3>1.4.0</h3>
+<ul>
+<li>New: Add a template system for the message, with the ability to use mustache-style template tags as well as conditional blocks.</li>
+<li>New: Add ability to send HTML email. The template tag system is also available in HTML templates.</li>
+</ul>
+<h3>1.3.0</h3>
+<ul>
+<li>New: Add attachment handling. To enable, the <code>handle_attachments</code> property must be set to <code>true</code> (which happens automatically if a file input is added with <code>add_field()</code>).</li>
+</ul>
+<h3>1.2.0</h3>
+<ul>
+<li>New: Filter headers against email injection.</li>
+<li>Tweak: A lot of code cleanup and restructuring of the field methods.</li>
+</ul>
+<h3>1.1.0</h3>
+<ul>
+<li>New: Add subject label property.</li>
+<li>Tweak: A lot of code cleanup and restructuring of the assembly and send process.</li>
+</ul>
+<h3>1.0.0</h3>
+<ul>
+<li>Initial version.</li>
 </ul>
 
 

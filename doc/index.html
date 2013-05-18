@@ -16,7 +16,63 @@
 	<li><a href="html/MetaBox.html">WPAlchemy_MetaBox</a></li>
 </ul>
 
-<h1>&larr; Choose a section</h1>
+<p class="pointer">&larr; Choose a section</p>
+
+<h1>Lucid Toolbox</h1>
+<p>A set of classes used to speed up and automate common tasks.</p>
+<ul>
+<li><code>Lucid_Post_Type</code> for creating custom post types.</li>
+<li><code>Lucid_Taxonomy</code> for creating custom taxonomies.</li>
+<li><code>Lucid_Settings</code> for creating settings pages using the Settings API.</li>
+<li><code>Lucid_Contact</code> for creating contact forms.</li>
+<li><code>WPAlchemy_Metabox</code> for creating metaboxes.</li>
+</ul>
+<p>The plugin doesn&#39;t do anything by itself, apart from loading language files. It simply allows usage of the classes through something like:</p>
+<pre><code>if ( defined( &#39;LUCID_TOOLBOX_CLASS&#39; ) &amp;&amp; ! class_exists( &#39;Lucid_Settings&#39; ) )
+    require LUCID_TOOLBOX_CLASS . &#39;lucid-settings.php&#39;;</code></pre>
+<p>Read more about each class in the included documentation, located in the &#39;doc&#39; directory.</p>
+<p>Lucid Toolbox is currently available in the following languages:</p>
+<ul>
+<li>English</li>
+<li>Swedish</li>
+</ul>
+<h2>Changelog</h2>
+<h3>1.1.0: May 18, 2013</h3>
+<p><strong>General</strong></p>
+<ul>
+<li>New: Add @since tags to docblocks. Since I didn&#39;t have this properly version controlled until the public release this March, they are mostly from memory and very possibly incorrect in a few places.</li>
+<li>New: Update changelogs to include versions before release, mostly for myself to keep track. Won&#39;t be as detailed since they&#39;re from memory.</li>
+</ul>
+<p><strong>Lucid_Contact 1.5.0</strong></p>
+<ul>
+<li>New: It&#39;s now possible to add extra recipients and extra headers. See documentation for <code>$extra_headers</code>, <code>$extra_recipients</code>, <code>$extras_from_name</code> and <code>$extras_from_address</code>.</li>
+<li>New: Add form message for <code>some_sent</code>. This is displayed when sending to multiple recipients and at least one message, but not all, fail to send.</li>
+<li>Tweak: Improve line break normalization.</li>
+<li>Fix: Allow empty data for template tags, like the number 0.</li>
+</ul>
+<p><strong>Lucid_Settings 1.3.3</strong></p>
+<ul>
+<li>Fix: Prevent notice with unsaved checklists.</li>
+</ul>
+<h3>1.0.2: Apr 14, 2013</h3>
+<p><strong>Lucid_Settings 1.3.2</strong></p>
+<ul>
+<li>New: Add <code>pass_settings_errors_id</code> property to control <code>settings_errors</code>. Passing the ID seems to be needed sometimes to prevent double update messages. Other times, passing it prevents messages from showing up at all. I don&#39;t know the reason yet, so this is all trial and error.</li>
+</ul>
+<p><strong>Lucid_Taxonomy 1.1.1</strong></p>
+<ul>
+<li>Tweak: Change the select list width &#39;algorithm&#39; and prevent double digit result.</li>
+</ul>
+<h3>1.0.1: Apr 14, 2013</h3>
+<p><strong>WPAlchemy_MetaBox</strong></p>
+<ul>
+<li>Tweak: Minify the JS output slightly.</li>
+</ul>
+<h3>1.0.0: Mar 27, 2013</h3>
+<ul>
+<li>Initial version.</li>
+</ul>
+
 
 </body>
 </html>

@@ -97,3 +97,9 @@ To get an easier overview, here's a complete example.
 ### 1.1.0: Mar 27, 2013
 
 * Initial public release.
+* New: Add option to set default terms.
+* Tweak: Use WordPress 3.5 argument `'show_admin_column'` to add the columns.
+
+### 1.0.0
+
+* Initial version.

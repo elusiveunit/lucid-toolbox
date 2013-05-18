@@ -8,6 +8,17 @@ module.exports = function(grunt) {
 
 		// Compile markdown
 		markdown: {
+			docIndex: {
+				files: ['README.md'],
+				template: 'doc/assets/index-template.html',
+				dest: 'doc',
+				options: {
+					gfm: false, // Github flavored markdown
+					highlight: function(code, lang) {
+						return code; // No code highlighting
+					}
+				}
+			},
 			doc: {
 				files: ['doc/markdown/*.md'],
 				template: 'doc/assets/template.html',
@@ -18,6 +29,14 @@ module.exports = function(grunt) {
 						return code; // No code highlighting
 					}
 				}
+			}
+		},
+
+		// Rename files
+		rename: {
+			doc: {
+				src: 'doc/README.html',
+				dest: 'doc/index.html'
 			}
 		},
 
@@ -87,6 +106,7 @@ module.exports = function(grunt) {
 
 	// Load tasks
 	grunt.loadNpmTasks('grunt-markdown');
+	grunt.loadNpmTasks('grunt-rename');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
@@ -94,7 +114,9 @@ module.exports = function(grunt) {
 	// Register tasks.
 	// Documentation: 'grunt doc'
 	grunt.registerTask('doc', [
+		'markdown:docIndex',
 		'markdown:doc',
+		'rename:doc',
 		'jshint:doc',
 		'uglify:doc',
 		'cssmin:doc'

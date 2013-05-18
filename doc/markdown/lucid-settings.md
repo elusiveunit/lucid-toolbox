@@ -212,6 +212,10 @@ Since there are quite a bit of options, here are some examples.
 
 ## Changelog
 
+### 1.3.3: May 18, 2013
+
+* Fix: Prevent notice with unsaved checklists.
+
 ### 1.3.2: Apr 14, 2013
 
 * New: Add `pass_settings_errors_id` property to control `settings_errors`. Passing the ID seems to be needed sometimes to prevent double update messages. Other times, passing it prevents messages from showing up at all. I don't know the reason yet, so this is all trial and error.
@@ -219,3 +223,24 @@ Since there are quite a bit of options, here are some examples.
 ### 1.3.1: Mar 27, 2013
 
 * Initial public release.
+* Fix: Prevent notices with default values when using checklists by not overwriting the ID variable.
+
+### 1.3.0
+
+* New: Add 'button field'.
+* Tweak: A lot of internal restructuring.
+
+### 1.2.0
+
+* New: Add custom validation and sanitation.
+* New: Highlight fields with errors.
+* New: Add ability to include general HTML.
+
+### 1.1.0
+
+* New: Add checklists, a grouped list of checkboxes, as a field type.
+* New: Add ability to set default values.
+
+### 1.0.0
+
+* Initial version.
