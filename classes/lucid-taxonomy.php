@@ -67,6 +67,7 @@ class Lucid_Taxonomy {
 	/**
 	 * The taxonomy name.
 	 *
+	 * @since 1.0.0
 	 * @var string
 	 */
 	public $name;
@@ -74,6 +75,7 @@ class Lucid_Taxonomy {
 	/**
 	 * The post type(s) that get the taxonomy.
 	 *
+	 * @since 1.0.0
 	 * @var array
 	 */
 	public $to_post_types;
@@ -81,6 +83,7 @@ class Lucid_Taxonomy {
 	/**
 	 * The taxonomy.
 	 *
+	 * @since 1.0.0
 	 * @var array
 	 */
 	public $taxonomy_data = array();
@@ -96,6 +99,7 @@ class Lucid_Taxonomy {
 	 * - 'taxonomy_args' (array) The standard arguments for register_taxonomy,
 	 *   like 'hierarchical', 'labels', 'rewrite' etc. See WordPress Codex.
 	 *
+	 * @since 1.0.0
 	 * @param string $taxonomy The unique taxonomy name. Maximum 32 characters
 	 *   and can not contain capital letters or spaces. See WordPress Codex for
 	 *   a list of reserved terms.
@@ -113,6 +117,8 @@ class Lucid_Taxonomy {
 
 	/**
 	 * Add relevant hooks for taxonomy functions.
+	 *
+	 * @since 1.0.0
 	 */
 	private function _add_hooks() {
 		add_action( 'wp_loaded', array( $this, '_add_taxonomy' ), 0 );
@@ -127,6 +133,8 @@ class Lucid_Taxonomy {
 
 	/**
 	 * Register custom taxonomy.
+	 *
+	 * @since 1.0.0
 	 */
 	public function _add_taxonomy() {
 		register_taxonomy(
@@ -142,6 +150,8 @@ class Lucid_Taxonomy {
 	 * This needs different hooks depending on the post type, as noted in the
 	 * comments. The sutuation for manage_posts_columns is easier to manage in
 	 * the callback function instead of here.
+	 *
+	 * @since 1.0.0
 	 */
 	public function _do_taxonomy_columns() {
 		global $typenow;
@@ -162,6 +172,8 @@ class Lucid_Taxonomy {
 	/**
 	 * Generate a drop down for custom taxonomy filtering above the list of
 	 * posts.
+	 *
+	 * @since 1.0.0
 	 */
 	public function _restrict_posts_by_taxonomy() {
 		global $typenow;
@@ -190,6 +202,7 @@ class Lucid_Taxonomy {
 	/**
 	 * Filter post list based on the selected taxonomy.
 	 *
+	 * @since 1.0.0
 	 * @param object $query The current wp_query.
 	 */
 	public function _convert_taxonomy_id_to_term_in_query( $query ) {
@@ -222,6 +235,7 @@ class Lucid_Taxonomy {
 	 * );
 	 * </code>
 	 *
+	 * @since 1.0.0
 	 * @param array $columns The default array of columns.
 	 * @return array The columns with the new one inserted.
 	 */
@@ -248,6 +262,7 @@ class Lucid_Taxonomy {
 	/**
 	 * Populate the added custom taxonomy columns.
 	 *
+	 * @since 1.0.0
 	 * @param string $column_name Current column, all columns are looped over.
 	 * @param int $post_id Current post ID.
 	 * @see add_columns()
@@ -287,6 +302,8 @@ class Lucid_Taxonomy {
 	 * By default the right edge of the select box is right against the text.
 	 * This sets a min-width depending on character count, minus a totally trial
 	 * and error number, so it's not too wide.
+	 *
+	 * @since 1.0.0
 	 */
 	public function _admin_css() {
 		$tax = $this->name;
@@ -305,6 +322,7 @@ class Lucid_Taxonomy {
 	 * Unlike categories, custom taxonomies don't have a default term if none is
 	 * chosen.
 	 *
+	 * @since 1.1.0
 	 * @param int $post_id ID of current post being saved.
 	 * @param object $post Current post object.
 	 * @link wordpress.mfields.org/?p=311

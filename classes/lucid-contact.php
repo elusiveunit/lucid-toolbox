@@ -116,10 +116,10 @@ class Lucid_Contact {
 	| _send
 	| _has_required_send_data
 	| _clear_send
-	|
-	| [=Misc. functions and utilities]
 	| assemble_form
 	| render_form
+	|
+	| [=Misc. functions and utilities]
 	| _debug_filter
 	| _get_attributes_string
 	| is_checkbox
@@ -142,6 +142,7 @@ class Lucid_Contact {
 	 * Sender's name. Set to a field name like 'name' to use the data from that
 	 * field.
 	 *
+	 * @since 1.0.0
 	 * @var string
 	 */
 	public $from_name = '';
@@ -150,6 +151,7 @@ class Lucid_Contact {
 	 * Sender's email address. Set to a field name like 'email' to use the data
 	 * from that field.
 	 *
+	 * @since 1.0.0
 	 * @var string
 	 */
 	public $from_address = '';
@@ -157,6 +159,7 @@ class Lucid_Contact {
 	/**
 	 * Recipient's email address.
 	 *
+	 * @since 1.0.0
 	 * @var string
 	 */
 	public $to_address = '';
@@ -180,6 +183,7 @@ class Lucid_Contact {
 	 * );
 	 * </code>
 	 *
+	 * @since 1.0.0
 	 * @var array
 	 * @see $message_format_separator
 	 */
@@ -191,6 +195,7 @@ class Lucid_Contact {
 	 * The email message is assembled by taking the submitted data from every
 	 * field and joining it with implode(). This string is used as glue.
 	 *
+	 * @since 1.0.0
 	 * @var string
 	 * @see $message_format
 	 */
@@ -226,6 +231,7 @@ class Lucid_Contact {
 	 * ';
 	 * </code>
 	 *
+	 * @since 1.4.0
 	 * @var string
 	 */
 	public $message_template = '';
@@ -233,6 +239,7 @@ class Lucid_Contact {
 	/**
 	 * Template tags contained in the message.
 	 *
+	 * @since 1.4.0
 	 * @var array
 	 */
 	protected $_message_tags = array();
@@ -240,6 +247,7 @@ class Lucid_Contact {
 	/**
 	 * Conditional tags contained in the message.
 	 *
+	 * @since 1.4.0
 	 * @var array
 	 */
 	protected $_message_conditionals = array();
@@ -261,6 +269,7 @@ class Lucid_Contact {
 	 *
 	 * These can then be used in the template like any other: {{price_total}}.
 	 *
+	 * @since 1.4.0
 	 * @var array
 	 */
 	public $custom_template_tags = array();
@@ -271,6 +280,7 @@ class Lucid_Contact {
 	 * Full include path to an HTML file to use as email template. The file can
 	 * contain the same template tags as $message_template.
 	 *
+	 * @since 1.4.0
 	 * @see $message_template For how template tags work.
 	 * @var string
 	 */
@@ -284,6 +294,7 @@ class Lucid_Contact {
 	 *
 	 * Takes the form of: [Label] Subject goes after.
 	 *
+	 * @since 1.1.0
 	 * @var string
 	 */
 	public $subject_label = '';
@@ -295,6 +306,7 @@ class Lucid_Contact {
 	 * Otherwise, the string will be used as is. The value of a field will be a
 	 * maximum of six words long and if shortened will have '...' appended to it.
 	 *
+	 * @since 1.0.0
 	 * @var string
 	 */
 	public $subject_text = '';
@@ -303,6 +315,7 @@ class Lucid_Contact {
 	 * Extra headers to use, one full header per item.
 	 *
 	 * @var array
+	 * @since 1.5.0
 	 */
 	public $extra_headers = array();
 
@@ -310,6 +323,7 @@ class Lucid_Contact {
 	 * Extra recipients to send to, in addition to the to_address.
 	 *
 	 * @var array
+	 * @since 1.5.0
 	 */
 	public $extra_recipients = array();
 
@@ -318,6 +332,7 @@ class Lucid_Contact {
 	 * use the data from that field.
 	 *
 	 * @var string
+	 * @since 1.5.0
 	 */
 	public $extras_from_name = '';
 
@@ -326,12 +341,14 @@ class Lucid_Contact {
 	 * to use the data from that field.
 	 *
 	 * @var string
+	 * @since 1.5.0
 	 */
 	public $extras_from_address = '';
 
 	/**
 	 * The form fields.
 	 *
+	 * @since 1.0.0
 	 * @var array
 	 * @see add_field()
 	 */
@@ -343,6 +360,7 @@ class Lucid_Contact {
 	 * The wrap includes the field's label, description, error etc. Defaults to
 	 * div.
 	 *
+	 * @since 1.0.0
 	 * @var string
 	 */
 	public $field_wrap = 'div';
@@ -350,6 +368,7 @@ class Lucid_Contact {
 	/**
 	 * Default ignored custom attributes for fields.
 	 *
+	 * @since 1.0.0
 	 * @var array
 	 * @see assemble_form()
 	 */
@@ -361,6 +380,7 @@ class Lucid_Contact {
 	 * To get a nicer key for miscellaneous HTML added via add_to_field_list()
 	 * (html-# instead of a number), the key is kept unique with this counter.
 	 *
+	 * @since 1.0.0
 	 * @var int
 	 * @see add_to_field_list()
 	 */
@@ -369,6 +389,7 @@ class Lucid_Contact {
 	/**
 	 * The form action. Default set in constructor.
 	 *
+	 * @since 1.0.0
 	 * @var string
 	 */
 	public $form_action = '';
@@ -376,6 +397,7 @@ class Lucid_Contact {
 	/**
 	 * The form method.
 	 *
+	 * @since 1.0.0
 	 * @var string
 	 */
 	public $form_method = 'post';
@@ -384,6 +406,7 @@ class Lucid_Contact {
 	 * If email attachments should be handled. Is set if there is a file input
 	 * added.
 	 *
+	 * @since 1.3.0
 	 * @var bool
 	 */
 	public $handle_attachments = false;
@@ -391,6 +414,7 @@ class Lucid_Contact {
 	/**
 	 * Remove uploaded attachment files from the server when they've been sent.
 	 *
+	 * @since 1.3.0
 	 * @var bool
 	 */
 	public $delete_sent_files = true;
@@ -398,6 +422,7 @@ class Lucid_Contact {
 	/**
 	 * Allowed file extensions for mail attachments.
 	 *
+	 * @since 1.3.0
 	 * @var array
 	 * @see _get_attachments()
 	 * @see set_allowed_files()
@@ -408,6 +433,7 @@ class Lucid_Contact {
 	/**
 	 * Allowed MIME types for mail attachments.
 	 *
+	 * @since 1.3.0
 	 * @var array
 	 * @see _get_attachments()
 	 * @see set_allowed_files()
@@ -417,6 +443,7 @@ class Lucid_Contact {
 	/**
 	 * Paths to sent attachments.
 	 *
+	 * @since 1.3.0
 	 * @var array
 	 */
 	protected $_attachments = array();
@@ -427,6 +454,7 @@ class Lucid_Contact {
 	 * - X * 1024 for kb to bytes.
 	 * - X * 1024 * 1024 for MB to bytes.
 	 *
+	 * @since 1.3.0
 	 * @var int
 	 */
 	public $max_file_size = 0;
@@ -434,6 +462,7 @@ class Lucid_Contact {
 	/**
 	 * Additional form attributes. Format attr => value.
 	 *
+	 * @since 1.0.0
 	 * @var array
 	 * @see assemble_form()
 	 */
@@ -443,6 +472,7 @@ class Lucid_Contact {
 	 * Referer to check when submitting, for a teeny-weeny bit of spoofable extra
 	 * CSRF security... Pointless? Maybe. Default set in constructor.
 	 *
+	 * @since 1.0.0
 	 * @var string
 	 */
 	public $form_location = '';
@@ -450,6 +480,7 @@ class Lucid_Contact {
 	/**
 	 * Stores user feedback messages.
 	 *
+	 * @since 1.0.0
 	 * @var array
 	 * @see set_form_messages()
 	 */
@@ -458,6 +489,7 @@ class Lucid_Contact {
 	/**
 	 * Stores user feedback messages for file uploads.
 	 *
+	 * @since 1.3.0
 	 * @var array
 	 * @see set_file_form_messages()
 	 */
@@ -466,6 +498,7 @@ class Lucid_Contact {
 	/**
 	 * Current form error or success message.
 	 *
+	 * @since 1.0.0
 	 * @var string
 	 * @see _validate()
 	 */
@@ -474,6 +507,7 @@ class Lucid_Contact {
 	/**
 	 * Handle the $_POST data and sending.
 	 *
+	 * @since 1.0.0
 	 * @var bool
 	 */
 	public $handle_post = true;
@@ -481,6 +515,7 @@ class Lucid_Contact {
 	/**
 	 * If email validation should include DNS lookup.
 	 *
+	 * @since 1.0.0
 	 * @var bool
 	 * @see is_valid_email()
 	 */
@@ -493,6 +528,7 @@ class Lucid_Contact {
 	 * $_fields contents. Debug parts of the class is preceded by a --Debug--
 	 * comment. Quicker toggle through the constructor.
 	 *
+	 * @since 1.0.0
 	 * @var bool
 	 */
 	public $debug_mode = false;
@@ -500,6 +536,7 @@ class Lucid_Contact {
 	/**
 	 * Constructor. Set some default properties, data and messages.
 	 *
+	 * @since 1.0.0
 	 * @param bool $debug_mode Whether to display form and POST contents.
 	 */
 	public function __construct( $debug_mode = false ) {
@@ -532,8 +569,10 @@ class Lucid_Contact {
 	 * - 'not_sent' If there was a problem during the sending process. Not
 	 *   something the user can do anything about.
 	 * - 'some_sent' If sending to multiple recipients and there was a problem
-	 *   with some, but not all, during the sending process.
+	 *   with some, but not all, during the sending process. Not something the
+	 *   user can do anything about.
 	 *
+	 * @since 1.0.0
 	 * @param array $messages Associative array of messages.
 	 */
 	public function set_form_messages( array $messages = array() ) {
@@ -551,6 +590,7 @@ class Lucid_Contact {
 	/**
 	 * Set form messages for file uploads.
 	 *
+	 * @since 1.3.0
 	 * @param array $messages Associative array of messages.
 	 * @link http://www.php.net/manual/en/features.file-upload.errors.php
 	 */
@@ -581,6 +621,7 @@ class Lucid_Contact {
 	/**
 	 * Set allowed extensions and MIME types. Sets default if there are none.
 	 *
+	 * @since 1.3.0
 	 * @param array $extensions Array of file extensions.
 	 * @param array $mime_types Array of file MIME types.
 	 * @link http://www.webmaster-toolkit.com/mime-types.shtml MIME types list.
@@ -674,6 +715,7 @@ class Lucid_Contact {
 	 * - 'error_invalid' (string) Error message for when a field with validation
 	 *   doesn't pass it.
 	 *
+	 * @since 1.0.0
 	 * @param string $type The field type.
 	 * @param string $name Name and, in most cases, ID attributes for the field.
 	 * @param array $args Array of additional arguments.
@@ -776,6 +818,7 @@ class Lucid_Contact {
 	/**
 	 * Field wrap opening HTML tag.
 	 *
+	 * @since 1.2.0
 	 * @param array $args Arguments passed to add_field().
 	 * @return array Field part with the 'open' key.
 	 */
@@ -807,6 +850,7 @@ class Lucid_Contact {
 	/**
 	 * Field wrap closing HTML tag.
 	 *
+	 * @since 1.2.0
 	 * @param string $wrap HTML tag to use as a wrapping element.
 	 * @return array Field part with the 'close' key.
 	 */
@@ -830,8 +874,9 @@ class Lucid_Contact {
 	}
 
 	/**
-	 * Field label.
+	 * The field label.
 	 *
+	 * @since 1.2.0
 	 * @param string $id Field ID to set in the 'for' attribute.
 	 * @param array $args Arguments passed to add_field().
 	 * @return array Field part with the 'label' key.
@@ -853,6 +898,7 @@ class Lucid_Contact {
 	/**
 	 * Field description.
 	 *
+	 * @since 1.2.0
 	 * @param string $description_text Text to display.
 	 * @return array Field part with the 'description' key.
 	 */
@@ -863,6 +909,7 @@ class Lucid_Contact {
 	/**
 	 * Assemble a textarea as an array of parts.
 	 *
+	 * @since 1.2.0
 	 * @see add_field()
 	 * @param string $name Name and id attributes.
 	 * @param array $args Arguments passed to add_field().
@@ -895,6 +942,7 @@ class Lucid_Contact {
 	/**
 	 * Assemble a select box as an array of parts.
 	 *
+	 * @since 1.2.0
 	 * @see add_field()
 	 * @param string $name Name and id attributes.
 	 * @param array $args Arguments passed to add_field().
@@ -940,6 +988,7 @@ class Lucid_Contact {
 	/**
 	 * Assemble a radio button input as an array of parts.
 	 *
+	 * @since 1.2.0
 	 * @see add_field()
 	 * @param string $name Name attribute.
 	 * @param string $id Id attribute, different from name for radio buttons.
@@ -975,6 +1024,7 @@ class Lucid_Contact {
 	/**
 	 * Assemble a hidden input as an array of parts.
 	 *
+	 * @since 1.2.0
 	 * @see add_field()
 	 * @param string $name Name and id attributes.
 	 * @param array $args Arguments passed to add_field().
@@ -1002,6 +1052,7 @@ class Lucid_Contact {
 	/**
 	 * Assemble a default input field as an array of parts.
 	 *
+	 * @since 1.2.0
 	 * @see add_field()
 	 * @param string $type The field type, i.e. text or email.
 	 * @param string $name Name and id attributes.
@@ -1049,6 +1100,7 @@ class Lucid_Contact {
 	 *
 	 * This is added as-is, so remember to sanitize if user data is involved.
 	 *
+	 * @since 1.0.0
 	 * @param string $string String of HTML to add.
 	 */
 	public function add_to_field_list( $string ) {
@@ -1065,6 +1117,7 @@ class Lucid_Contact {
 	 *
 	 * This should most likely always run last, after every add_field() call.
 	 *
+	 * @since 1.0.0
 	 * @param string $value The value attribute i.e. text for the button.
 	 * @param array $attributes Additional HTML attributes, format	attr => value.
 	 */
@@ -1098,6 +1151,7 @@ class Lucid_Contact {
 	 *
 	 * TODO: Break apart this monster of a method.
 	 *
+	 * @since 1.0.0
 	 * @return bool True if POST data is valid, false if there were errors.
 	 */
 	protected function _validate() {
@@ -1249,6 +1303,7 @@ class Lucid_Contact {
 	 * POST data of that field is used as the string. Otherwise the string is
 	 * added as is.
 	 *
+	 * @since 1.1.0
 	 * @return string The assembled subject line.
 	 */
 	protected function _get_subject() {
@@ -1289,6 +1344,7 @@ class Lucid_Contact {
 	 * POST data of that field is used as the string. Otherwise the string is
 	 * added as is.
 	 *
+	 * @since 1.4.0
 	 * @see $message_format For how the message is assembled.
 	 * @return array The assembled message.
 	 */
@@ -1338,6 +1394,7 @@ class Lucid_Contact {
 	/**
 	 * Get conditionals in the email message.: {{if}}s and {{if_block}}s.
 	 *
+	 * @since 1.4.0
 	 * @param string $message Text to search in, defaults to the message_template
 	 *   property.
 	 * @return array Found conditional blocks.
@@ -1384,6 +1441,7 @@ class Lucid_Contact {
 	 * Get template tags in the email message.: anything between {{ and }},
 	 * except strings containing #, / or }.
 	 *
+	 * @since 1.4.0
 	 * @param string $message Text to search in, defaults to the message_template
 	 *   property.
 	 * @return array Found template tags.
@@ -1408,6 +1466,7 @@ class Lucid_Contact {
 	 * tag and replaces it with relevant content. In the case of an empty value,
 	 * the entire if/if_block is removed.
 	 *
+	 * @since 1.4.0
 	 * @param string $tag Mustache style template tag, i.e. {{name}}
 	 * @param string $text Text to search in.
 	 * @return string Filtered text.
@@ -1465,6 +1524,7 @@ class Lucid_Contact {
 	 *
 	 * Searches the text for the passed tag and replaces it with POST content.
 	 *
+	 * @since 1.4.0
 	 * @param string $tag Mustache style template tag, i.e. {{name}}
 	 * @param string $text Text to search in.
 	 * @return string Filtered text.
@@ -1513,6 +1573,7 @@ class Lucid_Contact {
 	 * mustache-style template tags, like {{tag}}. Found tags are checked
 	 * against the $_fields array and matches replaced with POST values.
 	 *
+	 * @since 1.1.0
 	 * @see $message_template For how templates work.
 	 * @return string The message.
 	 */
@@ -1534,6 +1595,7 @@ class Lucid_Contact {
 	/**
 	 * Put together the HTML message for the email.
 	 *
+	 * @since 1.4.0
 	 * @return string The complete message.
 	 */
 	protected function _get_html_message() {
@@ -1577,6 +1639,7 @@ class Lucid_Contact {
 	 * made for properties that can be either a field's data or a harcoded
 	 * option.
 	 *
+	 * @since 1.5.0
 	 * @param string $field Field ID to check.
 	 * @param string $filter Filter to run on the data. Defaults to 'other',
 	 *   with additional options being 'name', 'email' and 'none'. See
@@ -1618,6 +1681,7 @@ class Lucid_Contact {
 	 * - 'reply_to' Whether to include Reply-To with the 'regular' and 'extra'
 	 *   headers.
 	 *
+	 * @since 1.1.0
 	 * @param array $include Headers to include.
 	 * @return array wp_mail accepts headers as an array.
 	 */
@@ -1669,6 +1733,7 @@ class Lucid_Contact {
 	 *
 	 * TODO: Change $_FILES[$field]['type'] to something more secure, like finfo.
 	 *
+	 * @since 1.3.0
 	 * @return array|bool wp_mail checks for empty array, so return that if
 	 *   there are no attachments. False if there is a problem with a file.
 	 */
@@ -1744,6 +1809,7 @@ class Lucid_Contact {
 	 * to the name (file.ext => file-#.ext). Recursively call self with a higher
 	 * number until a unique file name is found.
 	 *
+	 * @since 1.3.0
 	 * @param string $dir Directory of the file.
 	 * @param string $file The file name.
 	 * @param string $extension The file extension.
@@ -1773,6 +1839,7 @@ class Lucid_Contact {
 	 *
 	 * TODO: Separate this a bit.
 	 *
+	 * @since 1.0.0
 	 * @link http://codex.wordpress.org/Function_Reference/wp_mail
 	 * @return bool True if wp_mail was successful, false otherwise.
 	 */
@@ -1875,6 +1942,7 @@ class Lucid_Contact {
 	/**
 	 * Check if there is a recipient address and a message format.
 	 *
+	 * @since 1.0.0
 	 * @return boolean
 	 */
 	protected function _has_required_send_data() {
@@ -1898,6 +1966,8 @@ class Lucid_Contact {
 
 	/**
 	 * Clear the form after message is sent.
+	 *
+	 * @since 1.0.0
 	 */
 	protected function _clear_send() {
 
@@ -1933,6 +2003,7 @@ class Lucid_Contact {
 	 * Assemble the $_fields array to a complete form and save it to the 'form'
 	 * property.
 	 *
+	 * @since 1.0.0
 	 * @return string $form The finished form.
 	 */
 	public function assemble_form() {
@@ -1995,6 +2066,8 @@ class Lucid_Contact {
 	 *
 	 * This is the function to use after adding all the fields. In addition to
 	 * rendering, it calls _send(), which in turn calls _validate().
+	 *
+	 * @since 1.0.0
 	 */
 	public function render_form() {
 		if ( $this->handle_post )
@@ -2032,6 +2105,7 @@ class Lucid_Contact {
 	 * For debug purposes, encodes all fields through array_walk_recursive() so
 	 * the markup is displayed.
 	 *
+	 * @since 1.0.0
 	 * @param string $value Array item value.
 	 */
 	protected function _debug_filter( &$value ) {
@@ -2044,6 +2118,7 @@ class Lucid_Contact {
 	 * Loops through an array of HTML attributes in in 'attr' => 'val' format
 	 * and merges them into a string.
 	 *
+	 * @since 1.2.0
 	 * @param array $attributes HTML attributes.
 	 * @param $ignored array|string Attributes to ignore. A string can be passed
 	 *   in case of a single attribute. Defaults to $this->_ignore_field_attrs if
@@ -2072,6 +2147,7 @@ class Lucid_Contact {
 	/**
 	 * Check if a field is a checkbox.
 	 *
+	 * @since 1.4.0
 	 * @param string $field Field ID.
 	 * @return boolean
 	 */
@@ -2084,6 +2160,7 @@ class Lucid_Contact {
 	 *
 	 * Original code by Douglas Lovell.
 	 *
+	 * @since 1.0.0
 	 * @param string $email Email address to validate.
 	 * @param bool $check_dns Whether to do a DNS check of the email address
 	 *   domain. If empty, checks do_email_dns_check property.
@@ -2156,6 +2233,7 @@ class Lucid_Contact {
 	 * Allowed are digits, dots, hyphens, plusses, round brackets and spaces
 	 * in any format, as long as the number is at least eight characters long.
 	 *
+	 * @since 1.0.0
 	 * @param string $tel Phone number to validate
 	 * @return bool True if phone number is valid, false otherwise
 	 */
@@ -2173,6 +2251,7 @@ class Lucid_Contact {
 	/**
 	 * Clean a string to be used as HTML.
 	 *
+	 * @since 1.0.0
 	 * @param string $tag
 	 * @return string
 	 */
@@ -2190,6 +2269,7 @@ class Lucid_Contact {
 	 *
 	 * https://www.owasp.org/index.php/XSS_%28Cross_Site_Scripting%29_Prevention_Cheat_Sheet
 	 *
+	 * @since 1.4.0
 	 * @param string $input Text to filter.
 	 * @return string
 	 */
@@ -2206,6 +2286,7 @@ class Lucid_Contact {
 	 * Filter a name to be used in email headers, to prevent email injection.
 	 * Code from Zend_Mail.
 	 *
+	 * @since 1.2.1
 	 * @param string $input The name to filter.
 	 * @return string
 	 */
@@ -2219,6 +2300,7 @@ class Lucid_Contact {
 	 * Filter an email address to be used in email headers, to prevent email
 	 * injection. Code from Zend_Mail.
 	 *
+	 * @since 1.2.1
 	 * @param string $input The email address to filter.
 	 * @return string
 	 */
@@ -2232,6 +2314,7 @@ class Lucid_Contact {
 	 * Filter misc. fields to be used in email headers, to prevent email
 	 * injection. Code from Zend_Mail.
 	 *
+	 * @since 1.2.1
 	 * @param string $data The name to filter.
 	 * @return string
 	 */
@@ -2244,6 +2327,7 @@ class Lucid_Contact {
 	/**
 	 * Normalize line break characters used in a string.
 	 *
+	 * @since 1.5.0
 	 * @param string $input Data to filter.
 	 * @param string $to_character Replacement to insert. Defaults to line feed.
 	 * @return string
@@ -2259,6 +2343,7 @@ class Lucid_Contact {
 	 * string to a set number of words and adds dots to signify that the string
 	 * is cut off, if specified.
 	 *
+	 * @since 1.1.0
 	 * @param string $string String to get words from.
 	 * @param int $words Number of words to get from the string.
 	 * @param bool $add_dots Add three dots to the end of the string if the word
@@ -2281,6 +2366,7 @@ class Lucid_Contact {
 	 *
 	 * http://eosrei.net/articles/2011/11/php-arrayinsertafter-arrayinsertbefore
 	 *
+	 * @since 1.0.0
 	 * @param string $where Where to insert, 'before' or 'after'.
 	 * @param string $key The key to insert before of after.
 	 * @param array $array An array to insert into.
@@ -2315,6 +2401,7 @@ class Lucid_Contact {
 	/**
 	 * Return array keys that match the pattern.
 	 *
+	 * @since 1.0.0
 	 * @param string $pattern Regex pattern to search for.
 	 * @param array $input The array to search in.
 	 * @param int $flags If set to PREG_GREP_INVERT, this function returns the
@@ -2334,6 +2421,7 @@ class Lucid_Contact {
 	/**
 	 * Opening pre tag and heading for primitive debug mode.
 	 *
+	 * @since 1.1.0
 	 * @param string $heading Text to display above the printed data.
 	 */
 	protected function _debug_open( $heading = '' ) {
@@ -2343,6 +2431,8 @@ class Lucid_Contact {
 
 	/**
 	 * Closing pre tag for primitive debug mode.
+	 *
+	 * @since 1.1.0
 	 */
 	protected function _debug_close() {
 		echo '</pre>';

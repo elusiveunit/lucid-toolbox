@@ -108,6 +108,7 @@ class Lucid_Settings {
 	 * tab ID is a separate settings collection.
 	 *
 	 * @var string
+	 * @since 1.0.0
 	 */
 	public $id = '';
 
@@ -115,6 +116,7 @@ class Lucid_Settings {
 	 * The heading for the settings page. Doesn't show when using tabs.
 	 *
 	 * @var string
+	 * @since 1.0.0
 	 */
 	public $page_heading = '';
 
@@ -122,6 +124,7 @@ class Lucid_Settings {
 	 * The screen ID of the settings page.
 	 *
 	 * @var string
+	 * @since 1.0.0
 	 */
 	protected $_screen_id = '';
 
@@ -129,6 +132,7 @@ class Lucid_Settings {
 	 * Capability required to edit the settings.
 	 *
 	 * @var string
+	 * @since 1.0.0
 	 * @link http://codex.wordpress.org/Roles_and_Capabilities
 	 */
 	public $capability = 'manage_options';
@@ -142,6 +146,7 @@ class Lucid_Settings {
 	 * the reason for the issue.
 	 *
 	 * @var bool
+	 * @since 1.3.2
 	 * @see _display_page()
 	 */
 	public $pass_settings_errors_id = true;
@@ -150,6 +155,7 @@ class Lucid_Settings {
 	 * The submenu item for the settings page.
 	 *
 	 * @var array
+	 * @since 1.0.0
 	 * @see submenu()
 	 */
 	protected $_submenu = array();
@@ -158,6 +164,7 @@ class Lucid_Settings {
 	 * Settings page tabs. Stored as 'unique_id' => 'Tab label'.
 	 *
 	 * @var array
+	 * @since 1.0.0
 	 */
 	protected $_tabs = array();
 
@@ -165,6 +172,7 @@ class Lucid_Settings {
 	 * Which sections belong to which tabs.
 	 *
 	 * @var array
+	 * @since 1.0.0
 	 */
 	protected $_tab_sections = array();
 
@@ -172,6 +180,7 @@ class Lucid_Settings {
 	 * Settings sections.
 	 *
 	 * @var array
+	 * @since 1.0.0
 	 * @see section()
 	 */
 	protected $_sections = array();
@@ -180,6 +189,7 @@ class Lucid_Settings {
 	 * Settings fields.
 	 *
 	 * @var array
+	 * @since 1.0.0
 	 * @see field()
 	 */
 	protected $_fields = array();
@@ -188,6 +198,7 @@ class Lucid_Settings {
 	 * HTML blocks.
 	 *
 	 * @var array
+	 * @since 1.2.0
 	 * @see html()
 	 */
 	protected $_html = array();
@@ -199,6 +210,7 @@ class Lucid_Settings {
 	 * get POSTed.
 	 *
 	 * @var array
+	 * @since 1.0.0
 	 */
 	protected $_checkboxes = array();
 
@@ -212,12 +224,14 @@ class Lucid_Settings {
 	 * param to field()) is thus added here and chacked in in _add_fields().
 	 *
 	 * @var array
+	 * @since 1.1.0
 	 */
 	protected $_checklists = array();
 
 	/**
 	 * Constructor, set ID and heading.
 	 *
+	 * @since 1.0.0
 	 * @param string $id Unique setting ID.
 	 * @param string $page_heading Heading for the settings page.
 	 */
@@ -242,6 +256,7 @@ class Lucid_Settings {
 	 * - 'capability' (string) Capability needed to edit the settings. If not
 	 *   set, the $capability property is used, which defaults to manage_options.
 	 *
+	 * @since 1.0.0
 	 * @param string $menu_label Text for the link in the menu.
 	 * @param array $args Additional arguments.
 	 * @link http://codex.wordpress.org/Function_Reference/add_submenu_page
@@ -277,6 +292,7 @@ class Lucid_Settings {
 	 * - 'output' (string) HTML to display at the top of the section, below the
 	 *   heading.
 	 *
+	 * @since 1.0.0
 	 * @param string $id A unique section ID.
 	 * @param array $args Additional arguments.
 	 * @link http://codex.wordpress.org/Function_Reference/add_submenu_page
@@ -344,6 +360,7 @@ class Lucid_Settings {
 	 * - 'sanitize_custom' (regex string) Sanitize value with a regular
 	 *   expression. Value will go through preg_replace.
 	 *
+	 * @since 1.0.0
 	 * @param string $id A unique ID for the field.
 	 * @param string $label The field label.
 	 * @param array $args Array of additional arguments.
@@ -426,6 +443,7 @@ class Lucid_Settings {
 	/**
 	 * Add general HTML to the settings page.
 	 *
+	 * @since 1.2.0
 	 * @param string $id Which field ID to insert after.
 	 * @param string $html HTML content.
 	 */
@@ -435,6 +453,8 @@ class Lucid_Settings {
 
 	/**
 	 * Run the settings registration on apropriate hooks.
+	 *
+	 * @since 1.0.0
 	 */
 	public function init() {
 		add_action( 'admin_menu', array( $this, '_load_settings' ) );
@@ -444,6 +464,7 @@ class Lucid_Settings {
 	/**
 	 * Get settings page ID.
 	 *
+	 * @since 1.0.0
 	 * @return string
 	 */
 	public function get_screen_id() {
@@ -463,6 +484,8 @@ class Lucid_Settings {
 	 *
 	 * Add a menu entry to the defined menu and set up loading of the content
 	 * for the settings page.
+	 *
+	 * @since 1.0.0
 	 */
 	public function _load_settings() {
 		if ( ! $this->_submenu ) return;
@@ -485,6 +508,8 @@ class Lucid_Settings {
 
 	/**
 	 * Add all sections from $this->_sections.
+	 *
+	 * @since 1.0.0
 	 */
 	public function _add_sections() {
 		foreach ( $this->_sections as $section => $args ) :
@@ -507,6 +532,8 @@ class Lucid_Settings {
 
 	/**
 	 * Add all fields from $this->_fields.
+	 *
+	 * @since 1.0.0
 	 */
 	public function _add_fields() {
 		foreach ( $this->_fields as $field_id => $args ) :
@@ -593,6 +620,8 @@ class Lucid_Settings {
 
 	/**
 	 * Display the settings page.
+	 *
+	 * @since 1.0.0
 	 */
 	public function _display_page() {
 		if ( ! current_user_can( $this->capability ) )
@@ -638,6 +667,7 @@ class Lucid_Settings {
 	/**
 	 * Display section output if set.
 	 *
+	 * @since 1.0.0
 	 * @param array $section Data for the section being processed.
 	 */
 	public function _display_section( $section ) {
@@ -648,6 +678,8 @@ class Lucid_Settings {
 
 	/**
 	 * Render settings tabs.
+	 *
+	 * @since 1.0.0
 	 */
 	protected function _settings_tabs() {
 		if ( ! $this->_tabs ) return;
@@ -669,6 +701,8 @@ class Lucid_Settings {
 
 	/**
 	 * Register settings page and fields.
+	 *
+	 * @since 1.0.0
 	 */
 	public function _register_setting() {
 
@@ -702,6 +736,7 @@ class Lucid_Settings {
 	 * Should only run if there are no options set, which should only happen if
 	 * the settings have never been saved.
 	 *
+	 * @since 1.1.0
 	 * @param string $id Setting ID, tab or global.
 	 */
 	protected function _add_defaults( $id ) {
@@ -756,6 +791,7 @@ class Lucid_Settings {
 	/**
 	 * Display settings field.
 	 *
+	 * @since 1.3.0
 	 * @param array $args Field options.
 	 */
 	public function _display_field( $args ) {
@@ -823,6 +859,7 @@ class Lucid_Settings {
 	/**
 	 * Display a text field.
 	 *
+	 * @since 1.0.0
 	 * @param array $args Field options.
 	 * @param string $class CSS class for the field.
 	 */
@@ -838,6 +875,7 @@ class Lucid_Settings {
 	/**
 	 * Display a textarea.
 	 *
+	 * @since 1.0.0
 	 * @param array $args Field options.
 	 * @param string $class CSS class for the field.
 	 */
@@ -850,6 +888,7 @@ class Lucid_Settings {
 	/**
 	 * Display a checkbox.
 	 *
+	 * @since 1.0.0
 	 * @param array $args Field options.
 	 */
 	protected function _add_checkbox( $args ) { ?>
@@ -863,6 +902,7 @@ class Lucid_Settings {
 	/**
 	 * Display a list of checkboxes.
 	 *
+	 * @since 1.1.0
 	 * @param array $args Field options.
 	 */
 	protected function _add_checklist( $args ) {
@@ -882,6 +922,7 @@ class Lucid_Settings {
 	/**
 	 * Display a select list.
 	 *
+	 * @since 1.0.0
 	 * @param array $args Field options.
 	 */
 	protected function _add_select( $args ) { ?>
@@ -897,6 +938,7 @@ class Lucid_Settings {
 	/**
 	 * Display radio buttons.
 	 *
+	 * @since 1.0.0
 	 * @param array $args Field options.
 	 */
 	protected function _add_radios( $args ) {
@@ -916,6 +958,7 @@ class Lucid_Settings {
 	 *
 	 * Useful when using JavaScript, for example an image upload field.
 	 *
+	 * @since 1.3.0
 	 * @param array $args Field options.
 	 * @param string $class CSS class for the field.
 	 */
@@ -932,6 +975,7 @@ class Lucid_Settings {
 	/**
 	 * Display a field description.
 	 *
+	 * @since 1.0.0
 	 * @param string $text Text to display.
 	 */
 	protected function _add_description( $text ) {
@@ -941,6 +985,7 @@ class Lucid_Settings {
 	/**
 	 * Display custom HTML.
 	 *
+	 * @since 1.0.0
 	 * @param string $text Text to display.
 	 */
 	protected function _add_html( $text ) {
@@ -963,6 +1008,7 @@ class Lucid_Settings {
 	 * values. Runs through _sanitize() if none is set, where it defaults to
 	 * stripping illegal tags with wp_kses_post().
 	 *
+	 * @since 1.0.0
 	 * @see _validate()
 	 * @see _validate_custom()
 	 * @see _sanitize()
@@ -1059,6 +1105,7 @@ class Lucid_Settings {
 	 * FILTER_VALIDATE_URL is not used due to a bug in some versions of PHP
 	 * where dashes are invalid. It also doesn't handle non-ASCII characters.
 	 *
+	 * @since 1.0.0
 	 * @param string $type Type of validation, predfined or custom.
 	 * @param string $value Value to validate.
 	 * @param string $error Error message to display in case of invalid value.
@@ -1119,6 +1166,7 @@ class Lucid_Settings {
 	 * Runs a custom regex validation. If reverse is set, the preg_match result
 	 * is reversed.
 	 *
+	 * @since 1.2.0
 	 * @param string $regex The regex to run in preg_match.
 	 * @param string $value Value to validate.
 	 * @param string $error Error message to display in case of invalid value.
@@ -1166,6 +1214,7 @@ class Lucid_Settings {
 	 *
 	 * Falls back to stripping illegal HTML tags with wp_kses_post.
 	 *
+	 * @since 1.0.0
 	 * @param string $type What kind of sanitation to run.
 	 * @param string $value Value to sanitize
 	 * @return mixed The sanitized value.
@@ -1226,6 +1275,7 @@ class Lucid_Settings {
 	/**
 	 * Sanitize a value with a custom regex.
 	 *
+	 * @since 1.2.0
 	 * @param string $regex Regular expression to run in value.
 	 * @param string $value Value to sanitize.
 	 * @return mixed The sanitized value.
@@ -1236,6 +1286,8 @@ class Lucid_Settings {
 
 	/**
 	 * Hightlight fields with errors.
+	 *
+	 * @since 1.2.0
 	 */
 	public function _error_highlighting() { ?>
 		<script>

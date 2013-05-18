@@ -62,6 +62,7 @@ class Lucid_Post_Type {
 	/**
 	 * The post type name.
 	 *
+	 * @since 1.0.0
 	 * @var string
 	 */
 	public $name;
@@ -69,6 +70,7 @@ class Lucid_Post_Type {
 	/**
 	 * Additional post type data.
 	 *
+	 * @since 1.0.0
 	 * @var array
 	 */
 	public $post_type_data = array();
@@ -93,6 +95,7 @@ class Lucid_Post_Type {
 	 *   false), like a post type for gallery images. See _update_messages()
 	 *   for examples.
 	 *
+	 * @since 1.0.0
 	 * @param string $post_type The unique post type name. Maximum 20
 	 *   characters, can not contain capital letters or spaces.
 	 * @param array $args Additional post type data.
@@ -107,6 +110,8 @@ class Lucid_Post_Type {
 
 	/**
 	 * Add relevant hooks for post type functions.
+	 *
+	 * @since 1.0.0
 	 */
 	protected function _add_hooks() {
 		add_action( 'wp_loaded', array( $this, '_add_post_type' ), 0 );
@@ -116,6 +121,8 @@ class Lucid_Post_Type {
 
 	/**
 	 * Register the custom post type.
+	 *
+	 * @since 1.0.0
 	 */
 	public function _add_post_type() {
 		register_post_type(
@@ -161,6 +168,7 @@ class Lucid_Post_Type {
 	 * )
 	 * </code>
 	 *
+	 * @since 1.0.0
 	 * @param array $messages Default messages.
 	 * @return array Message array with custom messages added.
 	 */
@@ -214,6 +222,8 @@ class Lucid_Post_Type {
 	 *
 	 * The small image should be a 16x40 pixels sprite image, with the hover
 	 * state on top of the regular state. The large icon should be 32x32 pixels.
+	 *
+	 * @since 1.0.0
 	 */
 	public function _admin_icons() {
 		$post_type = $this->name;
