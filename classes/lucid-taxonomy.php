@@ -60,7 +60,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.1.1
+ * @version 1.1.2
  */
 class Lucid_Taxonomy {
 
@@ -112,6 +112,8 @@ class Lucid_Taxonomy {
 		$this->name = (string) $taxonomy;
 		$this->to_post_types = (array) $to_post_types;
 		$this->taxonomy_data = $args;
+
+		$this->_add_taxonomy();
 		$this->_add_hooks();
 	}
 
@@ -121,7 +123,6 @@ class Lucid_Taxonomy {
 	 * @since 1.0.0
 	 */
 	private function _add_hooks() {
-		add_action( 'wp_loaded', array( $this, '_add_taxonomy' ), 0 );
 		add_action( 'restrict_manage_posts', array( $this, '_restrict_posts_by_taxonomy' ) );
 		add_filter( 'parse_query', array( $this, '_convert_taxonomy_id_to_term_in_query' ) );
 		add_action( 'admin_head', array( $this, '_admin_css' ) );
