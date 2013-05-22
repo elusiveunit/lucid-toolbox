@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.3.3
+ * @version 1.3.4
  */
 class Lucid_Settings {
 
@@ -1038,8 +1038,12 @@ class Lucid_Settings {
 				$must_not_match = ( ! empty( $f['must_not_match'] ) ) ? $f['must_not_match'] : false;
 				$error = ( ! empty( $f['error_message'] ) ) ? $f['error_message'] : '';
 
+				// Empty or no checking, value saved as is
+				if ( empty( $input[$name] ) || 'none' == $sanitize ) :
+					$output[$name] = $input[$name];
+
 				// Validation, sets error if there is a problem
-				if ( $validate || $must_match || $must_not_match ) :
+				elseif ( $validate || $must_match || $must_not_match ) :
 					$result = trim( $input[$name] );
 
 					// Do appropriate validation depending on type
@@ -1058,10 +1062,6 @@ class Lucid_Settings {
 					else :
 						$output[$name] = $result;
 					endif;
-
-				// No checking, value saved as is
-				elseif ( 'none' == $sanitize ) :
-					$output[$name] = $input[$name];
 
 				// Custom sanitation, runs the value through preg_replace
 				elseif ( $sanitize_custom ) :
