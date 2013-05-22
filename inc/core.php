@@ -34,7 +34,7 @@ class Lucid_Toolbox {
 	public function __construct( $file ) {
 		self::$plugin_file = $file;
 
-		add_action( 'init', array( $this, 'load_translation' ), 1 );
+		add_action( 'init', array( $this, 'load_translation' ) );
 		add_filter( 'plugin_row_meta', array( $this, 'add_meta_links' ), 10, 2 );
 	}
 
