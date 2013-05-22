@@ -212,6 +212,8 @@ Example:
 	{{/if_block}}
 	';
 
+**Note:** The conditionals will count the POST value as empty, therefore not showing it, for any falsy values except the number 0.
+
 Since this class only handles find and replace for template tags, custom tags can be used when processing of the tag value is needed, like for a total price. These are set with the `$custom_template_tags` property.
 
 	$form->custom_template_tags = array(
@@ -329,12 +331,16 @@ An example setup with name, email, honeypot and message.
 
 ## Changelog
 
+### 1.5.1: May 22, 2013
+
+* Fix: Rewrite overly complicated regex that could cause a stack overflow, and thus crash Apache or PHP. This was a very interesting bug that would show itself if the message string passed to the conditional tag regex was too large or complex (probably when using an HTML template). The crash is due to a PHP issue, described in detail in this [Stack Overflow (hey!) answer](http://stackoverflow.com/questions/7620910/regexp-in-preg-match-function-returning-browser-error).
+* Tweak: Allow the number 0 in template tags.
+
 ### 1.5.0: May 18, 2013
 
 * New: It's now possible to add extra recipients and extra headers. See documentation section 'Multiple recipients and extra headers'.
 * New: Add form message for `some_sent`. This is displayed when sending to multiple recipients and at least one message, but not all, fail to send.
 * Tweak: Improve line break normalization.
-* Fix: Allow empty data for template tags, like the number 0.
 
 ### 1.4.1: Mar 27, 2013
 

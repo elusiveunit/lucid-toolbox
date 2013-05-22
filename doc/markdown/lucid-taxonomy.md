@@ -16,6 +16,8 @@ The format is very similar to the standard way of registering, with some additio
 
 The `taxonomy_args` array contains standard `register_taxonomy` arguments, see [the codex](http://codex.wordpress.org/Function_Reference/register_taxonomy#Arguments).
 
+The `init` hook is a good one to use for registering.
+
 ## Additional arguments
 
 In addition to the standard `register_taxonomy` arguments, there are some additional customizations.
@@ -89,6 +91,10 @@ To get an easier overview, here's a complete example.
 	);
 
 ## Changelog
+
+### 1.1.2: May 22, 2013
+
+* Tweak: Register taxonomy in the constructor, allowing the user to choose the hook.
 
 ### 1.1.1: Apr 14, 2013
 

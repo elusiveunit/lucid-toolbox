@@ -21,6 +21,7 @@
     )
 );</code></pre>
 <p>The <code>taxonomy_args</code> array contains standard <code>register_taxonomy</code> arguments, see <a href="http://codex.wordpress.org/Function_Reference/register_taxonomy#Arguments">the codex</a>.</p>
+<p>The <code>init</code> hook is a good one to use for registering.</p>
 <h2>Additional arguments</h2>
 <p>In addition to the standard <code>register_taxonomy</code> arguments, there are some additional customizations.</p>
 <ul>
@@ -87,6 +88,10 @@
     )
 );</code></pre>
 <h2>Changelog</h2>
+<h3>1.1.2: May 22, 2013</h3>
+<ul>
+<li>Tweak: Register taxonomy in the constructor, allowing the user to choose the hook.</li>
+</ul>
 <h3>1.1.1: Apr 14, 2013</h3>
 <ul>
 <li>Tweak: Change the select list width &#39;algorithm&#39; and prevent double digit result.</li>

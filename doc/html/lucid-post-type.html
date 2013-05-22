@@ -22,6 +22,7 @@
     )
 ) );</code></pre>
 <p>The <code>post_type_args</code> array contains standard <code>register_post_type</code> arguments, see <a href="http://codex.wordpress.org/Function_Reference/register_post_type#Arguments">the codex</a>.</p>
+<p>The <code>init</code> hook is a good one to use for registering.</p>
 <h2>Additional arguments</h2>
 <p>In addition to the standard <code>register_post_type</code> arguments, there are some additional customizations.</p>
 <ul>
@@ -120,6 +121,10 @@
     )
 ) );</code></pre>
 <h2>Changelog</h2>
+<h3>1.1.1: May 22, 2013</h3>
+<ul>
+<li>Tweak: Register post type in the constructor, allowing the user to choose the hook.</li>
+</ul>
 <h3>1.1.0: Mar 27, 2013</h3>
 <ul>
 <li>Initial public release.</li>

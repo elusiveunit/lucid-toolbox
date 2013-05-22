@@ -212,6 +212,10 @@ Since there are quite a bit of options, here are some examples.
 
 ## Changelog
 
+### 1.3.4: May 22, 2013
+
+* Fix: Don't validate empty values, since that could prevent erasing them.
+
 ### 1.3.3: May 18, 2013
 
 * Fix: Prevent notice with unsaved checklists.
