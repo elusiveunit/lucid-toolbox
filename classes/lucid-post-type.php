@@ -55,7 +55,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.1.0
+ * @version 1.1.1
  */
 class Lucid_Post_Type {
 
@@ -105,6 +105,8 @@ class Lucid_Post_Type {
 	public function __construct( $post_type, array $args = array() ) {
 		$this->name = (string) $post_type;
 		$this->post_type_data = $args;
+
+		$this->_add_post_type();
 		$this->_add_hooks();
 	}
 
@@ -114,7 +116,6 @@ class Lucid_Post_Type {
 	 * @since 1.0.0
 	 */
 	protected function _add_hooks() {
-		add_action( 'wp_loaded', array( $this, '_add_post_type' ), 0 );
 		add_action( 'admin_head', array( $this, '_admin_icons' ) );
 		add_action( 'post_updated_messages', array( $this, '_update_messages' ) );
 	}
