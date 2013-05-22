@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.5.0
+ * @version 1.5.1
  */
 class Lucid_Contact {
 
@@ -1406,31 +1406,24 @@ class Lucid_Contact {
 			$message = ( ! empty( $message ) ) ? $message : $this->message_template;
 
 			// Get conditionals: {{if}}s and {{if_block}}s
-			// Compact version:
-			// '/\{\{#(if|if_block)\}\}(?:(?!\{\{(\/|#)(if|if_block)\}\}).)+\{\{\/(if|if_block)\}\}/ms'
+			// Compacted: '/\{\{\#(if|if_block)\}\}(?:.+?)\{\{\/(?:\1)\}\}/ms'
 			preg_match_all( '/
 				# Opening if or if_block between {{ }}
 				\{\{
 					\#(if|if_block)
 				\}\}
 
-				# Non-capturing greedy group
-				(?:
-					# Negative lookahead: match anything but
-					# opening or closing if and if_block
-					(?!
-						\{\{
-							(\/|\#)(if|if_block)
-						\}\}
-					)
-					. # Dot here
-				)+
+				# Non-capturing lazy group, keep matching
+				# anything until the next part
+				(?:.+?)
 
-				# Closing if or if_block between {{ }}
+				# Closing if or if_block between {{ }}.
+				# Match whatever was found in the first group
 				\{\{
-					\/(if|if_block)
+					\/(?:\1)
 				\}\}
 			/msx', $message, $conditionals );
+
 			$this->_message_conditionals = ( ! empty( $conditionals[0] ) ) ? $conditionals[0] : array();
 		endif;
 
@@ -1452,6 +1445,7 @@ class Lucid_Contact {
 		if ( empty( $this->_message_tags ) ) :
 			$message = ( ! empty( $message ) ) ? $message : $this->message_template;
 
+			// Match '{{', followed by anything but '}#/', and lastly '}}'
 			preg_match_all( '/\{\{[^\}#\/]+\}\}/', $message, $tags );
 			$this->_message_tags = array_unique( $tags[0] );
 		endif;
@@ -1475,45 +1469,50 @@ class Lucid_Contact {
 		$field = trim( $tag, '{}' );
 
 		// Tag must be a field ID or custom tag to be replaced
-		if ( ! array_key_exists( $field, $this->_fields )
-		  && ! array_key_exists( $field, $this->custom_template_tags ) )
+		if ( ! isset( $this->_fields[$field] )
+		  && ! isset( $this->custom_template_tags[$field] ) )
 			return $text;
 
 		$conditionals = $this->_get_message_conditionals( $text );
 		foreach ( $conditionals as $cond ) :
 
-			// If tag exists inside a conditional
-			if ( false !== strpos( $cond, $tag ) ) :
-				$cond_content = str_replace( array( '{{#if}}', '{{/if}}', '{{#if_block}}', '{{/if_block}}' ), '', $cond );
+			// Skip if tag doesn't exists inside a conditional
+			if ( false === strpos( $cond, $tag ) ) continue;
 
-				// Value POSTed and not empty: replace checkbox with 'yes',
-				// others with POST value
-				if ( array_key_exists( $field, $_POST ) && '' != $_POST[$field] ) :
-					$post_value = ( ! empty( $this->html_template ) )
-						? nl2br( $this->filter_html( $_POST[$field] ) )
-						: $_POST[$field];
+			// Remove the if tags to get what's inside them
+			$cond_content = trim( str_replace( array( '{{#if}}', '{{/if}}', '{{#if_block}}', '{{/if_block}}' ), '', $cond ) );
 
-					$replace = ( $this->is_checkbox( $field ) )
-						? str_replace( $tag, _x( 'yes', 'checkbox yes', 'lucid-toolbox' ), $cond_content )
-						: str_replace( $tag, $post_value, $cond_content );
+			// Value POSTed and not empty: replace checkbox with 'yes',
+			// others with POST value
+			if ( ! empty( $_POST[$field] ) ) :
+				$post_value = ( ! empty( $this->html_template ) )
+					? nl2br( $this->filter_html( $_POST[$field] ) )
+					: $_POST[$field];
 
-				elseif ( ! empty( $this->custom_template_tags[$field] ) ) :
-					$replace = str_replace( $tag, $this->custom_template_tags[$field], $cond_content );
+				$replace = ( $this->is_checkbox( $field ) )
+					? str_replace( $tag, _x( 'yes', 'checkbox yes', 'lucid-toolbox' ), $cond_content )
+					: str_replace( $tag, $post_value, $cond_content );
 
-				// Otherwise replace checkbox with 'no' and remove others
-				else :
-					$replace = ( $this->is_checkbox( $field ) )
-						? str_replace( $tag, _x( 'no', 'checkbox no', 'lucid-toolbox' ), $cond_content )
-						: '';
-				endif;
+			// Field is a custom tag
+			elseif ( isset( $this->custom_template_tags[$field] ) ) :
+				$val = $this->custom_template_tags[$field];
 
-				// If removing a block, also remove following line break
-				$search = ( '' == $replace && false !== strpos( $cond, 'if_block' ) )
-					? $cond .= "\n"
-					: $cond;
+				// Allow the number 0 as a value
+				$replace = ( ! empty( $val ) || 0 === $val ) ? str_replace( $tag, $val, $cond_content ) : '';
 
-				$text = str_replace( $search, $replace, $text );
+			// Otherwise replace checkbox with 'no' and remove others
+			else :
+				$replace = ( $this->is_checkbox( $field ) )
+					? str_replace( $tag, _x( 'no', 'checkbox no', 'lucid-toolbox' ), $cond_content )
+					: '';
 			endif;
+
+			// If removing a block, also remove following line break
+			$search = ( '' == $replace && false !== strpos( $cond, 'if_block' ) )
+				? $cond .= "\n"
+				: $cond;
+
+			$text = str_replace( $search, $replace, $text );
 		endforeach;
 
 		return $text;
@@ -1533,12 +1532,12 @@ class Lucid_Contact {
 		$field = trim( $tag, '{}' );
 
 		// Tag must be a field ID or custom tag to be replaced
-		if ( ! array_key_exists( $field, $this->_fields )
-		  && ! array_key_exists( $field, $this->custom_template_tags ) )
+		if ( ! isset( $this->_fields[$field] )
+		  && ! isset( $this->custom_template_tags[$field] ) )
 			return $text;
 
 		// Field if POSTed
-		if ( array_key_exists( $field, $_POST ) ) :
+		if ( isset( $_POST[$field] ) ) :
 
 			// Checkbox is set as yes or no
 			if ( $this->is_checkbox( $field ) ) :
@@ -1553,8 +1552,12 @@ class Lucid_Contact {
 				$text = str_replace( $tag, $post_value, $text );
 			endif;
 
-		elseif ( ! empty( $this->custom_template_tags[$field] ) ) :
-			$text = str_replace( $tag, $this->custom_template_tags[$field], $text );
+		// Field is a custom tag
+		elseif ( isset( $this->custom_template_tags[$field] ) ) :
+			$val = $this->custom_template_tags[$field];
+
+			// Allow the number 0 as a value
+			$text = ( ! empty( $val ) || 0 === $val ) ? str_replace( $tag, $val, $text ) : $text;
 
 		// Unchecked checkboxes don't get POSTed, so if string is a checkbox
 		// field ID that is not in POST, add it with a 'no'
@@ -1603,12 +1606,12 @@ class Lucid_Contact {
 		if ( file_exists( $this->html_template ) ) :
 			ob_start();
 			include $this->html_template;
+			$message = ob_get_clean();
 		else :
 			return '';
 		endif;
 
-		// Hopefully normalize line breaks
-		$message = $this->normalize_line_break( ob_get_clean() );
+		$message = $this->normalize_line_break( $message );
 		$tags = $this->_get_message_tags( $message );
 
 		// Check every found template tag
@@ -2152,7 +2155,7 @@ class Lucid_Contact {
 	 * @return boolean
 	 */
 	public function is_checkbox( $field ) {
-		return array_key_exists( $field, $this->_fields ) && 'checkbox' == $this->_fields[$field]['type'];
+		return isset( $this->_fields[$field]['type'] ) && 'checkbox' == $this->_fields[$field]['type'];
 	}
 
 	/**
