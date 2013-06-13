@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.3.4
+ * @version 1.3.5
  */
 class Lucid_Settings {
 
@@ -332,6 +332,7 @@ class Lucid_Settings {
 	 *   - 'textarea_large'
 	 *   - 'textarea_monospace'
 	 *   - 'textarea_large_monospace'
+	 *   - 'editor'
 	 *   - 'checkbox'
 	 *   - 'checklist' (List of checkboxes)
 	 *   - 'radios'
@@ -397,6 +398,7 @@ class Lucid_Settings {
 			'textarea_large',
 			'textarea_monospace',
 			'textarea_large_monospace',
+			'editor',
 			'checkbox',
 			'checklist',
 			'radios',
@@ -823,6 +825,10 @@ class Lucid_Settings {
 				$this->_add_textarea( $args, 'large-text code' );
 				break;
 
+			case 'editor' :
+				$this->_add_editor( $args );
+				break;
+
 			case 'checkbox' :
 				$this->_add_checkbox( $args );
 				break;
@@ -883,6 +889,18 @@ class Lucid_Settings {
 		<textarea id="<?php echo $args['id']; ?>" name="<?php echo "{$args['prefix']}[{$args['id']}]"; ?>" rows="8" cols="80"<?php if ( $class ) echo " class=\"{$class}\""; ?>><?php echo esc_textarea( $args['value'] ); ?></textarea>
 
 		<?php
+	}
+
+	/**
+	 * Display a visual editor.
+	 *
+	 * @since 1.3.5
+	 * @param array $args Field options.
+	 */
+	protected function _add_editor( $args ) {
+		wp_editor( $args['value'], "{$args['prefix']}[{$args['id']}]", array(
+			'textarea_rows' => 12
+		) );
 	}
 
 	/**
