@@ -65,6 +65,7 @@ The field method requires an ID and a label, and accepts additional arguments th
   * `'textarea_large'`
   * `'textarea_monospace'`
   * `'textarea_large_monospace'`
+  * `'editor'`
   * `'checkbox'`
   * `'checklist'` (List of checkboxes)
   * `'radios'`
@@ -211,6 +212,14 @@ Since there are quite a bit of options, here are some examples.
 	$example_settings->init();
 
 ## Changelog
+
+### 1.3.6: June 13, 2013
+
+* Fix: Set required save capability with `option_page_capability_[id]` when using a custom one. The Settings API requires posting to `options.php`, which defaults to requiring the `manage_options` capability, regardless of what the option page with the form is set to require.
+
+### 1.3.5: June 11, 2013
+
+* New: Add `editor` field type, to show a visual editor/WYSIWYG area/TinyMCE box.
 
 ### 1.3.4: May 22, 2013
 

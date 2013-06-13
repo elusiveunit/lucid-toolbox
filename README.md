@@ -22,6 +22,18 @@ Lucid Toolbox is currently available in the following languages:
 
 ## Changelog
 
+### 1.1.3: June 13, 2013
+
+#### Lucid\_Settings 1.3.6
+
+* Fix: Set required save capability with `option_page_capability_[id]` when using a custom one. The Settings API requires posting to `options.php`, which defaults to requiring the `manage_options` capability, regardless of what the option page with the form is set to require.
+
+### 1.1.2: June 11, 2013
+
+#### Lucid\_Settings 1.3.5
+
+* New: Add `editor` field type, to show a visual editor/WYSIWYG area/TinyMCE box.
+
 ### 1.1.1: May 22, 2013
 
 #### Lucid\_Post\_Type 1.1.1
