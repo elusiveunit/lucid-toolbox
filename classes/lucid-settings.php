@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.3.5
+ * @version 1.3.6
  */
 class Lucid_Settings {
 
@@ -461,6 +461,32 @@ class Lucid_Settings {
 	public function init() {
 		add_action( 'admin_menu', array( $this, '_load_settings' ) );
 		add_action( 'admin_init', array( $this, '_register_setting' ) );
+
+		// Set desired capability to the settings page, if using a custom one.
+		// When using the Settings API, posting to options.php is required. That
+		// page requires the 'manage_options' capability, regardless of what the
+		// settings page requires, unless filtered like here.
+		if ( 'manage_options' != $this->capability ) :
+			if ( $this->_tabs ) :
+				foreach ( $this->_tabs as $tab => $label )
+					add_filter( "option_page_capability_{$tab}", array( $this, '_set_page_capability' ) );
+				endforeach;
+			else :
+				add_filter( "option_page_capability_{$this->id}", array( $this, '_set_page_capability' ) );
+			endif;
+		endif;
+	}
+
+	/**
+	 * Set capability required for saving the settings.
+	 *
+	 * Callback for 'option_page_capability_{settings_id}' hook.
+	 *
+	 * @since 1.3.6
+	 * @return string
+	 */
+	public function _set_page_capability() {
+		return $this->capability;
 	}
 
 	/**
