@@ -468,7 +468,7 @@ class Lucid_Settings {
 		// settings page requires, unless filtered like here.
 		if ( 'manage_options' != $this->capability ) :
 			if ( $this->_tabs ) :
-				foreach ( $this->_tabs as $tab => $label )
+				foreach ( $this->_tabs as $tab => $label ) :
 					add_filter( "option_page_capability_{$tab}", array( $this, '_set_page_capability' ) );
 				endforeach;
 			else :
