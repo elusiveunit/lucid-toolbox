@@ -339,6 +339,7 @@ An example setup with name, email, honeypot and message.
 * New: Add new error message (with key `invalid_post`) for when the nonce check fails.
 * Fix: Display the correct error message (`not_sent` instead of `some_sent`) when not using extra recipients and the message couldn't be sent.
 * Tweak: Change form errors from `p` tags to `div` tags. Add the better classes `form-error` and `field-error`, to the form error and field errors respectively.
+* Tweak: Remove plain text word wrapping, since it's wrapping at weird places sometimes.
 
 ### 1.5.1: May 22, 2013
 

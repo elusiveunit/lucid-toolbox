@@ -1929,15 +1929,10 @@ class Lucid_Contact {
 		else
 			$message = implode( $this->message_format_separator, $this->_get_message_from_format() );
 
-		// Wrap lines for plain text messages.
-		// Internet Message Format RFC says max line length of 78
-		// (http://www.rfc-editor.org/rfc/rfc5322.txt, [Page 6])
-		// Format of Internet Message Bodies RFC says 76, so let's go with 75.
-		// (http://www.rfc-editor.org/rfc/rfc2045.txt, [Page 19])
-		// RFC 5322 also states lines should be delimited by a carriage return
+		// RFC 5322 states lines should be delimited by a carriage return
 		// character, followed immediately by a line feed character. [Page 5]
 		if ( empty( $this->html_template ) )
-			$message = wordwrap( $this->normalize_line_break( $message, "\r\n" ), 75, "\r\n" );
+			$message = $this->normalize_line_break( $message, "\r\n" );
 
 		// --Debug--
 		// Print headers and message
