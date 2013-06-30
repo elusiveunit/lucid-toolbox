@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.5.1
+ * @version 1.5.2
  */
 class Lucid_Contact {
 
@@ -137,6 +137,23 @@ class Lucid_Contact {
 	| _debug_open
 	| _debug_close
 	*/
+
+	/**
+	 * Forms counter. Increased every time a form is assembled.
+	 *
+	 * @since 1.5.2
+	 * @var int
+	 */
+	protected static $form_count = 1;
+
+	/**
+	 * ID for current form. Is used for the nonce field and uses $form_count to
+	 * be unique.
+	 *
+	 * @since 1.5.2
+	 * @var string
+	 */
+	protected $form_id = '';
 
 	/**
 	 * Sender's name. Set to a field name like 'name' to use the data from that
@@ -548,6 +565,7 @@ class Lucid_Contact {
 		$this->set_form_messages();
 		$this->set_file_form_messages();
 		$this->set_allowed_files();
+		$this->_add_nonce();
 
 		// --Debug--
 		if ( $this->debug_mode && ! empty( $_POST ) ) :
@@ -560,7 +578,7 @@ class Lucid_Contact {
 	/**
 	 * Set form messages.
 	 *
-	 * These are the messages that appear above the form on submission.
+	 * These are the messages that appear above the form on submission:
 	 *
 	 * - 'success' If the message was successfully sent.
 	 * - 'error' Some problem with the information provided by the user, like
@@ -571,17 +589,21 @@ class Lucid_Contact {
 	 * - 'some_sent' If sending to multiple recipients and there was a problem
 	 *   with some, but not all, during the sending process. Not something the
 	 *   user can do anything about.
+	 * - 'invalid_post' If the nonce verification failed. This could be due to
+	 *   an expired nonce because of a long peroid of inactivity, or a malicious
+	 *   attempt of something.
 	 *
 	 * @since 1.0.0
 	 * @param array $messages Associative array of messages.
 	 */
 	public function set_form_messages( array $messages = array() ) {
 		$defaults = array(
-			'success'  => __( 'Thank you for your message!', 'lucid-toolbox' ),
-			'error'    => __( 'There seems to be a problem with your information.', 'lucid-toolbox' ),
-			'honeypot' => __( 'To send the message, the last field must be empty. Maybe it was filled by mistake, delete the text and try again.', 'lucid-toolbox' ),
-			'not_sent' => __( 'Due to a technical issue, the message could not be sent, we apologize.', 'lucid-toolbox' ),
-			'some_sent' => __( 'There was an isuue sending the message, some recipients may not receive it properly.', 'lucid-toolbox' )
+			'success'      => __( 'Thank you for your message!', 'lucid-toolbox' ),
+			'error'        => __( 'There seems to be a problem with your information.', 'lucid-toolbox' ),
+			'honeypot'     => __( 'To send the message, the last field must be empty. Maybe it was filled by mistake, delete the text and try again.', 'lucid-toolbox' ),
+			'not_sent'     => __( 'Due to a technical issue, the message could not be sent, we apologize.', 'lucid-toolbox' ),
+			'some_sent'    => __( 'There was an isuue sending the message, some recipients may not receive it properly.', 'lucid-toolbox' ),
+			'invalid_post' => __( 'The request could not be verified, please try again.', 'lucid-toolbox' )
 		);
 
 		$this->_form_messages = array_merge( $defaults, $messages );
@@ -654,6 +676,16 @@ class Lucid_Contact {
 			$mime_types = $default_mime_types;
 
 		$this->_allowed_mime_types = $mime_types;
+	}
+
+	/**
+	 * Add a nonce field to the form.
+	 *
+	 * @since 1.5.2
+	 */
+	protected function _add_nonce() {
+		$this->form_id = 'lucid-form-' . self::$form_count;
+		$this->add_to_field_list( '<input type="hidden" name="' . $this->form_id . '" value="' . wp_create_nonce( $this->form_id ) . '">' );
 	}
 
 
@@ -1145,6 +1177,37 @@ class Lucid_Contact {
 	      =Validation, sending and form rendering
 	\*-------------------------------------------------------------------------*/
 
+	/**
+	 * Verify that the form is posted correctly.
+	 *
+	 * Checks several things:
+	 *
+	 * - There is a POST request
+	 * - The $_POST superglobal is not empty
+	 * - The referer is 'correct' (easily spoofed, but no harm in checking)
+	 * - The nonce field is correct
+	 *
+	 * @since 1.5.2
+	 * @return bool True if everything passed, false otherwise.
+	 */
+	protected function _verify_post() {
+
+		// Check POST request and correct referer
+		$posted = ( 'POST' == $_SERVER['REQUEST_METHOD']
+			&& ! empty( $_POST )
+			&& $this->form_location == $_SERVER['HTTP_REFERER']
+			&& isset( $_POST[$this->form_id] ) );
+
+		// Check nonce
+		$verified = ( $posted && wp_verify_nonce( $_POST[$this->form_id], $this->form_id ) );
+
+		// Posted but invalid nonce
+		if ( $posted && ! $verified )
+			$this->_form_status = '<div class="error form-error">' . $this->_form_messages['invalid_post'] . '</div>';
+
+		return ( $posted && $verified );
+	}
+
 
 	/**
 	 * Validate POST data and set error messages.
@@ -1155,145 +1218,138 @@ class Lucid_Contact {
 	 * @return bool True if POST data is valid, false if there were errors.
 	 */
 	protected function _validate() {
-		if ( 'POST' == $_SERVER['REQUEST_METHOD']
-		  && $this->form_location == $_SERVER['HTTP_REFERER']
-		  && ! empty( $_POST ) ) :
+		$all_is_well = true;
 
-			$all_is_well = true;
+		// Honeypot checks
+		$honeypot_error = false;
+		$error_count = 0;
 
-			// Honeypot checks
-			$honeypot_error = false;
-			$error_count = 0;
+		// Check every field
+		foreach ( $this->_fields as $name => $data ) :
 
-			// Check every field
-			foreach ( $this->_fields as $name => $data ) :
-				if ( isset( $this->_fields[$name]['type'] )
-				  && 'submit' == $this->_fields[$name]['type'] ) continue;
+			// Skip submit fields
+			if ( isset( $this->_fields[$name]['type'] )
+			  && 'submit' == $this->_fields[$name]['type'] ) continue;
 
-				$error_msg = '';
-				$validation = isset( $this->_fields[$name]['validation'] )
-					? $this->_fields[$name]['validation']
-					: '';
+			$error_msg = '';
+			$validation = isset( $this->_fields[$name]['validation'] )
+				? $this->_fields[$name]['validation']
+				: '';
 
-				// Radio button ID clash handling, remove added -# string
-				$id = $name;
-				if ( 'radio' == $data['type'] )
-					$id = preg_replace( '/-\d+$/', '', $name );
+			// Radio button ID clash handling, remove added -# string
+			$id = $name;
+			if ( 'radio' == $data['type'] )
+				$id = preg_replace( '/-\d+$/', '', $name );
 
-				// If field is required and empty
-				// Some ugly stuff here, but file and other inputs needs different
-				// checks for empty, and all conditions must be checked at the same
-				// level for elseif to kick in on non-empty fields.
-				if ( (
-					   'file' != $data['type']
-					&& empty( $_POST[$id] )
-					&& ! empty( $this->_fields[$name]['required'] )
-				) || (
-					   'file' == $data['type']
-					&& 4 == $_FILES[$name]['error']
-					&& ! empty( $this->_fields[$name]['required'] )
-				) ) :
+			// If field is required and empty
+			// Some ugly stuff here, but file and other inputs needs different
+			// checks for empty, and all conditions must be checked at the same
+			// level for elseif to kick in on non-empty fields.
+			if ( (
+				   'file' != $data['type']
+				&& empty( $_POST[$id] )
+				&& ! empty( $this->_fields[$name]['required'] )
+			) || (
+				   'file' == $data['type']
+				&& 4 == $_FILES[$name]['error']
+				&& ! empty( $this->_fields[$name]['required'] )
+			) ) :
+				$error_count++;
+
+				// Add error message for 'empty' if it exists
+				if ( ! empty( $this->_fields[$name]['error_empty'] ) ) :
+					$error_msg = $this->_fields[$name]['error_empty'];
+				endif;
+
+			// If field has some kind of validation defined and a message for
+			// invalid data
+			elseif ( ! empty( $validation ) ) :
+				$is_valid = true;
+
+				switch ( $validation ) :
+					case 'email' :
+						$is_valid = $this->is_valid_email( $_POST[$id] );
+						break;
+
+					case 'tel' :
+						$is_valid = $this->is_valid_tel( $_POST[$id] );
+						break;
+
+					case 'honeypot' :
+						$is_valid = ( '' == $_POST[$id] );
+						break;
+
+					default :
+						// Non-reserved strings assumed to be regex. If something
+						// matches, is_valid should be false, so preg_match is
+						// reversed
+						$is_valid = ! preg_match( $validation, $_POST[$id] );
+						break;
+				endswitch;
+
+				// Invalid, add relevant data
+				if ( ! $is_valid ) :
 					$error_count++;
 
-					// Add error message for 'empty' if it exists
-					if ( ! empty( $this->_fields[$name]['error_empty'] ) ) :
-						$error_msg = $this->_fields[$name]['error_empty'];
-					endif;
+					// Add error message for 'invalid' if it exists
+					if ( ! empty( $this->_fields[$name]['error_invalid'] ) )
+						$error_msg = $this->_fields[$name]['error_invalid'];
 
-				// If field has some kind of validation defined and a message for
-				// invalid data
-				elseif ( ! empty( $validation ) ) :
-					$is_valid = true;
-
-					switch ( $validation ) :
-						case 'email' :
-							$is_valid = $this->is_valid_email( $_POST[$id] );
-							break;
-
-						case 'tel' :
-							$is_valid = $this->is_valid_tel( $_POST[$id] );
-							break;
-
-						case 'honeypot' :
-							$is_valid = ( '' == $_POST[$id] );
-							break;
-
-						default :
-							// Non-reserved strings assumed to be regex. If something
-							// matches, is_valid should be false, so preg_match is
-							// reversed
-							$is_valid = ! preg_match( $validation, $_POST[$id] );
-							break;
-					endswitch;
-
-					// Invalid, add relevant data
-					if ( ! $is_valid ) :
-						$error_count++;
-
-						// Add error message for 'invalid' if it exists
-						if ( ! empty( $this->_fields[$name]['error_invalid'] ) )
-							$error_msg = $this->_fields[$name]['error_invalid'];
-
-						// See large comment about honeypot below
-						if ( 'honeypot' == $validation )
-							$honeypot_error = true;
-					endif;
+					// See large comment about honeypot below
+					if ( 'honeypot' == $validation )
+						$honeypot_error = true;
 				endif;
-
-				// Add error indications
-				if ( $error_msg ) :
-					$all_is_well = false;
-
-					// Add error span before closing wrap tag if it exists in $fields
-					if ( isset( $this->_fields[$name]['close'] ) ) :
-						$this->_fields[$name] = $this->_array_insert(
-							'after',
-							'tag_close',
-							$this->_fields[$name],
-							'error',
-							'<span class="error">' . $error_msg . '</span>'
-						);
-					// Otherwise just add it last
-					else :
-						$this->_fields[$name]['error'] = '<span class="error">' . $error_msg . '</span>';
-					endif;
-
-					// Update form tag class with 'error'
-					$tag = $this->_fields[$name]['tag_open'];
-
-					// If there is a class attribute, add to it
-					if ( strpos( $tag, 'class="' ) ) :
-						$this->_fields[$name]['tag_open'] = str_replace( 'class="', 'class="error ', $tag );
-					// Otherwise, add a class attribute
-					// Regex: |<tag|> => |<tag class="error"|>
-					else :
-						$this->_fields[$name]['tag_open'] = preg_replace( '/<[\w\-]+(?=\s|>)/', '$0 class="error"', $tag );
-					endif;
-				endif;
-			endforeach; // Field loop
-
-			// Set success/error message
-			if ( $all_is_well ) :
-				$this->_form_status = '<p class="success">' . $this->_form_messages['success'] . '</p>';
-
-			// If the honeypot is the only problem, an extra CSS class is available
-			// for potentially showing the honeypot field if it's hidden (a general
-			// sibling combinator can be used: [.error-honeypot ~ form <field>],
-			// IE7+). This may be needed if some sort of auto form filler is used
-			// by a human.
-			elseif ( 1 === $error_count && $honeypot_error ) :
-				$this->_form_status = '<p class="error error-honeypot">' . $this->_form_messages['honeypot'] . '</p>';
-
-			else :
-				$this->_form_status = '<p class="error">' . $this->_form_messages['error'] . '</p>';
 			endif;
 
-			return $all_is_well;
+			// Add error indications
+			if ( $error_msg ) :
+				$all_is_well = false;
 
-		// Not POST or bad referer
+				// Add error span before closing wrap tag if it exists in $fields
+				if ( isset( $this->_fields[$name]['close'] ) ) :
+					$this->_fields[$name] = $this->_array_insert(
+						'after',
+						'tag_close',
+						$this->_fields[$name],
+						'error',
+						'<span class="error field-error">' . $error_msg . '</span>'
+					);
+				// Otherwise just add it last
+				else :
+					$this->_fields[$name]['error'] = '<span class="error field-error">' . $error_msg . '</span>';
+				endif;
+
+				// Update form tag class with 'error'
+				$tag = $this->_fields[$name]['tag_open'];
+
+				// If there is a class attribute, add to it
+				if ( strpos( $tag, 'class="' ) ) :
+					$this->_fields[$name]['tag_open'] = str_replace( 'class="', 'class="error ', $tag );
+				// Otherwise, add a class attribute
+				// Regex: |<tag|> => |<tag class="error field-error"|>
+				else :
+					$this->_fields[$name]['tag_open'] = preg_replace( '/<[\w\-]+(?=\s|>)/', '$0 class="error field-error"', $tag );
+				endif;
+			endif;
+		endforeach; // Field loop
+
+		// Set success/error message
+		if ( $all_is_well ) :
+			$this->_form_status = '<div class="success form-success">' . $this->_form_messages['success'] . '</div>';
+
+		// If the honeypot is the only problem, an extra CSS class is available
+		// for potentially showing the honeypot field if it's hidden (a general
+		// sibling combinator can be used: [.error-honeypot ~ form <field>],
+		// IE7+). This may be needed if some sort of auto form filler is used
+		// by a human.
+		elseif ( 1 === $error_count && $honeypot_error ) :
+			$this->_form_status = '<div class="error form-error error-honeypot">' . $this->_form_messages['honeypot'] . '</div>';
+
 		else :
-			return false;
+			$this->_form_status = '<div class="error form-error">' . $this->_form_messages['error'] . '</div>';
 		endif;
+
+		return $all_is_well;
 	}
 
 	/**
@@ -1772,7 +1828,7 @@ class Lucid_Contact {
 			// either of them is not on the whitelist.
 			if ( ! in_array( $extension, $this->_allowed_extensions )
 			  || ! in_array( $mime_type, $this->_allowed_mime_types ) ) :
-				$this->_form_status = '<p class="error">' . $this->_file_form_messages['invalid_file_type'] . '</p>';
+				$this->_form_status = '<div class="error form-error">' . $this->_file_form_messages['invalid_file_type'] . '</div>';
 				$attachments = false;
 				break;
 
@@ -1790,7 +1846,7 @@ class Lucid_Contact {
 
 				// Upload error message
 				else :
-					$this->_form_status = '<p class="error">' . $this->_file_form_messages[$error_code] . '</p>';
+					$this->_form_status = '<div class="error form-error">' . $this->_file_form_messages[$error_code] . '</div>';
 					$attachments = false;
 					break;
 				endif;
@@ -1849,9 +1905,7 @@ class Lucid_Contact {
 	protected function _send() {
 
 		// Check posting and data validation
-		if ( 'POST' != $_SERVER['REQUEST_METHOD']
-		  || $this->form_location != $_SERVER['HTTP_REFERER']
-		  || empty( $_POST )
+		if ( ! $this->_verify_post()
 		  || ! $this->_validate()
 		  || ! $this->_has_required_send_data() )
 			return false;
@@ -1901,12 +1955,17 @@ class Lucid_Contact {
 		// if $attachments is an array.
 		if ( ! empty( $message ) && ! $this->debug_mode ) :
 			$sent = wp_mail( $to, $subject, $message, $headers, $attachments );
-			$extra_sent = true;
+
+			$send_extra = ( ! empty( $this->extra_recipients )
+			  && ! empty( $this->extras_from_name )
+			  && ! empty( $this->extras_from_address ) );
+
+			// If sending extra, default to true and overwrite in loop below.
+			// Otherwise match regular sent status.
+			$extra_sent = ( $send_extra ) ? true : $sent;
 
 			// Send to additional recipients
-			if ( ! empty( $this->extra_recipients )
-			  && ! empty( $this->extras_from_name )
-			  && ! empty( $this->extras_from_address ) ) :
+			if ( $send_extra ) :
 				$extra_headers = $this->_get_headers( array( 'regular' => false, 'extra' => true, 'custom' => false ) );
 				$this->extra_recipients = array_map( array( $this, 'filter_other' ), (array) $this->extra_recipients );
 
@@ -1926,18 +1985,18 @@ class Lucid_Contact {
 
 			// None sent
 			elseif ( ! $sent && ! $extra_sent ) :
-				$this->_form_status = '<p class="error">' . $this->_form_messages['not_sent'] . '</p>';
+				$this->_form_status = '<div class="error form-error">' . $this->_form_messages['not_sent'] . '</div>';
 				return false;
 
 			// Some sent
 			else :
-				$this->_form_status = '<p class="error">' . $this->_form_messages['some_sent'] . '</p>';
+				$this->_form_status = '<div class="error form-error">' . $this->_form_messages['some_sent'] . '</div>';
 				return false;
 			endif;
 
 		// No message or debug mode on
 		else :
-			$this->_form_status = '<p class="error">' . $this->_form_messages['not_sent'] . '</p>';
+			$this->_form_status = '<div class="error form-error">' . $this->_form_messages['not_sent'] . '</div>';
 			return false;
 		endif;
 	}
@@ -2059,7 +2118,9 @@ class Lucid_Contact {
 			endforeach;
 		endforeach;
 
-		$form .= "</form>";
+		$form .= '</form>';
+
+		self::$form_count++;
 
 		return $form;
 	}
