@@ -59,11 +59,12 @@ Concerning multiple recipients:
 Messages appear above the form on submission, to inform the user of the current state. There are set with `set_form_messages()` and `set_file_form_messages` (for file uploads). The default regular messages are:
 
 	$defaults = array(
-		'success'  => __( 'Thank you for your message!', 'lucid-toolbox' ),
-		'error'    => __( 'There seems to be a problem with your information.', 'lucid-toolbox' ),
-		'honeypot' => __( 'To send the message, the last field must be empty. Maybe it was filled by mistake, delete the text and try again.', 'lucid-toolbox' ),
-		'not_sent' => __( 'Due to a technical issue, the message could not be sent, we apologize.', 'lucid-toolbox' ),
-		'some_sent' => __( 'There was an isuue sending the message, some recipients may not receive it properly.', 'lucid-toolbox' )
+		'success'      => __( 'Thank you for your message!', 'lucid-toolbox' ),
+		'error'        => __( 'There seems to be a problem with your information.', 'lucid-toolbox' ),
+		'honeypot'     => __( 'To send the message, the last field must be empty. Maybe it was filled by mistake, delete the text and try again.', 'lucid-toolbox' ),
+		'not_sent'     => __( 'Due to a technical issue, the message could not be sent, we apologize.', 'lucid-toolbox' ),
+		'some_sent'    => __( 'There was an isuue sending the message, some recipients may not receive it properly.', 'lucid-toolbox' ),
+		'invalid_post' => __( 'The request could not be verified, please try again.', 'lucid-toolbox' )
 	);
 
 To clarify:
@@ -73,6 +74,7 @@ To clarify:
 * `'honeypot'` If the only problem was a filled-in honeypot field.
 * `'not_sent'` If there was a problem during the sending process. Not something the user can do anything about.
 * `'some_sent'` If sending to multiple recipients and there was a problem with some, but not all, during the sending process. Not something the user can do anything about.
+* `'invalid_post'` If the nonce verification failed. This could be due to an expired nonce because of a long peroid of inactivity, or a malicious attempt of something.
 
 Information about the file upload errors can be found on the [PHP manual page](http://www.php.net/manual/en/features.file-upload.errors.php). The defaults:
 
@@ -330,6 +332,13 @@ An example setup with name, email, honeypot and message.
 	$form->render_form();
 
 ## Changelog
+
+### 1.5.2: June 30, 2013
+
+* New: Add a nonce field for more secure forms and to differentiate between multiple forms on the same page.
+* New: Add new error message (with key `invalid_post`) for when the nonce check fails.
+* Fix: Display the correct error message (`not_sent` instead of `some_sent`) when not using extra recipients and the message couldn't be sent.
+* Tweak: Change form errors from `p` tags to `div` tags. Add the better classes `form-error` and `field-error`, to the form error and field errors respectively.
 
 ### 1.5.1: May 22, 2013
 

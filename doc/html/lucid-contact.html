@@ -60,11 +60,12 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
 <h2>Form messages</h2>
 <p>Messages appear above the form on submission, to inform the user of the current state. There are set with <code>set_form_messages()</code> and <code>set_file_form_messages</code> (for file uploads). The default regular messages are:</p>
 <pre><code>$defaults = array(
-    &#39;success&#39;  =&gt; __( &#39;Thank you for your message!&#39;, &#39;lucid-toolbox&#39; ),
-    &#39;error&#39;    =&gt; __( &#39;There seems to be a problem with your information.&#39;, &#39;lucid-toolbox&#39; ),
-    &#39;honeypot&#39; =&gt; __( &#39;To send the message, the last field must be empty. Maybe it was filled by mistake, delete the text and try again.&#39;, &#39;lucid-toolbox&#39; ),
-    &#39;not_sent&#39; =&gt; __( &#39;Due to a technical issue, the message could not be sent, we apologize.&#39;, &#39;lucid-toolbox&#39; ),
-    &#39;some_sent&#39; =&gt; __( &#39;There was an isuue sending the message, some recipients may not receive it properly.&#39;, &#39;lucid-toolbox&#39; )
+    &#39;success&#39;      =&gt; __( &#39;Thank you for your message!&#39;, &#39;lucid-toolbox&#39; ),
+    &#39;error&#39;        =&gt; __( &#39;There seems to be a problem with your information.&#39;, &#39;lucid-toolbox&#39; ),
+    &#39;honeypot&#39;     =&gt; __( &#39;To send the message, the last field must be empty. Maybe it was filled by mistake, delete the text and try again.&#39;, &#39;lucid-toolbox&#39; ),
+    &#39;not_sent&#39;     =&gt; __( &#39;Due to a technical issue, the message could not be sent, we apologize.&#39;, &#39;lucid-toolbox&#39; ),
+    &#39;some_sent&#39;    =&gt; __( &#39;There was an isuue sending the message, some recipients may not receive it properly.&#39;, &#39;lucid-toolbox&#39; ),
+    &#39;invalid_post&#39; =&gt; __( &#39;The request could not be verified, please try again.&#39;, &#39;lucid-toolbox&#39; )
 );</code></pre>
 <p>To clarify:</p>
 <ul>
@@ -73,6 +74,7 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
 <li><code>&#39;honeypot&#39;</code> If the only problem was a filled-in honeypot field.</li>
 <li><code>&#39;not_sent&#39;</code> If there was a problem during the sending process. Not something the user can do anything about.</li>
 <li><code>&#39;some_sent&#39;</code> If sending to multiple recipients and there was a problem with some, but not all, during the sending process. Not something the user can do anything about.</li>
+<li><code>&#39;invalid_post&#39;</code> If the nonce verification failed. This could be due to an expired nonce because of a long peroid of inactivity, or a malicious attempt of something.</li>
 </ul>
 <p>Information about the file upload errors can be found on the <a href="http://www.php.net/manual/en/features.file-upload.errors.php">PHP manual page</a>. The defaults:</p>
 <pre><code>$defaults = array(
@@ -278,6 +280,13 @@ $form-&gt;add_submit( __( &#39;Send message&#39;, &#39;TEXTDOMAIN&#39; ) );
 
 $form-&gt;render_form();</code></pre>
 <h2>Changelog</h2>
+<h3>1.5.2: June 30, 2013</h3>
+<ul>
+<li>New: Add a nonce field for more secure forms and to differentiate between multiple forms on the same page.</li>
+<li>New: Add new error message (with key <code>invalid_post</code>) for when the nonce check fails.</li>
+<li>Fix: Display the correct error message (<code>not_sent</code> instead of <code>some_sent</code>) when not using extra recipients and the message couldn&#39;t be sent.</li>
+<li>Tweak: Change form errors from <code>p</code> tags to <code>div</code> tags. Add the better classes <code>form-error</code> and <code>field-error</code>, to the form error and field errors respectively.</li>
+</ul>
 <h3>1.5.1: May 22, 2013</h3>
 <ul>
 <li>Fix: Rewrite overly complicated regex that could cause a stack overflow, and thus crash Apache or PHP. This was a very interesting bug that would show itself if the message string passed to the conditional tag regex was too large or complex (probably when using an HTML template). The crash is due to a PHP issue, described in detail in this <a href="http://stackoverflow.com/questions/7620910/regexp-in-preg-match-function-returning-browser-error">Stack Overflow (hey!) answer</a>.</li>
