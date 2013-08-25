@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.3.7
+ * @version 1.4.0
  */
 class Lucid_Settings {
 
@@ -1004,7 +1004,7 @@ class Lucid_Settings {
 	/**
 	 * Display a select list with non-hierarchical posts.
 	 *
-	 * @since 1.3.7
+	 * @since 1.4.0
 	 * @param array $args Field options.
 	 */
 	protected function _add_post_select( $args ) {
@@ -1032,7 +1032,7 @@ class Lucid_Settings {
 	/**
 	 * Display a select list with hierarchical posts.
 	 *
-	 * @since 1.3.7
+	 * @since 1.4.0
 	 * @param array $args Field options.
 	 */
 	protected function _add_page_select( $args ) {
