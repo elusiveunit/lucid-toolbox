@@ -92,6 +92,10 @@ To get an easier overview, here's a complete example.
 
 ## Changelog
 
+### 1.1.3: Aug 25, 2013
+
+* Tweak: Check the taxonomy name before registering and trigger errors if it's invalid.
+
 ### 1.1.2: May 22, 2013
 
 * Tweak: Register taxonomy in the constructor, allowing the user to choose the hook.

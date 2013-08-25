@@ -70,6 +70,8 @@ The field method requires an ID and a label, and accepts additional arguments th
   * `'checklist'` (List of checkboxes)
   * `'radios'`
   * `'select'`
+  * `'post_select'`
+  * `'page_select'`
   * `'button_field'` (Text field with a button beside it)
   * `'button_field_monospace'`
 * `'section'` **(string)** Section to add the field to, defined with `section()`.
@@ -78,6 +80,7 @@ The field method requires an ID and a label, and accepts additional arguments th
 * `'inline_label'` **(string)** Field label for checkbox and radio button.
 * `'options'` **(array)** Options for types `'select'`, `'radios'`, and `'checklist'`, format: `value => text`.
 * `'button_text'` **(string)** Text for the button when using button_field.
+* `'select_post_type'` (string) Post type to use when using `post_select` or `page_select`. Defaults to `'post'` for `post_select` and `'page'` for `page_select`.
 * `'validate'` **(string)** Validate value against predefined functions, see below.
 * `'must_match'` **(regex string)** A regular expression that is matched against the value, i.e. `'/^\d{3}$/'` to require exactly three digits.
 * `'must_not_match'` **(regex string)** A regular expression that is matched against the value, where the result is reversed. So something like `'/\d{3}/'` would mean the value can not contain three digits in a row.
@@ -93,7 +96,7 @@ There are a few predefined validation options:
 
 * `'email'` Email address, uses the PHP `FILTER_VALIDATE_EMAIL`
 * `'url'` URL, uses a modified regex by [John Gruber](http://daringfireball.net/2010/07/improved_regex_for_matching_urls)
-* `'hex_color'` Hexadecimal color (like 101 or bada55, hash is stripped before checking)
+* `'hex_color'` Hexadecimal color (like 101 or bada55, hash is optional)
 
 ### Predefined sanitation
 
@@ -212,6 +215,11 @@ Since there are quite a bit of options, here are some examples.
 	$example_settings->init();
 
 ## Changelog
+
+### 1.4.0: Aug 25, 2013
+
+* New: Add post and page select list fields, named `post_select` and `page_select` respectively. The value saved from the field is the selected post's ID. The fields work pretty much the same, only difference being that `page_select` displayes hierarchy. The post type used for a `page_select` field must be hierarchial. What post type(s) to use can be set with the `select_post_type` argument.
+* Tweak: Change hex color validation to make the hash optional, instead of stripping it beforehand.
 
 ### 1.3.6: June 13, 2013
 

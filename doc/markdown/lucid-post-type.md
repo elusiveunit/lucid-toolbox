@@ -131,6 +131,10 @@ To get an easier overview, here's a complete example.
 
 ## Changelog
 
+### 1.1.2: Aug 25, 2013
+
+* Tweak: Check the post type name before registering and trigger errors if it's invalid.
+
 ### 1.1.1: May 22, 2013
 
 * Tweak: Register post type in the constructor, allowing the user to choose the hook.
