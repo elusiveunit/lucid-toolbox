@@ -47,7 +47,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  * 	'search_items' =>       __( 'Search movies', 'TEXTDOMAIN' ),
  * 	'not_found' =>          __( 'No movies found', 'TEXTDOMAIN' ),
  * 	'not_found_in_trash' => __( 'No movies found in trash', 'TEXTDOMAIN' ),
-
+ *
  * 	// Hierarchical only
  * 	'parent_item_colon' =>  __( 'Parent movie:', 'TEXTDOMAIN' )
  * )
@@ -55,7 +55,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.1.1
+ * @version 1.1.2
  */
 class Lucid_Post_Type {
 
@@ -104,10 +104,38 @@ class Lucid_Post_Type {
 	 */
 	public function __construct( $post_type, array $args = array() ) {
 		$this->name = (string) $post_type;
+
+		if ( ! $this->_is_valid_post_type_name() )
+			return;
+
 		$this->post_type_data = $args;
 
 		$this->_add_post_type();
 		$this->_add_hooks();
+	}
+
+	/**
+	 * Check if the post type name is valid and show errors if not.
+	 *
+	 * @since 1.1.2
+	 * @return bool
+	 */
+	protected function _is_valid_post_type_name() {
+		$name_valid = true;
+
+		// Maximum 20 characters long
+		if ( strlen( $this->name ) > 20 ) :
+			trigger_error( sprintf( "Post type name '%s' can be no more than 20 characters long", $this->name ), E_USER_WARNING );
+			$name_valid = false;
+		endif;
+
+		// No capital letters or spaces
+		if ( preg_match( '/[A-Z\s]/', $this->name ) ) :
+			trigger_error( sprintf( "Post type name '%s' can not contain capital letters or spaces", $this->name ), E_USER_WARNING );
+			$name_valid = false;
+		endif;
+
+		return $name_valid;
 	}
 
 	/**

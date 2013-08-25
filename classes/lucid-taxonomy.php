@@ -60,7 +60,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.1.2
+ * @version 1.1.3
  */
 class Lucid_Taxonomy {
 
@@ -110,11 +110,39 @@ class Lucid_Taxonomy {
 	 */
 	public function __construct( $taxonomy, $to_post_types, array $args = array() ) {
 		$this->name = (string) $taxonomy;
+
+		if ( ! $this->_is_valid_taxonomy_name() )
+			return;
+
 		$this->to_post_types = (array) $to_post_types;
 		$this->taxonomy_data = $args;
 
 		$this->_add_taxonomy();
 		$this->_add_hooks();
+	}
+
+	/**
+	 * Check if the taxonomy name is valid and show errors if not.
+	 *
+	 * @since 1.1.3
+	 * @return bool
+	 */
+	protected function _is_valid_taxonomy_name() {
+		$name_valid = true;
+
+		// Maximum 32 characters long
+		if ( strlen( $this->name ) > 32 ) :
+			trigger_error( sprintf( "Taxonomy name '%s' can be no more than 32 characters long", $this->name ), E_USER_WARNING );
+			$name_valid = false;
+		endif;
+
+		// No capital letters or spaces
+		if ( preg_match( '/[A-Z\s]/', $this->name ) ) :
+			trigger_error( sprintf( "Taxonomy name '%s' can not contain capital letters or spaces", $this->name ), E_USER_WARNING );
+			$name_valid = false;
+		endif;
+
+		return $name_valid;
 	}
 
 	/**
