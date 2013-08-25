@@ -1187,12 +1187,11 @@ class Lucid_Settings {
 				|| $simple_url
 			);
 
-		// Hexadecimal color (like 101 or bada55, hash is stripped before checking)
+		// Hexadecimal color (like 101 or bada55, hash is optional)
 		elseif ( 'hex_color' == $type ) :
 			if ( ! $error ) $error = __( 'The hex color seems to have an invalid format.', 'lucid-toolbox' );
-			$value = str_replace( '#', '', $value );
 
-			$valid = (bool) preg_match( '/^([a-f0-9]{6}|[a-f0-9]{3})$/', strtolower( $value ) );
+			$valid = (bool) preg_match( '/^(\#)?([a-f0-9]{6}|[a-f0-9]{3})$/', strtolower( $value ) );
 
 		endif;
 
