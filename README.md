@@ -34,7 +34,7 @@ Lucid Toolbox is currently available in the following languages:
 
 #### Lucid\_Settings 1.4.0
 
-* New: Add post and page select list fields, named `post_select` and `page_select` respectively. The value saved from the field is the selected post's ID. The fields work pretty much the same, only difference being that `page_select` displayes hierarchy. The post type used for a `page_select` field must be hierarchial. What post type(s) to use can be set with the `select_post_type` argument.
+* New: Add post and page select list fields, named `post_select` and `page_select` respectively. The value saved from the field is the selected post's ID. The fields work pretty much the same way, only difference being that `page_select` displayes hierarchy. The post type used for a `page_select` field must be hierarchial. What post type(s) to use can be set with the `select_post_type` argument.
 * Tweak: Change hex color validation to make the hash optional, instead of stripping it beforehand.
 
 #### WPAlchemy\_MetaBox
