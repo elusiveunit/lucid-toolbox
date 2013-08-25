@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.3.6
+ * @version 1.3.7
  */
 class Lucid_Settings {
 
@@ -337,6 +337,8 @@ class Lucid_Settings {
 	 *   - 'checklist' (List of checkboxes)
 	 *   - 'radios'
 	 *   - 'select'
+	 *   - 'post_select'
+	 *   - 'page_select'
 	 *   - 'button_field' (Text field with a button beside it)
 	 *   - 'button_field_monospace'
 	 * - 'section' (string) Section to add the field to, defined with section().
@@ -348,6 +350,9 @@ class Lucid_Settings {
 	 * - 'options' (array) Options for types 'select', 'radios', and 'checklist',
 	 *   format: value => text.
 	 * - 'button_text' (string) Text for the button when using button_field.
+	 * - 'select_post_type' (string) Post type to use when using post_select or
+	 *   page_select. Defaults to 'post' for post_select and 'page' for
+	 *   page_select.
 	 * - 'validate' (string) Validate value against predefined functions, see
 	 *   _validate().
 	 * - 'must_match' (regex string) A regular expression that is matched
@@ -375,6 +380,7 @@ class Lucid_Settings {
 			'inline_label' => '',
 			'options' => array(),
 			'button_text' => '',
+			'select_post_type' => '',
 			'validate' => '',
 			'must_match' => '',
 			'must_not_match' => '',
@@ -386,6 +392,11 @@ class Lucid_Settings {
 		// Probably no reason not to sanitize checkboxes as 0 or 1
 		if ( 'checkbox' == $args['type'] )
 			$defaults['sanitize'] = 'checkbox';
+
+		// Post select values are post IDs, so sanitize non-negative integer by
+		// default
+		if ( 'post_select' == $args['type'] || 'page_select' == $args['type'] )
+			$defaults['sanitize'] = 'absint';
 
 		$args = array_merge( $defaults, $args );
 
@@ -403,6 +414,8 @@ class Lucid_Settings {
 			'checklist',
 			'radios',
 			'select',
+			'post_select',
+			'page_select',
 			'button_field',
 			'button_field_monospace'
 		);
@@ -637,7 +650,8 @@ class Lucid_Settings {
 					'label' => $args['inline_label'],
 					'description' => $args['description'],
 					'options' => $args['options'],
-					'button_text' => $args['button_text']
+					'button_text' => $args['button_text'],
+					'select_post_type' => $args['select_post_type']
 				)
 			);
 		endforeach;
@@ -867,6 +881,14 @@ class Lucid_Settings {
 				$this->_add_select( $args );
 				break;
 
+			case 'post_select' :
+				$this->_add_post_select( $args );
+				break;
+
+			case 'page_select' :
+				$this->_add_page_select( $args );
+				break;
+
 			case 'radios' :
 				$this->_add_radios( $args );
 				break;
@@ -977,6 +999,69 @@ class Lucid_Settings {
 		</select>
 
 		<?php
+	}
+
+	/**
+	 * Display a select list with non-hierarchical posts.
+	 *
+	 * @since 1.3.7
+	 * @param array $args Field options.
+	 */
+	protected function _add_post_select( $args ) {
+		$post_type = ( $args['select_post_type'] ) ? $args['select_post_type'] : 'post';
+
+		// Get all posts for the select list
+		$posts = get_posts( array(
+			'post_type' => $post_type,
+			'post_status' => 'publish',
+			'numberposts' => -1,
+			'orderby' => 'title',
+			'order' => 'ASC'
+		) ); ?>
+
+		<select id="<?php echo $args['id']; ?>" name="<?php echo "{$args['prefix']}[{$args['id']}]"; ?>">
+			<option value="" <?php selected( $args['value'], '' ); ?>>&mdash; <?php _e( 'None', 'lucid-toolbox' ); ?> &mdash;</option>
+			<?php foreach ( $posts as $post ) : ?>
+				<option value="<?php echo $post->ID; ?>" <?php selected( $args['value'], $post->ID ); ?>><?php echo $post->post_title; ?></option>
+			<?php endforeach; ?>
+		</select>
+
+		<?php
+	}
+
+	/**
+	 * Display a select list with hierarchical posts.
+	 *
+	 * @since 1.3.7
+	 * @param array $args Field options.
+	 */
+	protected function _add_page_select( $args ) {
+		$post_type = ( $args['select_post_type'] ) ? $args['select_post_type'] : 'page';
+
+		$dropdown = wp_dropdown_pages( array(
+			'post_type' => $post_type,
+			'selected' => $args['value'],
+			'show_option_none' => '&mdash; ' . __( 'None', 'lucid-toolbox' ) . ' &mdash;',
+			'option_none_value' => '',
+			'id' => $args['id'],
+			'name' => "{$args['prefix']}[{$args['id']}]",
+			'echo' => false
+		) );
+
+		if ( $dropdown ) :
+
+			echo $dropdown;
+
+		// wp_dropdown_pages returns an empty string if no posts are found, so
+		// fall back to a select with only a 'none' option if that's the case.
+		else : ?>
+
+		<select id="<?php echo $args['id']; ?>" name="<?php echo "{$args['prefix']}[{$args['id']}]"; ?>">
+			<option value="" <?php selected( $args['value'], '' ); ?>>&mdash; <?php _e( 'None', 'lucid-toolbox' ); ?> &mdash;</option>
+		</select>
+
+		<?php
+		endif;
 	}
 
 	/**
