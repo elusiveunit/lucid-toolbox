@@ -1683,7 +1683,7 @@ class Lucid_Contact {
 		$message = preg_replace( '/\/\*(?:(?!\*\/).)+\*\//ms', '', $message );
 
 		// Collapse multiple line breaks
-		$message = preg_replace( '/\n+/', "\n", $message );
+		$message = preg_replace( '/\R+/', "\n", $message );
 
 		// Remove tabs
 		$message = str_replace( "\t", '', $message );
@@ -2392,7 +2392,7 @@ class Lucid_Contact {
 	 * @return string
 	 */
 	public function normalize_line_break( $input, $to_character = "\n" ) {
-		return preg_replace( '/\r\n?/', $to_character, $input );
+		return preg_replace( '/\R/', $to_character, $input );
 	}
 
 	/**
