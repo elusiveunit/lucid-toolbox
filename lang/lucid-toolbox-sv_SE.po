@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Lucid Toolbox v1.1.4\n"
+"Project-Id-Version: Lucid Toolbox v1.1.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-06-30 14:56:26+0000\n"
+"PO-Revision-Date: 2013-08-25 12:22:56+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -26,38 +26,38 @@ msgid "This action can not be undone, are you sure?"
 msgstr "Detta kan inte ångras, är du säker?"
 
 #. translators: Publish box date format, see http://php.net/date
-#: classes/lucid-post-type.php:194
-#: classes/lucid-post-type.php:212
+#: classes/lucid-post-type.php:222
+#: classes/lucid-post-type.php:240
 #@ lucid-toolbox
 msgid "M j, Y @ G:i"
 msgstr "j M, Y H:i"
 
-#: classes/lucid-settings.php:656
+#: classes/lucid-settings.php:670
 #@ lucid-toolbox
 msgid "You do not have sufficient permissions to access this page."
 msgstr "Du har inte tillräcklig behörighet för att få tillgång till denna sida."
 
-#: classes/lucid-settings.php:1164
+#: classes/lucid-settings.php:1249
 #@ lucid-toolbox
 msgid "The email address seems to be invalid."
 msgstr "E-postadressen verkar inte vara giltig."
 
-#: classes/lucid-settings.php:1170
+#: classes/lucid-settings.php:1255
 #@ lucid-toolbox
 msgid "The URL seems to be invalid."
 msgstr "URL:en verkar inte vara giltig."
 
-#: classes/lucid-settings.php:1192
+#: classes/lucid-settings.php:1277
 #@ lucid-toolbox
 msgid "The hex color seems to have an invalid format."
 msgstr "Färgkoden verkar inte ha ett korrekt format."
 
-#: classes/lucid-settings.php:1224
+#: classes/lucid-settings.php:1308
 #@ lucid-toolbox
 msgid "There were settings with invalid values."
 msgstr "Det fanns inställningar med ogiltiga värden."
 
-#: classes/lucid-taxonomy.php:189
+#: classes/lucid-taxonomy.php:217
 #, php-format
 #@ lucid-toolbox
 msgid "Show all %s"
@@ -183,9 +183,16 @@ msgstr ""
 msgid "Jens Lindberg"
 msgstr ""
 
+#: classes/lucid-settings.php:1023
+#: classes/lucid-settings.php:1044
+#: classes/lucid-settings.php:1060
+#@ lucid-toolbox
+msgid "None"
+msgstr "Inget"
+
 #. translators: plugin header field 'Version'
 #: lucid-toolbox.php:0
 #@ lucid-toolbox
-msgid "1.1.4"
+msgid "1.1.5"
 msgstr ""
 
