@@ -128,7 +128,7 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
 ) );</code></pre>
 <p>Read more about honeypots under &#39;Finishing touches&#39;.</p>
 <h3>Miscellaneous HTML</h3>
-<p>Any additional HTML outside the fields is (unfortunately) added with the strangely named <code>add_to_field_list()</code> method. It adds a strings as-is, so any HTML is allowed.</p>
+<p>Any additional HTML outside the fields can be added with the strangely named <code>add_to_field_list()</code> method. It adds a strings as-is, so any HTML is allowed. Since version 1.6.0, a better way could be used, see the section under &#39;Finishing touches&#39;.</p>
 <pre><code>$form-&gt;add_to_field_list( &#39;&lt;fieldset&gt;&#39; );
 
 [Add some fields]
@@ -226,6 +226,41 @@ Use if_block for whole and/or multiple lines.
 <p>Form messages will display above the form, wrapped in <code>&lt;p class=&quot;error&quot;&gt;</code> (or class &#39;success&#39; when sent). Any individual form field errors will display below the field, wrapped in <code>&lt;span class=&quot;error&quot;&gt;</code>.</p>
 <p>A special case is the honeypot error, where the form message will be wrapped in <code>&lt;p class=&quot;error error-honeypot&quot;&gt;</code>. If you are unfamiliar with <em>honeypots</em>, they are used to stop spam. The field must be empty to pass validation and spambots are presumed to automatically fill in every field, thus getting stuck. To help humans, a proper label should be included and the field should be hidden with CSS.</p>
 <p>In the case where a human fills in the field, this special error class allows the honeypot field to be displayed with a general sibling combinator, like so: <code>.error-honeypot ~ form #honeypot</code> (or whatever ID/class you use for the field, IE7+). This may be needed if some sort of auto form filler is used by a human. The special error class is only added if the honeypot is the only invalid field.</p>
+<h3>Separate field rendering</h3>
+<p>Since version 1.6.0, the assembly and render methods are separated to enable free use of HTML between fields. Let&#39;s start with the new methods:</p>
+<ul>
+<li><code>form_status</code> (return with <code>get_form_status</code>) The form status message. This is included at the top of <code>form_start</code> by default; pass <code>false</code> to it and use this method to place the message somewhere else.</li>
+<li><code>form_start</code> (return with <code>get_form_start</code>) The start of the form, includes some hidden fields and the appropriate attributes. Also triggers the POST check and sending (given <code>handle_post</code> is true).</li>
+<li><code>form_end</code> (return with <code>get_form_end</code>) The end of the form.</li>
+<li><code>render_field</code> (return with <code>get_field</code>) A field specified by ID.</li>
+</ul>
+<p>An example:</p>
+<pre><code>$form = new Lucid_Contact();
+[set properties as usual]
+
+$form-&gt;add_field( &#39;text&#39;, &#39;favorite_color&#39;, array(
+    &#39;label&#39;       =&gt; __( &#39;Your favorite color:&#39;, &#39;TEXTDOMAIN&#39; ),
+    &#39;error_empty&#39; =&gt; __( &#39;Enter a color dude(tte)!&#39;, &#39;TEXTDOMAIN&#39; )
+) );
+
+$form-&gt;add_submit( __( &#39;Build a rainbow&#39;, &#39;TEXTDOMAIN&#39; ) );
+
+$form-&gt;form_start( false ); // Don&#39;t include form message
+
+&lt;div&gt;
+    &lt;h2&gt;Help build a rainbow!&lt;/h2&gt;
+
+    &lt;?php $form-&gt;render_field( &#39;favorite_color&#39; ); ?&gt;
+
+    &lt;p&gt;Herp derp&lt;/p&gt;
+
+    &lt;?php $form-&gt;render_field( &#39;submit&#39; ); ?&gt;
+&lt;/div&gt;
+
+$form-&gt;form_status(); // Form message at the bottom
+
+$form-&gt;form_end();</code></pre>
+<p>As demonstrated, the difference between this and <code>render_form</code> is really only in how the rendering is handled.</p>
 <h2>Complete example</h2>
 <p>An example setup with name, email, honeypot and message.</p>
 <pre><code>$form = new Lucid_Contact();
@@ -280,6 +315,11 @@ $form-&gt;add_submit( __( &#39;Send message&#39;, &#39;TEXTDOMAIN&#39; ) );
 
 $form-&gt;render_form();</code></pre>
 <h2>Changelog</h2>
+<h3>1.6.0: Sep 16, 2013</h3>
+<ul>
+<li>New: Finally add a stupidly obvious way of freely using HTML without <code>add_to_field_list</code>, by separating the form assembly and render methods. See new &#39;Separate field rendering&#39; section in the documentation.</li>
+<li>Tweak: Disable the nonce field added in 1.5.2 by default. A nonce can cause issues if caching is used, since the nonce string can be cached and thus invalid for a time until the cache is renewed. A hidden field with the internal form ID is used instead, so there can still be multiple forms on the same page. The new <code>use_nonce</code> property (defaults to false) can be used to get the old behavior.</li>
+</ul>
 <h3>1.5.2: June 30, 2013</h3>
 <ul>
 <li>New: Add a nonce field for more secure forms and to differentiate between multiple forms on the same page.</li>

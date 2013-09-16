@@ -22,6 +22,13 @@ Lucid Toolbox is currently available in the following languages:
 
 ## Changelog
 
+### 1.1.6: Sep 16, 2013
+
+#### Lucid\_Contact 1.6.0
+
+* New: Finally add a stupidly obvious way of freely using HTML without `add_to_field_list`, by separating the form assembly and render methods. See new 'Separate field rendering' section in the documentation.
+* Tweak: Disable the nonce field added in 1.5.2 by default. A nonce can cause issues if caching is used, since the nonce string can be cached and thus invalid for a time until the cache is renewed. A hidden field with the internal form ID is used instead, so there can still be multiple forms on the same page. The new `use_nonce` property (defaults to false) can be used to get the old behavior.
+
 ### 1.1.5: Aug 25, 2013
 
 #### Lucid\_Post\_Type 1.1.2

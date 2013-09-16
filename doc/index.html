@@ -38,6 +38,12 @@
 <li>Swedish</li>
 </ul>
 <h2>Changelog</h2>
+<h3>1.1.6: Sep 16, 2013</h3>
+<h4>Lucid_Contact 1.6.0</h4>
+<ul>
+<li>New: Finally add a stupidly obvious way of freely using HTML without <code>add_to_field_list</code>, by separating the form assembly and render methods. See new &#39;Separate field rendering&#39; section in the documentation.</li>
+<li>Tweak: Disable the nonce field added in 1.5.2 by default. A nonce can cause issues if caching is used, since the nonce string can be cached and thus invalid for a time until the cache is renewed. A hidden field with the internal form ID is used instead, so there can still be multiple forms on the same page. The new <code>use_nonce</code> property (defaults to false) can be used to get the old behavior.</li>
+</ul>
 <h3>1.1.5: Aug 25, 2013</h3>
 <h4>Lucid_Post_Type 1.1.2</h4>
 <ul>

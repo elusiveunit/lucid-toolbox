@@ -137,7 +137,7 @@ Read more about honeypots under 'Finishing touches'.
 
 ### Miscellaneous HTML
 
-Any additional HTML outside the fields is (unfortunately) added with the strangely named `add_to_field_list()` method. It adds a strings as-is, so any HTML is allowed.
+Any additional HTML outside the fields can be added with the strangely named `add_to_field_list()` method. It adds a strings as-is, so any HTML is allowed. Since version 1.6.0, a better way could be used, see the section under 'Finishing touches'.
 
 	$form->add_to_field_list( '<fieldset>' );
 
@@ -275,6 +275,45 @@ A special case is the honeypot error, where the form message will be wrapped in 
 
 In the case where a human fills in the field, this special error class allows the honeypot field to be displayed with a general sibling combinator, like so: `.error-honeypot ~ form #honeypot` (or whatever ID/class you use for the field, IE7+). This may be needed if some sort of auto form filler is used by a human. The special error class is only added if the honeypot is the only invalid field.
 
+### Separate field rendering
+
+Since version 1.6.0, the assembly and render methods are separated to enable free use of HTML between fields. Let's start with the new methods:
+
+* `form_status` (return with `get_form_status`) The form status message. This is included at the top of `form_start` by default; pass `false` to it and use this method to place the message somewhere else.
+* `form_start` (return with `get_form_start`) The start of the form, includes some hidden fields and the appropriate attributes. Also triggers the POST check and sending (given `handle_post` is true).
+* `form_end` (return with `get_form_end`) The end of the form.
+* `render_field` (return with `get_field`) A field specified by ID.
+
+An example:
+
+	$form = new Lucid_Contact();
+	[set properties as usual]
+
+	$form->add_field( 'text', 'favorite_color', array(
+		'label'       => __( 'Your favorite color:', 'TEXTDOMAIN' ),
+		'error_empty' => __( 'Enter a color dude(tte)!', 'TEXTDOMAIN' )
+	) );
+
+	$form->add_submit( __( 'Build a rainbow', 'TEXTDOMAIN' ) );
+
+	$form->form_start( false ); // Don't include form message
+
+	<div>
+		<h2>Help build a rainbow!</h2>
+
+		<?php $form->render_field( 'favorite_color' ); ?>
+
+		<p>Herp derp</p>
+
+		<?php $form->render_field( 'submit' ); ?>
+	</div>
+
+	$form->form_status(); // Form message at the bottom
+
+	$form->form_end();
+
+As demonstrated, the difference between this and `render_form` is really only in how the rendering is handled.
+
 ## Complete example
 
 An example setup with name, email, honeypot and message.
@@ -332,6 +371,11 @@ An example setup with name, email, honeypot and message.
 	$form->render_form();
 
 ## Changelog
+
+### 1.6.0: Sep 16, 2013
+
+* New: Finally add a stupidly obvious way of freely using HTML without `add_to_field_list`, by separating the form assembly and render methods. See new 'Separate field rendering' section in the documentation.
+* Tweak: Disable the nonce field added in 1.5.2 by default. A nonce can cause issues if caching is used, since the nonce string can be cached and thus invalid for a time until the cache is renewed. A hidden field with the internal form ID is used instead, so there can still be multiple forms on the same page. The new `use_nonce` property (defaults to false) can be used to get the old behavior.
 
 ### 1.5.2: June 30, 2013
 
