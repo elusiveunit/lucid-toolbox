@@ -112,8 +112,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 	// Register tasks.
-	// Documentation: 'grunt doc'
-	grunt.registerTask('doc', [
+	// Default, documentation: 'grunt'
+	grunt.registerTask('default', [
 		'markdown:docIndex',
 		'markdown:doc',
 		'rename:doc',
