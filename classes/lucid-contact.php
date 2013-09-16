@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.5.2
+ * @version 1.6.0
  */
 class Lucid_Contact {
 
@@ -41,6 +41,8 @@ class Lucid_Contact {
 	|
 	| Properties
 	| ------------------------------
+	| $_form_count
+	| $_form_id
 	| $from_name
 	| $from_address
 	| $to_address
@@ -63,6 +65,7 @@ class Lucid_Contact {
 	| $_html_count
 	| $form_action
 	| $form_method
+	| $use_nonce
 	| $handle_attachments
 	| $delete_sent_files
 	| $_allowed_extensions
@@ -99,7 +102,8 @@ class Lucid_Contact {
 	| add_to_field_list
 	| add_submit
 	|
-	| [=Validation, sending and form rendering]
+	| [=Validation and sending]
+	| _verify_post
 	| _validate
 	| _get_subject
 	| _get_message_from_format
@@ -116,8 +120,20 @@ class Lucid_Contact {
 	| _send
 	| _has_required_send_data
 	| _clear_send
+	|
+	| [=Form rendering]
+	| _get_id_field
+	| get_form_status
+	| form_status
+	| get_form_start
+	| form_start
+	| get_form_end
+	| form_end
 	| assemble_form
+	| get_form
 	| render_form
+	| get_field
+	| render_field
 	|
 	| [=Misc. functions and utilities]
 	| _debug_filter
@@ -144,16 +160,16 @@ class Lucid_Contact {
 	 * @since 1.5.2
 	 * @var int
 	 */
-	protected static $form_count = 1;
+	protected static $_form_count = 0;
 
 	/**
-	 * ID for current form. Is used for the nonce field and uses $form_count to
+	 * ID for current form. Is used for the nonce field and uses $_form_count to
 	 * be unique.
 	 *
 	 * @since 1.5.2
 	 * @var string
 	 */
-	protected $form_id = '';
+	protected $_form_id = '';
 
 	/**
 	 * Sender's name. Set to a field name like 'name' to use the data from that
@@ -420,6 +436,17 @@ class Lucid_Contact {
 	public $form_method = 'post';
 
 	/**
+	 * Add a nonce field to the form.
+	 *
+	 * This can cause issues if caching is used, since the nonce string can be
+	 * cached and thus invalid for a time until the cache is renewed.
+	 *
+	 * @since 1.6.0
+	 * @var bool
+	 */
+	public $use_nonce = false;
+
+	/**
 	 * If email attachments should be handled. Is set if there is a file input
 	 * added.
 	 *
@@ -565,7 +592,6 @@ class Lucid_Contact {
 		$this->set_form_messages();
 		$this->set_file_form_messages();
 		$this->set_allowed_files();
-		$this->_add_nonce();
 
 		// --Debug--
 		if ( $this->debug_mode && ! empty( $_POST ) ) :
@@ -589,9 +615,9 @@ class Lucid_Contact {
 	 * - 'some_sent' If sending to multiple recipients and there was a problem
 	 *   with some, but not all, during the sending process. Not something the
 	 *   user can do anything about.
-	 * - 'invalid_post' If the nonce verification failed. This could be due to
-	 *   an expired nonce because of a long peroid of inactivity, or a malicious
-	 *   attempt of something.
+	 * - 'invalid_post' If a nonce is used and its verification failed. This
+	 *   could be due to an expired nonce because of a long peroid of inactivity,
+	 *   or a malicious attempt of some sort.
 	 *
 	 * @since 1.0.0
 	 * @param array $messages Associative array of messages.
@@ -676,16 +702,6 @@ class Lucid_Contact {
 			$mime_types = $default_mime_types;
 
 		$this->_allowed_mime_types = $mime_types;
-	}
-
-	/**
-	 * Add a nonce field to the form.
-	 *
-	 * @since 1.5.2
-	 */
-	protected function _add_nonce() {
-		$this->form_id = 'lucid-form-' . self::$form_count;
-		$this->add_to_field_list( '<input type="hidden" name="' . $this->form_id . '" value="' . wp_create_nonce( $this->form_id ) . '">' );
 	}
 
 
@@ -1174,7 +1190,7 @@ class Lucid_Contact {
 
 
 	/*-------------------------------------------------------------------------*\
-	      =Validation, sending and form rendering
+	      =Validation and sending
 	\*-------------------------------------------------------------------------*/
 
 	/**
@@ -1185,7 +1201,7 @@ class Lucid_Contact {
 	 * - There is a POST request
 	 * - The $_POST superglobal is not empty
 	 * - The referer is 'correct' (easily spoofed, but no harm in checking)
-	 * - The nonce field is correct
+	 * - The correct form ID is posted, or the nonce is correct
 	 *
 	 * @since 1.5.2
 	 * @return bool True if everything passed, false otherwise.
@@ -1195,14 +1211,18 @@ class Lucid_Contact {
 		// Check POST request and correct referer
 		$posted = ( 'POST' == $_SERVER['REQUEST_METHOD']
 			&& ! empty( $_POST )
-			&& $this->form_location == $_SERVER['HTTP_REFERER']
-			&& isset( $_POST[$this->form_id] ) );
+			&& $this->form_location == $_SERVER['HTTP_REFERER'] );
 
-		// Check nonce
-		$verified = ( $posted && wp_verify_nonce( $_POST[$this->form_id], $this->form_id ) );
+		// Check that the correct form is processed
+		if ( $this->use_nonce )
+			$verified = ( $posted && wp_verify_nonce( $_POST[$this->_form_id], $this->_form_id ) );
+		else
+			$verified = ( $posted
+				&& isset( $_POST['lucid-form-id'] )
+				&& $_POST['lucid-form-id'] == $this->_form_id );
 
 		// Posted but invalid nonce
-		if ( $posted && ! $verified )
+		if ( $this->use_nonce && $posted && ! $verified )
 			$this->_form_status = '<div class="error form-error">' . $this->_form_messages['invalid_post'] . '</div>';
 
 		return ( $posted && $verified );
@@ -2056,68 +2076,166 @@ class Lucid_Contact {
 		endif;
 	}
 
+
+
+
+
+
+
+
+
+
+	/*-------------------------------------------------------------------------*\
+	      =Form rendering
+	\*-------------------------------------------------------------------------*/
+
 	/**
-	 * Assemble the $_fields array to a complete form and save it to the 'form'
-	 * property.
+	 * Get a hidden input with the form ID.
 	 *
-	 * @since 1.0.0
-	 * @return string $form The finished form.
+	 * Used to verify that the correct form POST is processed, since there can
+	 * be multiple forms on a page.
+	 *
+	 * @since 1.6.0
+	 * @return string
 	 */
-	public function assemble_form() {
-		$form = '';
+	protected function _get_id_field() {
+		if ( $this->use_nonce )
+			$field = '<input type="hidden" name="' . $this->_form_id . '" value="' . wp_create_nonce( $this->_form_id ) . '">';
+		else
+			$field = '<input type="hidden" name="lucid-form-id" value="' . $this->_form_id . '">';
 
-		// Status message <p>
-		if ( $this->_form_status )
-			$form .= $this->_form_status;
+		return $field;
+	}
 
-		$form .= "<form action=\"{$this->form_action}\" method=\"{$this->form_method}\"";
+	/**
+	 * Get the current form status message.
+	 *
+	 * @since 1.6.0
+	 * @return string
+	 */
+	public function get_form_status() {
+		return $this->_form_status;
+	}
+
+	/**
+	 * Output the current form status message.
+	 *
+	 * @since 1.6.0
+	 * @see get_form_status()
+	 */
+	public function form_status() {
+		echo $this->get_form_status();
+	}
+
+	/**
+	 * Get the start of the form.
+	 *
+	 * Triggers the POST check and sending and returns the first part of the
+	 * form. This includes some hidden fields and the appropriate attributes.
+	 *
+	 * @since 1.6.0
+	 * @param bool $include_status Include form status message in output.
+	 *   Defaults to true.
+	 * @return string
+	 */
+	public function get_form_start( $include_status = true ) {
+		self::$_form_count++;
+
+		$this->_form_id = 'lucid-form-' . self::$_form_count;
+
+		if ( $this->handle_post )
+			$this->_send();
+
+		$form_start = '';
+
+		// Status message
+		if ( $include_status )
+			$form_start .= $this->get_form_status();
+
+		$form_start .= "<form action=\"{$this->form_action}\" method=\"{$this->form_method}\"";
 
 		// Add required enctype if doing attachments
 		if ( $this->handle_attachments )
-			$form .= ' enctype="multipart/form-data"';
+			$form_start .= ' enctype="multipart/form-data"';
 
 		// Additional attributes, ignore 'action', 'method' and 'novalidate'
-		$form .= $this->_get_attributes_string(
+		$form_start .= $this->_get_attributes_string(
 			$this->form_attributes,
 			array( 'action', 'method', 'novalidate' )
 		);
 
 		// Disable built-in browser validation. It's inconsistent both in
 		// function and appearance
-		$form .= " novalidate>\n";
+		$form_start .= " novalidate>\n";
 
 		// Included just to possibly save processing if the file is too big, it's
 		// not secure or reliable by any means.
 		if ( $this->max_file_size )
-			$form .= "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"{$this->max_file_size}\">\n";
+			$form_start .= "<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"{$this->max_file_size}\">\n";
 
-		// Loop through the $_fields array and only add stuff between opening and
-		// closing tags, so stuff like validation data is skipped. Others apart
-		// from 'open' counts as start due to optional field wraps, custom html
-		// keys etc.
-		foreach ( $this->_fields as $field ) :
-			$include_parts = false;
+		$form_start .= $this->_get_id_field();
 
-			foreach ( $field as $part => $val ) :
-				if ( $part == 'open'
-				  || $part == 'label'
-				  || $part == 'tag_open'
-				  || $part == 'string' ) $include_parts = true;
+		return $form_start;
+	}
 
-				if ( $include_parts ) :
-					$form .= $val;
-					$form .= ( $part != 'post' ) ? "\n" : '';
-				endif;
+	/**
+	 * Output the start of the form.
+	 *
+	 * @since 1.6.0
+	 * @see get_form_start()
+	 * @param bool $include_status Include form status message in output.
+	 *   Defaults to true.
+	 */
+	public function form_start( $include_status = true ) {
+		echo $this->get_form_start( $include_status );
+	}
 
-				if ( $part == 'close' ) $include_parts = false;
-			endforeach;
-		endforeach;
+	/**
+	 * Get the end of the form.
+	 *
+	 * @since 1.6.0
+	 * @return string
+	 */
+	public function get_form_end() {
+		return '</form>';
+	}
 
-		$form .= '</form>';
+	/**
+	 * Output the end of the form.
+	 *
+	 * @since 1.6.0
+	 * @see get_form_end()
+	 */
+	public function form_end() {
+		echo $this->get_form_end();
+	}
 
-		self::$form_count++;
+	/**
+	 * Assemble the $_fields array to a complete form.
+	 *
+	 * @since 1.0.0
+	 * @return string The finished form.
+	 */
+	public function assemble_form() {
+		$form = $this->get_form_start( true );
+
+		foreach ( $this->_fields as $id => $field_data )
+			$form .= $this->get_field( $id );
+
+		$form .= $this->get_form_end();
 
 		return $form;
+	}
+
+	/**
+	 * Alias to assemble_form.
+	 *
+	 * @since 1.6.0
+	 * @see assemble_form()
+	 * @return string The finished form.
+	 */
+	public function get_form() {
+		return $this->assemble_form();
 	}
 
 	/**
@@ -2127,12 +2245,9 @@ class Lucid_Contact {
 	 * rendering, it calls _send(), which in turn calls _validate().
 	 *
 	 * @since 1.0.0
+	 * @see assemble_form()
 	 */
 	public function render_form() {
-		if ( $this->handle_post )
-			$this->_send();
-
-		$form = $this->assemble_form();
 
 		// --Debug--
 		// Print the $_fields array
@@ -2143,7 +2258,56 @@ class Lucid_Contact {
 			$this->_debug_close();
 		endif;
 
-		echo $form;
+		echo $this->get_form();
+	}
+
+	/**
+	 * Get a form field.
+	 *
+	 * Puts together form field HTML from the $_fields array data for the
+	 * specified field.
+	 *
+	 * @since 1.6.0
+	 * @param string $id Form field ID.
+	 * @return string
+	 */
+	public function get_field( $id ) {
+		if ( empty( $this->_fields[$id] ) )
+			return '';
+
+		$field = '';
+		$include_parts = false;
+
+		// Only add stuff between opening and closing tags, so stuff like
+		// validation data is skipped.
+		foreach ( $this->_fields[$id] as $part => $val ) :
+
+			// Other keys apart from 'open' counts as start due to optional field
+			// wraps, custom html keys etc.
+			if ( in_array( $part, array( 'open', 'label', 'tag_open', 'string' ) ) )
+				$include_parts = true;
+
+			if ( $include_parts ) :
+				$field .= $val;
+				$field .= ( $part != 'post' ) ? "\n" : '';
+			endif;
+
+			if ( $part == 'close' )
+				$include_parts = false;
+		endforeach;
+
+		return $field;
+	}
+
+	/**
+	 * Output a form field.
+	 *
+	 * @since 1.6.0
+	 * @param string $id Form field ID.
+	 * @see get_field()
+	 */
+	public function render_field( $id ) {
+		echo $this->get_field( $id );
 	}
 
 
