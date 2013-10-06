@@ -1346,9 +1346,9 @@ class Lucid_Contact {
 				if ( strpos( $tag, 'class="' ) ) :
 					$this->_fields[$name]['tag_open'] = str_replace( 'class="', 'class="error ', $tag );
 				// Otherwise, add a class attribute
-				// Regex: |<tag|> => |<tag class="error field-error"|>
+				// Regex: |<tag|> => |<tag class="error input-error"|>
 				else :
-					$this->_fields[$name]['tag_open'] = preg_replace( '/<[\w\-]+(?=\s|>)/', '$0 class="error field-error"', $tag );
+					$this->_fields[$name]['tag_open'] = preg_replace( '/<[\w\-]+(?=\s|>)/', '$0 class="error input-error"', $tag );
 				endif;
 			endif;
 		endforeach; // Field loop
@@ -2289,7 +2289,7 @@ class Lucid_Contact {
 
 			if ( $include_parts ) :
 				$field .= $val;
-				$field .= ( $part != 'post' ) ? "\n" : '';
+				$field .= ( ! in_array( $part, array( 'post', 'tag_open' ) ) ) ? "\n" : '';
 			endif;
 
 			if ( $part == 'close' )
