@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.4.0
+ * @version 1.5.0
  */
 class Lucid_Settings {
 
@@ -149,7 +149,17 @@ class Lucid_Settings {
 	 * @since 1.3.2
 	 * @see _display_page()
 	 */
-	public $pass_settings_errors_id = true;
+	public $pass_settings_errors_id = false;
+
+	/**
+	 * Load necessary assets and initialize color picker fields.
+	 *
+	 * Is set to true if a color picker field is added.
+	 *
+	 * @var bool
+	 * @since 1.5.0
+	 */
+	public $init_color_picker = false;
 
 	/**
 	 * The submenu item for the settings page.
@@ -339,6 +349,7 @@ class Lucid_Settings {
 	 *   - 'select'
 	 *   - 'post_select'
 	 *   - 'page_select'
+	 *   - 'color_picker'
 	 *   - 'button_field' (Text field with a button beside it)
 	 *   - 'button_field_monospace'
 	 * - 'section' (string) Section to add the field to, defined with section().
@@ -390,12 +401,12 @@ class Lucid_Settings {
 		);
 
 		// Probably no reason not to sanitize checkboxes as 0 or 1
-		if ( 'checkbox' == $args['type'] )
+		if ( isset( $args['type'] ) && 'checkbox' == $args['type'] )
 			$defaults['sanitize'] = 'checkbox';
 
 		// Post select values are post IDs, so sanitize non-negative integer by
 		// default
-		if ( 'post_select' == $args['type'] || 'page_select' == $args['type'] )
+		if ( isset( $args['type'] ) && ( 'post_select' == $args['type'] || 'page_select' == $args['type'] ) )
 			$defaults['sanitize'] = 'absint';
 
 		$args = array_merge( $defaults, $args );
@@ -416,6 +427,7 @@ class Lucid_Settings {
 			'select',
 			'post_select',
 			'page_select',
+			'color_picker',
 			'button_field',
 			'button_field_monospace'
 		);
@@ -448,6 +460,10 @@ class Lucid_Settings {
 
 			// Drop out so they don't get overwritten.
 			return;
+
+		// Color picker needs extra assets added.
+		elseif ( 'color_picker' == $args['type'] ) :
+			$this->init_color_picker = true;
 		endif;
 
 		$this->_fields[$id] = array_merge( array(
@@ -541,9 +557,25 @@ class Lucid_Settings {
 		);
 
 		// Only load the settings content when on the added submenu page
-		if ( $this->_screen_id ) :
-			add_action( 'load-' . $this->_screen_id, array( $this, '_add_sections' ) );
-			add_action( 'load-' . $this->_screen_id, array( $this, '_add_fields' ) );
+		if ( $this->_screen_id )
+			add_action( 'load-' . $this->_screen_id, array( $this, '_load_settings_page' ) );
+	}
+
+	/**
+	 * Load settings page content.
+	 *
+	 * Callback for the load-[page-id] hook, which only runs on the added
+	 * settings page.
+	 *
+	 * @since 1.5.0
+	 */
+	public function _load_settings_page() {
+		$this->_add_sections();
+		$this->_add_fields();
+
+		if ( $this->init_color_picker ) :
+			add_action( 'admin_enqueue_scripts', array( $this, '_load_color_picker' ) );
+			add_action( 'admin_print_footer_scripts', array( $this, '_init_color_picker' ) );
 		endif;
 	}
 
@@ -552,7 +584,7 @@ class Lucid_Settings {
 	 *
 	 * @since 1.0.0
 	 */
-	public function _add_sections() {
+	protected function _add_sections() {
 		foreach ( $this->_sections as $section => $args ) :
 
 			// If using tabs, the page ID the section should be added to is the
@@ -576,7 +608,7 @@ class Lucid_Settings {
 	 *
 	 * @since 1.0.0
 	 */
-	public function _add_fields() {
+	protected function _add_fields() {
 		foreach ( $this->_fields as $field_id => $args ) :
 
 			// If using tabs, the page ID the field should be added to is the tab
@@ -657,8 +689,27 @@ class Lucid_Settings {
 		endforeach;
 
 		// Add highlighting for fields with errors.
-		add_action( 'admin_footer', array( $this, '_error_highlighting' ) );
+		add_action( 'admin_print_footer_scripts', array( $this, '_error_highlighting' ) );
 	}
+
+	/**
+	 * Load color picker assets.
+	 *
+	 * @since 1.5.0
+	 */
+	public function _load_color_picker() {
+		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_script( 'wp-color-picker' );
+	}
+
+	/**
+	 * Initialize color picker.
+	 *
+	 * @since 1.5.0
+	 */
+	public function _init_color_picker() { ?>
+		<script>jQuery(document).ready(function($){if($.fn.wpColorPicker){$('.lucid-settings-color-picker').wpColorPicker()}})</script>
+	<?php }
 
 	/**
 	 * Display the settings page.
@@ -889,6 +940,10 @@ class Lucid_Settings {
 				$this->_add_page_select( $args );
 				break;
 
+			case 'color_picker' :
+				$this->_add_color_picker( $args );
+				break;
+
 			case 'radios' :
 				$this->_add_radios( $args );
 				break;
@@ -1062,6 +1117,19 @@ class Lucid_Settings {
 
 		<?php
 		endif;
+	}
+
+	/**
+	 * Display a field with color picker functionality.
+	 *
+	 * @since 1.5.0
+	 * @param array $args Field options.
+	 */
+	protected function _add_color_picker( $args ) { ?>
+
+		<input type="text" class="lucid-settings-color-picker" id="<?php echo $args['id']; ?>" name="<?php echo "{$args['prefix']}[{$args['id']}]"; ?>" value="<?php echo esc_attr( $args['value'] ); ?>">
+
+		<?php
 	}
 
 	/**
