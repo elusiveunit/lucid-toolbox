@@ -315,6 +315,11 @@ $form-&gt;add_submit( __( &#39;Send message&#39;, &#39;TEXTDOMAIN&#39; ) );
 
 $form-&gt;render_form();</code></pre>
 <h2>Changelog</h2>
+<h3>1.6.1: Oct 06, 2013</h3>
+<ul>
+<li>Tweak: Ignore validation on optional fields if the value is empty. This allows validation on optional fields, while still allowing them to be optional. One example would be an optional email field; an empty value shouldn&#39;t cause an error, but a filled one should if the email is invalid.</li>
+<li>Tweak: Set <code>input-error</code> CSS class on input fields with errors.</li>
+</ul>
 <h3>1.6.0: Sep 16, 2013</h3>
 <ul>
 <li>New: Finally add a stupidly obvious way of freely using HTML without <code>add_to_field_list</code>, by separating the form assembly and render methods. See new &#39;Separate field rendering&#39; section in the documentation.</li>

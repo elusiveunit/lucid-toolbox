@@ -26,7 +26,7 @@ $example_settings-&gt;page_heading = __( &#39;My settings&#39;, &#39;TEXTDOMAIN&
 <p>Some options are controlled through properties: <code>$instance-&gt;prop = &#39;value&#39;</code>.</p>
 <ul>
 <li><code>capability</code> <strong>(string)</strong> Capability required to edit the settings. Defaults to <code>&#39;manage_options&#39;</code>.</li>
-<li><code>pass_settings_errors_id</code> <strong>(bool)</strong> Whether to pass setting ID to <code>settings_errors</code>. This is sometimes needed to avoid multiple update messages, other times it causes update messages to not be displayed at all. I have yet to find the reason for the issue. Defaults to true.</li>
+<li><code>pass_settings_errors_id</code> <strong>(bool)</strong> Whether to pass setting ID to <code>settings_errors</code>. This is sometimes needed to avoid multiple update messages, other times it causes update messages to not be displayed at all. I have yet to find the reason for the issue. Defaults to false.</li>
 </ul>
 <h2>Submenu</h2>
 <p>The submenu method requires a menu label text, and accepts some optional arguments through an array:</p>
@@ -70,6 +70,7 @@ $example_settings-&gt;page_heading = __( &#39;My settings&#39;, &#39;TEXTDOMAIN&
 <li><code>&#39;select&#39;</code></li>
 <li><code>&#39;post_select&#39;</code></li>
 <li><code>&#39;page_select&#39;</code></li>
+<li><code>&#39;color_picker&#39;</code></li>
 <li><code>&#39;button_field&#39;</code> (Text field with a button beside it)</li>
 <li><code>&#39;button_field_monospace&#39;</code></li>
 </ul>
@@ -209,6 +210,11 @@ $example_settings-&gt;field(
 
 $example_settings-&gt;init();</code></pre>
 <h2>Changelog</h2>
+<h3>1.5.0: Oct 06, 2013</h3>
+<ul>
+<li>New: Add <code>color_picker</code> field type, to show a color picker (duh).</li>
+<li>Tweak: Default <code>pass_settings_errors_id</code> to false instead of true. I seem to always set this to false nowadays, so the double message behavior may have been a bug that has been fixed.</li>
+</ul>
 <h3>1.4.0: Aug 25, 2013</h3>
 <ul>
 <li>New: Add post and page select list fields, named <code>post_select</code> and <code>page_select</code> respectively. The value saved from the field is the selected post&#39;s ID. The fields work pretty much the same way, only difference being that <code>page_select</code> displayes hierarchy. The post type used for a <code>page_select</code> field must be hierarchial. What post type(s) to use can be set with the <code>select_post_type</code> argument.</li>

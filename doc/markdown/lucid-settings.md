@@ -22,7 +22,7 @@ Settings are accessed with the ID (`get_option( 'example_settings_id' )`) when u
 Some options are controlled through properties: `$instance->prop = 'value'`.
 
 * `capability` **(string)** Capability required to edit the settings. Defaults to `'manage_options'`.
-* `pass_settings_errors_id` **(bool)** Whether to pass setting ID to `settings_errors`. This is sometimes needed to avoid multiple update messages, other times it causes update messages to not be displayed at all. I have yet to find the reason for the issue. Defaults to true.
+* `pass_settings_errors_id` **(bool)** Whether to pass setting ID to `settings_errors`. This is sometimes needed to avoid multiple update messages, other times it causes update messages to not be displayed at all. I have yet to find the reason for the issue. Defaults to false.
 
 ## Submenu
 
@@ -72,6 +72,7 @@ The field method requires an ID and a label, and accepts additional arguments th
   * `'select'`
   * `'post_select'`
   * `'page_select'`
+  * `'color_picker'`
   * `'button_field'` (Text field with a button beside it)
   * `'button_field_monospace'`
 * `'section'` **(string)** Section to add the field to, defined with `section()`.
@@ -215,6 +216,11 @@ Since there are quite a bit of options, here are some examples.
 	$example_settings->init();
 
 ## Changelog
+
+### 1.5.0: Oct 06, 2013
+
+* New: Add `color_picker` field type, to show a color picker (duh).
+* Tweak: Default `pass_settings_errors_id` to false instead of true. I seem to always set this to false nowadays, so the double message behavior may have been a bug that has been fixed.
 
 ### 1.4.0: Aug 25, 2013
 

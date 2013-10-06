@@ -38,6 +38,17 @@
 <li>Swedish</li>
 </ul>
 <h2>Changelog</h2>
+<h3>1.1.7: Oct 06, 2013</h3>
+<h4>Lucid_Settings 1.5.0</h4>
+<ul>
+<li>New: Add <code>color_picker</code> field type, to show a color picker (duh).</li>
+<li>Tweak: Default <code>pass_settings_errors_id</code> to false instead of true. I seem to always set this to false nowadays, so the double message behavior may have been a bug that has been fixed.</li>
+</ul>
+<h4>Lucid_Contact 1.6.1</h4>
+<ul>
+<li>Tweak: Ignore validation on optional fields if the value is empty. This allows validation on optional fields, while still allowing them to be optional. One example would be an optional email field; an empty value shouldn&#39;t cause an error, but a filled one should if the email is invalid.</li>
+<li>Tweak: Set <code>input-error</code> CSS class on input fields with errors.</li>
+</ul>
 <h3>1.1.6: Sep 16, 2013</h3>
 <h4>Lucid_Contact 1.6.0</h4>
 <ul>

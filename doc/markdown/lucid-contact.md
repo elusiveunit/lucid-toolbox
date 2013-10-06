@@ -372,6 +372,11 @@ An example setup with name, email, honeypot and message.
 
 ## Changelog
 
+### 1.6.1: Oct 06, 2013
+
+* Tweak: Ignore validation on optional fields if the value is empty. This allows validation on optional fields, while still allowing them to be optional. One example would be an optional email field; an empty value shouldn't cause an error, but a filled one should if the email is invalid.
+* Tweak: Set `input-error` CSS class on input fields with errors.
+
 ### 1.6.0: Sep 16, 2013
 
 * New: Finally add a stupidly obvious way of freely using HTML without `add_to_field_list`, by separating the form assembly and render methods. See new 'Separate field rendering' section in the documentation.

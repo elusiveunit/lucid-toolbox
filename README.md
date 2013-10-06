@@ -22,12 +22,26 @@ Lucid Toolbox is currently available in the following languages:
 
 ## Changelog
 
+### 1.1.7: Oct 06, 2013
+
+#### Lucid\_Settings 1.5.0
+
+* New: Add `color_picker` field type, to show a color picker (duh).
+* Tweak: Default `pass_settings_errors_id` to false instead of true. I seem to always set this to false nowadays, so the double message behavior may have been a bug that has been fixed.
+
+#### Lucid\_Contact 1.6.1
+
+* Tweak: Ignore validation on optional fields if the value is empty. This allows validation on optional fields, while still allowing them to be optional. One example would be an optional email field; an empty value shouldn't cause an error, but a filled one should if the email is invalid.
+* Tweak: Set `input-error` CSS class on input fields with errors.
+
+
 ### 1.1.6: Sep 16, 2013
 
 #### Lucid\_Contact 1.6.0
 
 * New: Finally add a stupidly obvious way of freely using HTML without `add_to_field_list`, by separating the form assembly and render methods. See new 'Separate field rendering' section in the documentation.
 * Tweak: Disable the nonce field added in 1.5.2 by default. A nonce can cause issues if caching is used, since the nonce string can be cached and thus invalid for a time until the cache is renewed. A hidden field with the internal form ID is used instead, so there can still be multiple forms on the same page. The new `use_nonce` property (defaults to false) can be used to get the old behavior.
+
 
 ### 1.1.5: Aug 25, 2013
 
@@ -129,6 +143,7 @@ Lucid Toolbox is currently available in the following languages:
 #### WPAlchemy\_MetaBox
 
 * Tweak: Minify the JS output slightly.
+
 
 ### 1.0.0: Mar 27, 2013
 
