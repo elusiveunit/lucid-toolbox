@@ -1307,6 +1307,10 @@ class Lucid_Contact {
 						break;
 				endswitch;
 
+				// If the field is optional and empty, ignore any validation done
+				if ( empty( $this->_fields[$name]['required'] ) && empty( $_POST[$id] ) )
+					$is_valid = true;
+
 				// Invalid, add relevant data
 				if ( ! $is_valid ) :
 					$error_count++;
