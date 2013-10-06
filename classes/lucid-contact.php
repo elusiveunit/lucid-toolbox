@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.6.0
+ * @version 1.6.1
  */
 class Lucid_Contact {
 
