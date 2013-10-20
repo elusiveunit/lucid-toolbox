@@ -1338,6 +1338,7 @@ class Lucid_Contact {
 						'error',
 						'<span class="error field-error">' . $error_msg . '</span>'
 					);
+
 				// Otherwise just add it last
 				else :
 					$this->_fields[$name]['error'] = '<span class="error field-error">' . $error_msg . '</span>';
@@ -1348,7 +1349,8 @@ class Lucid_Contact {
 
 				// If there is a class attribute, add to it
 				if ( strpos( $tag, 'class="' ) ) :
-					$this->_fields[$name]['tag_open'] = str_replace( 'class="', 'class="error ', $tag );
+					$this->_fields[$name]['tag_open'] = str_replace( 'class="', 'class="error input-error ', $tag );
+
 				// Otherwise, add a class attribute
 				// Regex: |<tag|> => |<tag class="error input-error"|>
 				else :
@@ -2145,7 +2147,7 @@ class Lucid_Contact {
 	public function get_form_start( $include_status = true ) {
 		self::$_form_count++;
 
-		$this->_form_id = 'lucid-form-' . self::$_form_count;
+		$this->_form_id = ( $this->use_nonce ) ? 'lucid-form-' . self::$_form_count : self::$_form_count;
 
 		if ( $this->handle_post )
 			$this->_send();
