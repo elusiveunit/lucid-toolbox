@@ -22,7 +22,7 @@ Settings are accessed with the ID (`get_option( 'example_settings_id' )`) when u
 Some options are controlled through properties: `$instance->prop = 'value'`.
 
 * `capability` **(string)** Capability required to edit the settings. Defaults to `'manage_options'`.
-* `pass_settings_errors_id` **(bool)** Whether to pass setting ID to `settings_errors`. This is sometimes needed to avoid multiple update messages, other times it causes update messages to not be displayed at all. I have yet to find the reason for the issue. Defaults to false.
+* `pass_settings_errors_id` **(bool)** *Should no longer be needed as of 1.5.1*. Whether to pass setting ID to `settings_errors`. This is sometimes needed to avoid multiple update messages, other times it causes update messages to not be displayed at all. I have yet to find the reason for the issue. Defaults to false.
 
 ## Submenu
 
@@ -216,6 +216,10 @@ Since there are quite a bit of options, here are some examples.
 	$example_settings->init();
 
 ## Changelog
+
+### 1.5.1: Oct 20, 2013
+
+* Tweak: Don't call `settings_errors` on options pages, since they're apparently [called automatically there](http://wordpress.stackexchange.com/a/18637/33110). If I've finally understood this correctly, `pass_settings_errors_id` should no longer be needed.
 
 ### 1.5.0: Oct 06, 2013
 

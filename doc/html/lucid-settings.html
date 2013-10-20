@@ -26,7 +26,7 @@ $example_settings-&gt;page_heading = __( &#39;My settings&#39;, &#39;TEXTDOMAIN&
 <p>Some options are controlled through properties: <code>$instance-&gt;prop = &#39;value&#39;</code>.</p>
 <ul>
 <li><code>capability</code> <strong>(string)</strong> Capability required to edit the settings. Defaults to <code>&#39;manage_options&#39;</code>.</li>
-<li><code>pass_settings_errors_id</code> <strong>(bool)</strong> Whether to pass setting ID to <code>settings_errors</code>. This is sometimes needed to avoid multiple update messages, other times it causes update messages to not be displayed at all. I have yet to find the reason for the issue. Defaults to false.</li>
+<li><code>pass_settings_errors_id</code> <strong>(bool)</strong> <em>Should no longer be needed as of 1.5.1</em>. Whether to pass setting ID to <code>settings_errors</code>. This is sometimes needed to avoid multiple update messages, other times it causes update messages to not be displayed at all. I have yet to find the reason for the issue. Defaults to false.</li>
 </ul>
 <h2>Submenu</h2>
 <p>The submenu method requires a menu label text, and accepts some optional arguments through an array:</p>
@@ -210,6 +210,10 @@ $example_settings-&gt;field(
 
 $example_settings-&gt;init();</code></pre>
 <h2>Changelog</h2>
+<h3>1.5.1: Oct 20, 2013</h3>
+<ul>
+<li>Tweak: Don&#39;t call <code>settings_errors</code> on options pages, since they&#39;re apparently <a href="http://wordpress.stackexchange.com/a/18637/33110">called automatically there</a>. If I&#39;ve finally understood this correctly, <code>pass_settings_errors_id</code> should no longer be needed.</li>
+</ul>
 <h3>1.5.0: Oct 06, 2013</h3>
 <ul>
 <li>New: Add <code>color_picker</code> field type, to show a color picker (duh).</li>

@@ -22,6 +22,13 @@ Lucid Toolbox is currently available in the following languages:
 
 ## Changelog
 
+### 1.1.8: Oct 20, 2013
+
+#### Lucid\_Settings 1.5.1
+
+* Tweak: Don't call `settings_errors` on options pages, since they're apparently [called automatically there](http://wordpress.stackexchange.com/a/18637/33110). If I've finally understood this correctly, `pass_settings_errors_id` should no longer be needed.
+
+
 ### 1.1.7: Oct 06, 2013
 
 #### Lucid\_Settings 1.5.0
