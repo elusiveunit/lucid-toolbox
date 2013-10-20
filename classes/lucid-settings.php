@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.5.0
+ * @version 1.5.1
  */
 class Lucid_Settings {
 
@@ -48,6 +48,7 @@ class Lucid_Settings {
 	| $_screen_id
 	| $capability
 	| $pass_settings_errors_id
+	| $init_color_picker
 	| $_submenu
 	| $_tabs
 	| $_tab_sections
@@ -65,12 +66,16 @@ class Lucid_Settings {
 	| field
 	| html
 	| init
+	| _set_page_capability
 	| get_screen_id
 	|
 	| [=Settings]
 	| _load_settings
+	| _load_settings_page
 	| _add_sections
 	| _add_fields
+	| _load_color_picker
+	| _init_color_picker
 	| _display_page
 	| _display_section
 	| _settings_tabs
@@ -81,9 +86,13 @@ class Lucid_Settings {
 	| _display_field
 	| _add_text
 	| _add_textarea
+	| _add_editor
 	| _add_checkbox
 	| _add_checklist
 	| _add_select
+	| _add_post_select
+	| _add_page_select
+	| _add_color_picker
 	| _add_radios
 	| _add_button_field
 	| _add_description
