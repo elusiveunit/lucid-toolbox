@@ -140,6 +140,9 @@ class Lucid_Settings {
 	/**
 	 * Pass setting ID to settings_errors().
 	 *
+	 * Shouldn't be needed as of 1.5.1, may return if I ever figure out
+	 * settings_errors completely...
+	 *
 	 * If true, the current page ID will be passed to settings_errors. This is
 	 * sometimes needed to avoid multiple update messages, other times it
 	 * causes update messages to not be displayed at all. I have yet to find
@@ -740,20 +743,21 @@ class Lucid_Settings {
 				echo "<h2>{$this->page_heading}</h2>";
 			endif;
 
-			// Different cases for different pages
-			if ( $this->pass_settings_errors_id )
-				settings_errors( $settings );
-			else
-				settings_errors(); ?>
+			// Apparently added automatically to options pages
+			// http://wordpress.stackexchange.com/a/18637/33110
+			if ( 'options-general.php' != $this->added_to ) :
+				$id = ( $this->pass_settings_errors_id ) ? $settings : '';
+				settings_errors( $id );
+			endif;
 
+			// Renders settings fields lined up in tables and also
+			// handles security with referer and nonce checks. ?>
 			<form method="post" action="options.php">
-				<?php
-				// Renders settings fields lined up in tables and also
-				// handles security with referer and nonce checks.
-				settings_fields( $settings );
+				<?php settings_fields( $settings );
+
 				do_settings_sections( $settings );
-				submit_button();
-				?>
+
+				submit_button(); ?>
 			</form>
 
 		</div>
