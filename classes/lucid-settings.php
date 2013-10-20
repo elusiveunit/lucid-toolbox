@@ -618,14 +618,17 @@ class Lucid_Settings {
 				? $this->_sections[$args['section']]['tab']
 				: $this->id;
 
+			$label_for = $field_id;
+
 			// Don't add 'for' to the left column label for checkboxes and radio
 			// buttons, since they will have adjacent labels.
-			$label_for = ( $args['type'] == 'checkbox'
-				|| $args['type'] == 'checklist'
-				|| $args['type'] == 'radios'
-				|| $args['type'] == 'radio' )
-				? ''
-				: $field_id;
+			if ( in_array( $args['type'], array( 'checkbox', 'checklist', 'radios', 'radio' ) ) ) :
+				$label_for = '';
+
+			// ID for wp_editor can only contain lowercase letters and underscores
+			elseif ( 'editor' == $args['type'] ) :
+				$label_for = preg_replace( '/[^a-z_]/', '', strtolower( $label_for ) );
+			endif;
 
 			// Get option value here instead of in every function. If using tabs,
 			// every tab ID is used as a separate options entry.
@@ -1001,7 +1004,12 @@ class Lucid_Settings {
 	 * @param array $args Field options.
 	 */
 	protected function _add_editor( $args ) {
-		wp_editor( $args['value'], "{$args['prefix']}[{$args['id']}]", array(
+
+		// Editor ID can only contain lowercase letters and underscores
+		$id = preg_replace( '/[^a-z_]/', '', strtolower( $args['id'] ) );
+
+		wp_editor( $args['value'], $id, array(
+			'textarea_name' => "{$args['prefix']}[{$args['id']}]",
 			'textarea_rows' => 12
 		) );
 	}
