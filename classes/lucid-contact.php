@@ -403,9 +403,9 @@ class Lucid_Contact {
 	 *
 	 * @since 1.0.0
 	 * @var array
-	 * @see assemble_form()
+	 * @see _get_attributes_string()
 	 */
-	protected $_ignore_field_attrs = array( 'value', 'name', 'id', 'type', 'rows', 'cols' );
+	protected $_ignore_field_attrs = array( 'value', 'name', 'id', 'type', 'rows', 'cols', 'aria-required', 'aria-invalid' );
 
 	/**
 	 * Number of add_to_field_list() entries.
@@ -964,9 +964,10 @@ class Lucid_Contact {
 	 * @return array The input part of the field block.
 	 */
 	protected function _get_textarea( $name, $args ) {
+		$aria_required = ( $args['required'] ) ? 'aria-required="true"' : 'aria-required="false"';
 
 		// Start field tag
-		$field_part = "<textarea name=\"{$name}\" id=\"{$name}\" rows=\"{$args['rows']}\" cols=\"{$args['cols']}\"";
+		$field_part = "<textarea name=\"{$name}\" id=\"{$name}\" rows=\"{$args['rows']}\" cols=\"{$args['cols']}\" {$aria_required}";
 
 		// Additional attributes
 		$field_part .= $this->_get_attributes_string( $args['field_attributes'] );
@@ -997,9 +998,10 @@ class Lucid_Contact {
 	 * @return array The input part of the field block.
 	 */
 	protected function _get_select( $name, $args ) {
+		$aria_required = ( $args['required'] ) ? 'aria-required="true"' : 'aria-required="false"';
 
 		// Start field tag
-		$field_part = "<select name=\"{$name}\" id=\"{$name}\"";
+		$field_part = "<select name=\"{$name}\" id=\"{$name}\" {$aria_required}";
 
 		// Additional attributes
 		$field_part .= $this->_get_attributes_string( $args['field_attributes'] );
@@ -1108,9 +1110,10 @@ class Lucid_Contact {
 	 * @return array The input part of the field block.
 	 */
 	protected function _get_input_field( $type, $name, $args ) {
+		$aria_required = ( $args['required'] ) ? 'aria-required="true"' : 'aria-required="false"';
 
 		// Start field tag
-		$field_part = "<input type=\"{$type}\" name=\"{$name}\" id=\"{$name}\"";
+		$field_part = "<input type=\"{$type}\" name=\"{$name}\" id=\"{$name}\" {$aria_required}";
 
 		if ( 'checkbox' == $type )
 			$field_part .= ' value="1"';
@@ -1344,17 +1347,15 @@ class Lucid_Contact {
 					$this->_fields[$name]['error'] = '<span class="error field-error">' . $error_msg . '</span>';
 				endif;
 
-				// Update form tag class with 'error'
 				$tag = $this->_fields[$name]['tag_open'];
 
-				// If there is a class attribute, add to it
+				// Update form tag with error classes and aria-invalid. If there is
+				// a class attribute, add to it. Otherwise, add a class attribute
+				// with the regex: |<tag|> => |<tag class="[...]"|>
 				if ( strpos( $tag, 'class="' ) ) :
-					$this->_fields[$name]['tag_open'] = str_replace( 'class="', 'class="error input-error ', $tag );
-
-				// Otherwise, add a class attribute
-				// Regex: |<tag|> => |<tag class="error input-error"|>
+					$this->_fields[$name]['tag_open'] = str_replace( 'class="', 'aria-invalid="true" class="error input-error ', $tag );
 				else :
-					$this->_fields[$name]['tag_open'] = preg_replace( '/<[\w\-]+(?=\s|>)/', '$0 class="error input-error"', $tag );
+					$this->_fields[$name]['tag_open'] = preg_replace( '/<[\w\-]+(?=\s|>)/', '$0 class="error input-error" aria-invalid="true"', $tag );
 				endif;
 			endif;
 		endforeach; // Field loop
