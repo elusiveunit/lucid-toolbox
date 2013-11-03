@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.5.1
+ * @version 1.6.0
  */
 class Lucid_Settings {
 
@@ -378,10 +378,10 @@ class Lucid_Settings {
 	 *   page_select.
 	 * - 'validate' (string) Validate value against predefined functions, see
 	 *   _validate().
-	 * - 'must_match' (regex string) A regular expression that is matched
-	 *   against the value, i.e. '/^\d{3}$/' to require exactly three digits.
-	 * - 'must_not_match' (regex string) A regular expression that is matched
-	 *   against the value, where the result is reversed. So something like
+	 * - 'must_match' (regex) A regular expression that is matched against
+	 *   the value, i.e. '/^\d{3}$/' to require exactly three digits.
+	 * - 'must_not_match' (regex) A regular expression that is matched against
+	 *   the value, where the result is reversed. So something like
 	 *   '/\d{3}/' would mean the value can not contain three digits in a row.
 	 * - 'error_message' (string) Message for when validation fails.
 	 * - 'sanitize' (string) Sanitize value against predefined functions, see
@@ -733,7 +733,7 @@ class Lucid_Settings {
 
 			// Renders settings fields lined up in tables and also
 			// handles security with referer and nonce checks. ?>
-			<form method="post" action="options.php">
+			<form method="post" action="options.php" novalidate>
 				<?php settings_fields( $settings );
 
 				do_settings_sections( $settings );
@@ -742,7 +742,8 @@ class Lucid_Settings {
 			</form>
 
 		</div>
-	<?php echo ob_get_clean();
+
+		<?php echo ob_get_clean();
 	}
 
 	/**
