@@ -6,7 +6,7 @@
  * Plugin URI: https://github.com/elusiveunit/lucid-toolbox
  * Description: A small library of commonly needed functionality.
  * Author: Jens Lindberg
- * Version: 1.1.8
+ * Version: 1.1.9
  * License: GPL-2.0+
  * Text Domain: lucid-toolbox
  * Domain Path: /lang
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
 
 // Plugin constants
 if ( ! defined( 'LUCID_TOOLBOX_VERSION' ) )
-	define( 'LUCID_TOOLBOX_VERSION', '1.1.8' );
+	define( 'LUCID_TOOLBOX_VERSION', '1.1.9' );
 
 if ( ! defined( 'LUCID_TOOLBOX_URL' ) )
 	define( 'LUCID_TOOLBOX_URL', trailingslashit( plugin_dir_url( __FILE__ ) ) );

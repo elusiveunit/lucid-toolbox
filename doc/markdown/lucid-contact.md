@@ -314,6 +314,10 @@ An example:
 
 As demonstrated, the difference between this and `render_form` is really only in how the rendering is handled.
 
+### Check if something was sent
+
+Sometimes a task outside the form depends on the state of it, like updating an option every time the form is successfully sent. This can be checked with the `is_form_sent` method, which returns true if everything, including validation and extra recipients, passed. Keep in mind that it will always be false if used before the `send` method has been called.
+
 ## Complete example
 
 An example setup with name, email, honeypot and message.
@@ -371,6 +375,11 @@ An example setup with name, email, honeypot and message.
 	$form->render_form();
 
 ## Changelog
+
+### 1.6.2: Nov 03, 2013
+
+* New: Add the `is_form_sent` method for checking the success state.
+* New: Add `aria-required` and `aria-invalid` attributes to fields when appropriate.
 
 ### 1.6.1: Oct 06, 2013
 

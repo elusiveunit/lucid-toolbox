@@ -261,6 +261,8 @@ $form-&gt;form_status(); // Form message at the bottom
 
 $form-&gt;form_end();</code></pre>
 <p>As demonstrated, the difference between this and <code>render_form</code> is really only in how the rendering is handled.</p>
+<h3>Check if something was sent</h3>
+<p>Sometimes a task outside the form depends on the state of it, like updating an option every time the form is successfully sent. This can be checked with the <code>is_form_sent</code> method, which returns true if everything, including validation and extra recipients, passed. Keep in mind that it will always be false if used before the <code>send</code> method has been called.</p>
 <h2>Complete example</h2>
 <p>An example setup with name, email, honeypot and message.</p>
 <pre><code>$form = new Lucid_Contact();
@@ -315,6 +317,11 @@ $form-&gt;add_submit( __( &#39;Send message&#39;, &#39;TEXTDOMAIN&#39; ) );
 
 $form-&gt;render_form();</code></pre>
 <h2>Changelog</h2>
+<h3>1.6.2: Nov 03, 2013</h3>
+<ul>
+<li>New: Add the <code>is_form_sent</code> method for checking the success state.</li>
+<li>New: Add <code>aria-required</code> and <code>aria-invalid</code> attributes to fields when appropriate.</li>
+</ul>
 <h3>1.6.1: Oct 06, 2013</h3>
 <ul>
 <li>Tweak: Ignore validation on optional fields if the value is empty. This allows validation on optional fields, while still allowing them to be optional. One example would be an optional email field; an empty value shouldn&#39;t cause an error, but a filled one should if the email is invalid.</li>

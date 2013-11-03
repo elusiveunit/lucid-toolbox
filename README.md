@@ -22,6 +22,21 @@ Lucid Toolbox is currently available in the following languages:
 
 ## Changelog
 
+### 1.1.9: Nov 03, 2013
+
+#### Lucid\_Settings 1.6.0
+
+* New: Add `'output_callback'` parameter to `field`, which allows custom callback methods for the field HTML.
+* New/tweak: What should have been done right from the start: if a field type is not 'supported', just add it as input [type] instead of converting to text.
+* Tweak: Add `novalidate` to the form, to disable inconsistent browser validation of some field types.
+* Fix: The `html` method now works with checklists.
+
+#### Lucid\_Contact 1.6.2
+
+* New: Add the `is_form_sent` method for checking the success state.
+* New: Add `aria-required` and `aria-invalid` attributes to fields when appropriate.
+
+
 ### 1.1.8: Oct 20, 2013
 
 #### Lucid\_Settings 1.5.1

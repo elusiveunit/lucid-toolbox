@@ -26,7 +26,7 @@ Some options are controlled through properties: `$instance->prop = 'value'`.
 
 ## Submenu
 
-The submenu method requires a menu label text, and accepts some optional arguments through an array:
+The `submenu` method requires a menu label text, and accepts some optional arguments through an array:
 
 * `'add_to'` **(string)** Slug for the parent menu, or the file name of a standard WordPress admin page (wp-admin/<file_name>). Includes .php extension and defaults to `'options-general.php'`.
 * `'title'` **(string)** HTML `<title>` text, defaults to the menu label.
@@ -48,7 +48,7 @@ When using tabs, each tab is saved as a separate option (`get_option( 'my_advanc
 
 ## Section
 
-Fields are added to sections, so at least one section must be added. The section method requires an ID, and accepts some optional arguments through an array:
+Fields are added to sections, so at least one section must be added. The `section` method requires an ID, and accepts some optional arguments through an array:
 
 * `'heading'` **(string)** Section heading.
 * `'tab'` **(string)** Tab to add section to. Tabs are defined with `submenu()`. Defaults to first tab if there are any.
@@ -56,9 +56,9 @@ Fields are added to sections, so at least one section must be added. The section
 
 ## Field
 
-The field method requires an ID and a label, and accepts additional arguments through an array (see the pattern?):
+The `field` method requires an ID and a label, and accepts additional arguments through an array (see the pattern?):
 
-* `'type'` **(string)** Type of field. Unsupported types will fall back to 'text', which is also the default. Supported types:
+* `'type'` **(string)** Type of field. Fields without specific 'support' will fall back to just an input with the specified type. Supported types:
   * `'text'`
   * `'text_monospace'`
   * `'textarea'`
@@ -83,11 +83,12 @@ The field method requires an ID and a label, and accepts additional arguments th
 * `'button_text'` **(string)** Text for the button when using button_field.
 * `'select_post_type'` (string) Post type to use when using `post_select` or `page_select`. Defaults to `'post'` for `post_select` and `'page'` for `page_select`.
 * `'validate'` **(string)** Validate value against predefined functions, see below.
-* `'must_match'` **(regex string)** A regular expression that is matched against the value, i.e. `'/^\d{3}$/'` to require exactly three digits.
-* `'must_not_match'` **(regex string)** A regular expression that is matched against the value, where the result is reversed. So something like `'/\d{3}/'` would mean the value can not contain three digits in a row.
+* `'must_match'` **(regex)** A regular expression that is matched against the value, i.e. `'/^\d{3}$/'` to require exactly three digits.
+* `'must_not_match'` **(regex)** A regular expression that is matched against the value, where the result is reversed. So something like `'/\d{3}/'` would mean the value can not contain three digits in a row.
 * `'error_message'` **(string)** Message for when validation fails.
 * `'sanitize'` **(string)** Sanitize value against predefined functions, see below. Defaults to `'checkbox'` for checkboxes.
-* `'sanitize_custom'` **(regex string)** Sanitize value with a regular expression. Value will go through preg_replace.
+* `'sanitize_custom'` **(regex)** Sanitize value with a regular expression. Value will go through preg_replace.
+* `'output_callback'` **(callback)** Custom method for the field output, see _Custom output callback_ below.
 
 When the data is passed through the required checks, an explicitly defined sanitize value of `'none'` is required to save unfiltered data. Any sanitize or validate values take precedence. If no sanitation or validation is defined, the default action is stripping illegal tags with [wp_kses_post](http://codex.wordpress.org/Function_Reference/wp_kses_post).
 
@@ -113,9 +114,44 @@ There are a few predefined sanitation options:
 * `'shortcode'` Removes greater/less than and forces enclosing square brackets.
 * `'empty'` No value. Useful for fields acting as 'tools' that shouldn't save anything.
 
+### Custom output callback
+
+For fine-grained control of the output, a custom callback can be used. The format is standard PHP, so a string for regular functions and the array notation for class methods.
+
+	$example_settings->field(
+		'my_field',
+		__( 'My field', 'TEXTDOMAIN' ),
+		array(
+			'sanitize' => 'alphanumeric',
+			'output_callback' => 'my_field_callback'
+		)
+	);
+
+	/**
+	 * Custom settings field callback.
+	 *
+	 * @param array $args Field options.
+	 */
+	function my_field_callback( $args ) { ?>
+
+		<input type="text" id="<?php echo $args['id']; ?>" name="<?php echo "{$args['prefix']}[{$args['id']}]"; ?>" value="<?php echo esc_attr( $args['value'] ); ?>">
+
+	<?php }
+
+Arguments like `sanitize` that are not related to output work the same. The `$args` parameter contains all the `field` arguments, as well as some extras like `prefix`, `id` and `value`. Keeping the id, name and value attributes like the example is recommended, to ensure labels and saving works as intended.
+
+## HTML
+
+Arbitrary HTML can be added with the `html` method, which takes two arguments:
+
+* A field ID, which the HTML will be inserted after.
+* The string of HTML to be added.
+
+An alternative is to use the `field` method with an empty label and a custom output callback. The benefit with that is that it's not dependant on another field.
+
 ## Complete examples
 
-Since there are quite a bit of options, here are some examples.
+Since there are quite a few options, here are some examples to get the gist of it.
 
 	// Setup
 	$example_settings = new Lucid_Settings( 'example_settings', __( 'My example settings', 'TEXTDOMAIN' ) );
@@ -216,6 +252,13 @@ Since there are quite a bit of options, here are some examples.
 	$example_settings->init();
 
 ## Changelog
+
+### 1.6.0: Nov 03, 2013
+
+* New: Add `'output_callback'` parameter to `field`, which allows custom callback methods for the field HTML.
+* New/tweak: What should have been done right from the start: if a field type is not 'supported', just add it as input [type] instead of converting to text.
+* Tweak: Add `novalidate` to the form, to disable inconsistent browser validation of some field types.
+* Fix: The `html` method now works with checklists.
 
 ### 1.5.1: Oct 20, 2013
 
