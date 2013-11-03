@@ -954,7 +954,7 @@ class Lucid_Settings {
 		$this->_add_description( $args['description'] );
 
 		// Custom HTML
-		$this->_add_html( $args['id'] );
+		$this->_add_html( $args );
 	}
 
 	/**
@@ -1207,11 +1207,16 @@ class Lucid_Settings {
 	 * Display custom HTML.
 	 *
 	 * @since 1.0.0
-	 * @param string $text Text to display.
+	 * @param string $args Field options.
 	 */
-	protected function _add_html( $text ) {
-		if ( ! empty( $this->_html[$text] ) )
-			echo $this->_html[$text];
+	protected function _add_html( $args ) {
+		$id = $args['id'];
+
+		if ( 'checklist' == $args['type'] && ! empty( $args['checklist'] ) )
+			$id = $args['checklist'];
+
+		if ( ! empty( $this->_html[$id] ) )
+			echo $this->_html[$id];
 	}
 
 
