@@ -425,29 +425,6 @@ class Lucid_Settings {
 
 		$args = array_merge( $defaults, $args );
 
-		// Since a function gets called based on the value of 'type', unsupported
-		// types are converted to text.
-		$supported_types = array(
-			'text',
-			'text_monospace',
-			'textarea',
-			'textarea_large',
-			'textarea_monospace',
-			'textarea_large_monospace',
-			'editor',
-			'checkbox',
-			'checklist',
-			'radios',
-			'select',
-			'post_select',
-			'page_select',
-			'color_picker',
-			'button_field',
-			'button_field_monospace'
-		);
-		if ( ! in_array( $args['type'], $supported_types ) )
-			$args['type'] = 'text';
-
 		// If a section is not defined, set it to the first one.
 		if ( ! $args['section'] ) :
 			reset( $this->_sections );
@@ -967,6 +944,10 @@ class Lucid_Settings {
 				$this->_add_button_field( $args, 'code' );
 				break;
 
+			default :
+				$this->_add_default( $args );
+				break;
+
 		endswitch;
 
 		// Field description
@@ -1180,7 +1161,34 @@ class Lucid_Settings {
 		$class = ( $class ) ? 'regular-text ' . $class : 'regular-text'; ?>
 
 		<input type="text" class="<?php echo $class; ?>" id="<?php echo $args['id']; ?>" name="<?php echo "{$args['prefix']}[{$args['id']}]"; ?>" value="<?php echo esc_attr( $args['value'] ); ?>">
-		<a href="#" id="<?php echo $args['id']; ?>-button" class="button"><?php echo $args['button_text']; ?></a>
+		<button type="button" id="<?php echo $args['id']; ?>-button" class="button"><?php echo $args['button_text']; ?></button>
+
+		<?php
+	}
+
+	/**
+	 * Display an input with a specified type. Fallback for when there is no
+	 * specific support.
+	 *
+	 * @since 1.6.0
+	 * @param array $args Field options.
+	 */
+	protected function _add_default( $args ) {
+
+		// Add the 'regular-text' class for consistent width
+		$text_fields = array(
+			'text',
+			'password',
+			'file',
+			'email',
+			'number',
+			'search',
+			'tel',
+			'url'
+		);
+		$class = ( in_array( $args['type'], $text_fields ) ) ? ' class="regular-text"' : ''; ?>
+
+		<input type="<?php echo $args['type']; ?>"<?php echo $class; ?> id="<?php echo $args['id']; ?>" name="<?php echo "{$args['prefix']}[{$args['id']}]"; ?>" value="<?php echo esc_attr( $args['value'] ); ?>">
 
 		<?php
 	}
