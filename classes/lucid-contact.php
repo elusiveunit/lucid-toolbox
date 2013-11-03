@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.6.1
+ * @version 1.6.2
  */
 class Lucid_Contact {
 
@@ -508,7 +508,7 @@ class Lucid_Contact {
 	 *
 	 * @since 1.0.0
 	 * @var array
-	 * @see assemble_form()
+	 * @see get_form_start()
 	 */
 	public $form_attributes = array();
 
@@ -555,6 +555,14 @@ class Lucid_Contact {
 	 * @var bool
 	 */
 	public $handle_post = true;
+
+	/**
+	 * If _send() has run and was successful.
+	 *
+	 * @since 1.6.2
+	 * @var bool
+	 */
+	protected $_form_sent = false;
 
 	/**
 	 * If email validation should include DNS lookup.
@@ -2151,7 +2159,7 @@ class Lucid_Contact {
 		$this->_form_id = ( $this->use_nonce ) ? 'lucid-form-' . self::$_form_count : self::$_form_count;
 
 		if ( $this->handle_post )
-			$this->_send();
+			$this->_form_sent = $this->_send();
 
 		$form_start = '';
 
@@ -2330,6 +2338,16 @@ class Lucid_Contact {
 	      =Misc. functions and utilities
 	\*-------------------------------------------------------------------------*/
 
+
+	/**
+	 * Check if the form has sent successfully.
+	 *
+	 * @since 1.6.2
+	 * @return bool
+	 */
+	public function is_form_sent() {
+		return $this->_form_sent;
+	}
 
 	/**
 	 * For debug purposes, encodes all fields through array_walk_recursive() so
