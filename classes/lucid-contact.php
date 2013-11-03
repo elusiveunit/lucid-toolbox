@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  * Not particularly pretty or flexible, but it gets the job done.
  *
  * $to_address and some template ($message_format, $message_template or
- * $html_template) are required properties and _send() will throw errors if
+ * $html_template) are required properties and send() will throw errors if
  * they are empty.
  *
  * Usage:
@@ -78,6 +78,7 @@ class Lucid_Contact {
 	| $_file_form_messages
 	| $_form_status
 	| $handle_post
+	| $_form_sent
 	| $do_email_dns_check
 	| $debug_mode
 	|
@@ -117,7 +118,7 @@ class Lucid_Contact {
 	| _get_headers
 	| _get_attachments
 	| _get_unique_file_path
-	| _send
+	| send
 	| _has_required_send_data
 	| _clear_send
 	|
@@ -136,6 +137,7 @@ class Lucid_Contact {
 	| render_field
 	|
 	| [=Misc. functions and utilities]
+	| is_form_sent
 	| _debug_filter
 	| _get_attributes_string
 	| is_checkbox
@@ -557,7 +559,7 @@ class Lucid_Contact {
 	public $handle_post = true;
 
 	/**
-	 * If _send() has run and was successful.
+	 * If send() has run and was successful.
 	 *
 	 * @since 1.6.2
 	 * @var bool
@@ -1937,7 +1939,7 @@ class Lucid_Contact {
 	 * @link http://codex.wordpress.org/Function_Reference/wp_mail
 	 * @return bool True if wp_mail was successful, false otherwise.
 	 */
-	protected function _send() {
+	public function send() {
 
 		// Check posting and data validation
 		if ( ! $this->_verify_post()
@@ -2159,7 +2161,7 @@ class Lucid_Contact {
 		$this->_form_id = ( $this->use_nonce ) ? 'lucid-form-' . self::$_form_count : self::$_form_count;
 
 		if ( $this->handle_post )
-			$this->_form_sent = $this->_send();
+			$this->_form_sent = $this->send();
 
 		$form_start = '';
 
@@ -2257,7 +2259,7 @@ class Lucid_Contact {
 	 * Render the assembled form.
 	 *
 	 * This is the function to use after adding all the fields. In addition to
-	 * rendering, it calls _send(), which in turn calls _validate().
+	 * rendering, sending and validation is part of the process.
 	 *
 	 * @since 1.0.0
 	 * @see assemble_form()

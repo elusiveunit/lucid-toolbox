@@ -95,6 +95,7 @@ class Lucid_Settings {
 	| _add_color_picker
 	| _add_radios
 	| _add_button_field
+	| _add_default
 	| _add_description
 	| _add_html
 	|
