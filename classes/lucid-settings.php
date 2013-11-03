@@ -386,8 +386,9 @@ class Lucid_Settings {
 	 * - 'error_message' (string) Message for when validation fails.
 	 * - 'sanitize' (string) Sanitize value against predefined functions, see
 	 *   _sanitize(). Defaults to 'checkbox' for checkboxes.
-	 * - 'sanitize_custom' (regex string) Sanitize value with a regular
-	 *   expression. Value will go through preg_replace.
+	 * - 'sanitize_custom' (regex) Sanitize value with a regular expression.
+	 *   Value will go through preg_replace.
+	 * - 'output_callback' (callback) Custom method for the field output.
 	 *
 	 * @since 1.0.0
 	 * @param string $id A unique ID for the field.
@@ -409,7 +410,8 @@ class Lucid_Settings {
 			'must_not_match' => '',
 			'error_message' => '',
 			'sanitize' => '',
-			'sanitize_custom' => ''
+			'sanitize_custom' => '',
+			'output_callback' => ''
 		);
 
 		// Probably no reason not to sanitize checkboxes as 0 or 1
@@ -660,14 +662,14 @@ class Lucid_Settings {
 				$value = trim( $options[$field_id] );
 
 			// Method
-			$method = '_add_' . $args['type'];
+			$method = ( $args['output_callback'] ) ? $args['output_callback'] : array( $this, '_display_field' );
 
 			// Checklist handling. Check for current page.
 			if ( $page == $settings_id && 'checklist' == $args['type'] ) :
 
 				// Checklist options are stored by each option value, since the
-				// checkboxes are not related to each other other than visually.
-				// Thus the key for $field_ids can not be used.
+				// checkboxes are not related to each other other than visually,
+				// so $field_id can not be used.
 				$value = array();
 				foreach ( $args['options'] as $id => $label ) :
 					$value[$id] = ( ! empty( $options[$id] ) ) ? $options[$id] : 0;
@@ -682,24 +684,17 @@ class Lucid_Settings {
 			add_settings_field(
 				$field_id,
 				$args['label'],
-				//array( $this, $method ),
-				array( $this, '_display_field' ),
+				$method,
 				$page,
 				$args['section'],
 
-				// Pass arguments to the _add_<type> functions
-				array(
-					'type' => $args['type'],
+				// Pass arguments to the callback method
+				array_merge( $args, array(
 					'label_for' => $label_for,
 					'prefix' => $page,
 					'id' => $field_id,
-					'value' => $value,
-					'label' => $args['inline_label'],
-					'description' => $args['description'],
-					'options' => $args['options'],
-					'button_text' => $args['button_text'],
-					'select_post_type' => $args['select_post_type']
-				)
+					'value' => $value
+				) )
 			);
 		endforeach;
 
