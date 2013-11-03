@@ -48,8 +48,8 @@ module.exports = function(grunt) {
 				'curly  '  : true,
 				'eqeqeq'   : true,
 				'eqnull'   : true,
-				'es5'      : true,
-				'esnext'   : true,
+				'es5'      : false,
+				'esnext'   : false,
 				'forin'    : true,
 				'immed'    : true,
 				'indent'   : false,
@@ -86,7 +86,7 @@ module.exports = function(grunt) {
 			doc: {
 				options: {
 					report: 'min',
-					banner: '/*! <%= pkg.title %> <%= pkg.version %> - Readme script */\n'
+					banner: '/*! <%= pkg.title %> - Readme script */\n'
 				},
 				files: [{src: ['doc/assets/doc.js'], dest: 'doc/assets/doc.min.js'}]
 			}
@@ -96,7 +96,7 @@ module.exports = function(grunt) {
 		cssmin: {
 			doc: {
 				options: {
-					banner: '/*! <%= pkg.title %> <%= pkg.version %> - Readme style */'
+					banner: '/*! <%= pkg.title %> - Readme style */'
 				},
 				files: [{src: ['doc/assets/doc.css'], dest: 'doc/assets/doc.min.css'}]
 			}
