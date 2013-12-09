@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.6.0
+ * @version 1.7.0
  */
 class Lucid_Settings {
 
@@ -68,6 +68,7 @@ class Lucid_Settings {
 	| init
 	| _set_page_capability
 	| get_screen_id
+	| is_on_settings_page
 	|
 	| [=Settings]
 	| _load_settings
@@ -518,6 +519,23 @@ class Lucid_Settings {
 	 */
 	public function get_screen_id() {
 		return $this->_screen_id;
+	}
+
+	/**
+	 * If the settings page is currently being viewed.
+	 *
+	 * @since 1.7.0
+	 * @return bool
+	 */
+	public function is_on_settings_page() {
+		global $pagenow;
+
+		return (
+		     ( 'options.php' == $pagenow )
+		  || ( $this->added_to == $pagenow
+		    && ! empty( $_GET['page'] )
+		    && $_GET['page'] == $this->id )
+		);
 	}
 
 
