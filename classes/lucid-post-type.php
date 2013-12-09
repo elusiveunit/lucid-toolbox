@@ -55,7 +55,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * @package Lucid
  * @subpackage Toolbox
- * @version 1.1.2
+ * @version 1.2.0
  */
 class Lucid_Post_Type {
 
@@ -85,6 +85,9 @@ class Lucid_Post_Type {
 	 *   should be on top of the regular state in the image.
 	 * - 'large_menu_icon_url' (string) Absolute url to a 32x32 image to use as
 	 *   the icon beside the heading in the post edit screen.
+	 * - 'icon' (string) For WordPress 3.8+, an icon from the included icon font
+	 *   can be used. Pass the hexadecimal/unicode code for the icon, like 'f120'
+	 *   for the WordPress logo. See the Dashicons link.
 	 * - 'post_type_args' (array) The standard arguments for register_post_type,
 	 *   like 'hierarchical', 'labels', 'supports' etc. See WordPress Codex.
 	 * - 'update_messages' (array) Update messages to display instead of the
@@ -95,12 +98,16 @@ class Lucid_Post_Type {
 	 *   false), like a post type for gallery images. See _update_messages()
 	 *   for examples.
 	 *
+	 * The 'icon' argument will take predecence over the custom URL ones for
+	 * WordPress 3.8+.
+	 *
 	 * @since 1.0.0
 	 * @param string $post_type The unique post type name. Maximum 20
 	 *   characters, can not contain capital letters or spaces.
 	 * @param array $args Additional post type data.
 	 * @see _update_messages() For message array structure.
 	 * @link http://codex.wordpress.org/Function_Reference/register_post_type
+	 * @link http://melchoyce.github.io/dashicons/ The Dashicons icon font
 	 */
 	public function __construct( $post_type, array $args = array() ) {
 		$this->name = (string) $post_type;
@@ -265,28 +272,35 @@ class Lucid_Post_Type {
 			? $this->post_type_data['large_menu_icon_url']
 			: '';
 
+		$font_icon = ( isset( $this->post_type_data['icon'] ) ) ? $this->post_type_data['icon'] : '';
+
 		$css = '';
 
-		// Small icon CSS
-		if ( ! empty( $small_icon ) ) :
-			$css .= "#menu-posts-{$post_type} .wp-menu-image {
-				background: url('{$small_icon}') no-repeat 6px -17px !important;
-			}
-			#menu-posts-{$post_type}:hover .wp-menu-image,
-			#menu-posts-{$post_type}.wp-has-current-submenu .wp-menu-image {
-				background-position: 6px 7px !important;
-			}";
-		endif;
+		// Dashicon
+		if ( $font_icon && version_compare( $GLOBALS['wp_version'], '3.8-alpha', '>' ) ) :
+			$css .= "#menu-posts-{$post_type} .wp-menu-image:before{content:'\\{$font_icon}'!important;}";
 
-		// Large icon CSS
-		if ( ! empty( $large_icon ) ) :
-			$css .= ".icon32-posts-{$post_type} {
-				background: url('{$large_icon}') no-repeat !important;
-			}";
+		// Custom sprite
+		else :
+			if ( $small_icon ) :
+				$css .= "#menu-posts-{$post_type} .wp-menu-image{
+					background:url('{$small_icon}') no-repeat 6px -17px!important;
+				}
+				#menu-posts-{$post_type}:hover .wp-menu-image,
+				#menu-posts-{$post_type}.wp-has-current-submenu .wp-menu-image{
+					background-position:6px 7px !important;
+				}";
+			endif;
+
+			if ( $large_icon ) :
+				$css .= ".icon32-posts-{$post_type}{
+					background:url('{$large_icon}') no-repeat!important;
+				}";
+			endif;
 		endif;
 
 		// Don't print an empty style tag
-		if ( empty( $css ) ) return;
+		if ( ! $css ) return;
 
 		// Remove newlines and tabs
 		$output = str_replace( array( "\n", "\t" ), '', $css );
