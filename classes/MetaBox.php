@@ -451,7 +451,12 @@ class WPAlchemy_MetaBox
 	 */
 	public $_loop_data;
 
-	public function WPAlchemy_MetaBox($arr)
+	/**
+	 * Constructor.
+	 *
+	 * @param array $args Metabox options.
+	 */
+	public function __construct(array $args)
 	{
 		$this->_loop_data = new stdClass;
 
@@ -459,60 +464,52 @@ class WPAlchemy_MetaBox
 
 		$this->types = array('post', 'page');
 
-		if (is_array($arr))
+		foreach ($args as $n => $v)
 		{
-			foreach ($arr as $n => $v)
-			{
-				$this->$n = $v;
-			}
-
-			if (empty($this->id)) die('Meta box ID required');
-
-			if (is_numeric($this->id)) die('Meta box ID must be a string');
-
-			if (empty($this->template)) die('Meta box template file required');
-
-			// check for nonarray values
-
-			$exc_inc = array
-			(
-				'exclude_template',
-				'exclude_category_id',
-				'exclude_category',
-				'exclude_tag_id',
-				'exclude_tag',
-				'exclude_post_id',
-
-				'include_template',
-				'include_category_id',
-				'include_category',
-				'include_tag_id',
-				'include_tag',
-				'include_post_id'
-			);
-
-			foreach ($exc_inc as $v)
-			{
-				// ideally the exclude and include values should be in array form, convert to array otherwise
-				if (!empty($this->$v) AND !is_array($this->$v))
-				{
-					$this->$v = array_map('trim',explode(',',$this->$v));
-				}
-			}
-
-			// convert depreciated variables
-			if ($this->lock_on_top) $this->lock = WPALCHEMY_LOCK_TOP;
-			elseif ($this->lock_on_bottom) $this->lock = WPALCHEMY_LOCK_BOTTOM;
-
-			add_action('admin_init', array($this,'_init'));
-
-			// uses the default wordpress-importer plugin hook
-			add_action('import_post_meta', array($this, '_import'), 10, 3);
+			$this->$n = $v;
 		}
-		else
+
+		if (empty($this->id)) die('Meta box ID required');
+
+		if (!is_string($this->id)) die('Meta box ID must be a string');
+
+		if (empty($this->template)) die('Meta box template file required');
+
+		// check for nonarray values
+
+		$exc_inc = array(
+			'exclude_template',
+			'exclude_category_id',
+			'exclude_category',
+			'exclude_tag_id',
+			'exclude_tag',
+			'exclude_post_id',
+
+			'include_template',
+			'include_category_id',
+			'include_category',
+			'include_tag_id',
+			'include_tag',
+			'include_post_id'
+		);
+
+		foreach ($exc_inc as $v)
 		{
-			die('Associative array parameters required');
+			// ideally the exclude and include values should be in array form, convert to array otherwise
+			if (!empty($this->$v) AND !is_array($this->$v))
+			{
+				$this->$v = array_map('trim',explode(',',$this->$v));
+			}
 		}
+
+		// convert depreciated variables
+		if ($this->lock_on_top) $this->lock = WPALCHEMY_LOCK_TOP;
+		elseif ($this->lock_on_bottom) $this->lock = WPALCHEMY_LOCK_BOTTOM;
+
+		add_action('admin_init', array($this,'_init'));
+
+		// uses the default wordpress-importer plugin hook
+		add_action('import_post_meta', array($this, '_import'), 10, 3);
 	}
 
 	/**
