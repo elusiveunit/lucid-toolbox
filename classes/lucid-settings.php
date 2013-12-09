@@ -583,6 +583,9 @@ class Lucid_Settings {
 		$this->_add_sections();
 		$this->_add_fields();
 
+		// Add highlighting for fields with errors.
+		add_action( 'admin_print_footer_scripts', array( $this, '_error_highlighting' ) );
+
 		if ( $this->init_color_picker ) :
 			add_action( 'admin_enqueue_scripts', array( $this, '_load_color_picker' ) );
 			add_action( 'admin_print_footer_scripts', array( $this, '_init_color_picker' ) );
@@ -693,9 +696,6 @@ class Lucid_Settings {
 				) )
 			);
 		endforeach;
-
-		// Add highlighting for fields with errors.
-		add_action( 'admin_print_footer_scripts', array( $this, '_error_highlighting' ) );
 	}
 
 	/**
@@ -1534,18 +1534,33 @@ class Lucid_Settings {
 	 *
 	 * @since 1.2.0
 	 */
-	public function _error_highlighting() { ?>
-		<script>
-		;(function( $ ) {
-			var $errors = $( '.settings-error' );
+	public function _error_highlighting() {
 
-			if ( 0 !== $errors.length ) {
-				$errors.each( function() {
-					var id = $(this).attr('id').replace( /setting-error-/, '' );
-					$( '#' + id ).css({ 'border-color': '#cc0000' });
-				});
+		// Don't output, use minified below
+		if ( false ) : ?>
+		<script>
+		(function (doc) {
+			var elems, i, id, field;
+
+			if ( doc.querySelectorAll ) {
+				elems = doc.body.querySelectorAll('.settings-error')
+
+				for ( i = elems.length - 1; i >= 0; i-- ) {
+					id = elems[i].id.replace( 'setting-error-', '' );
+					field = doc.getElementById(id);
+
+					if ( field ) {
+						field.style.borderColor = '#cc0000';
+					}
+				}
 			}
-		})( jQuery );
+		}(document));
 		</script>
-	<?php }
+		<?php
+
+		// Minified
+		else : ?>
+		<script>(function(c){var d,a,b;if(c.querySelectorAll)for(d=c.body.querySelectorAll(".settings-error"),a=d.length-1;0<=a;a--)if(b=d[a].id.replace("setting-error-",""),b=c.getElementById(b))b.style.borderColor="#cc0000"})(document);</script>
+		<?php endif;
+	}
 }
