@@ -18,19 +18,26 @@
 // Block direct requests
 if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
 
+// Symlink workaround, see http://core.trac.wordpress.org/ticket/16953
+$lucid_toolbox_plugin_file = __FILE__;
+if ( isset( $plugin ) )
+	$lucid_toolbox_plugin_file = $plugin;
+elseif ( isset( $network_plugin ) )
+	$lucid_toolbox_plugin_file = $network_plugin;
+
 // Plugin constants
 if ( ! defined( 'LUCID_TOOLBOX_VERSION' ) )
 	define( 'LUCID_TOOLBOX_VERSION', '1.1.9' );
 
 if ( ! defined( 'LUCID_TOOLBOX_URL' ) )
-	define( 'LUCID_TOOLBOX_URL', trailingslashit( plugin_dir_url( __FILE__ ) ) );
+	define( 'LUCID_TOOLBOX_URL', trailingslashit( plugin_dir_url( $lucid_toolbox_plugin_file ) ) );
 
 if ( ! defined( 'LUCID_TOOLBOX_PATH' ) )
-	define( 'LUCID_TOOLBOX_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
+	define( 'LUCID_TOOLBOX_PATH', trailingslashit( plugin_dir_path( $lucid_toolbox_plugin_file ) ) );
 
 if ( ! defined( 'LUCID_TOOLBOX_CLASS' ) )
 	define( 'LUCID_TOOLBOX_CLASS', LUCID_TOOLBOX_PATH . 'classes/' );
 
 // Load and initialize the plugin parts
 require LUCID_TOOLBOX_PATH . 'inc/core.php';
-$lucid_toolbox = new Lucid_Toolbox( __FILE__ );
+$lucid_toolbox = new Lucid_Toolbox( $lucid_toolbox_plugin_file );
