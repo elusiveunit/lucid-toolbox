@@ -91,6 +91,7 @@ $example_settings-&gt;page_heading = __( &#39;My settings&#39;, &#39;TEXTDOMAIN&
 <li><code>&#39;output_callback&#39;</code> <strong>(callback)</strong> Custom method for the field output, see <em>Custom output callback</em> below.</li>
 </ul>
 <p>When the data is passed through the required checks, an explicitly defined sanitize value of <code>&#39;none&#39;</code> is required to save unfiltered data. Any sanitize or validate values take precedence. If no sanitation or validation is defined, the default action is stripping illegal tags with <a href="http://codex.wordpress.org/Function_Reference/wp_kses_post">wp_kses_post</a>.</p>
+<p>Wrapping field registration with a <code>is_on_settings_page</code> if statement is a good idea, to limit unnecessary function calls on other admin pages.</p>
 <h3>Predefined validation</h3>
 <p>There are a few predefined validation options:</p>
 <ul>
@@ -163,83 +164,93 @@ $example_settings-&gt;section( &#39;second_section&#39;, array(
     &#39;tab&#39; =&gt; &#39;my_advanced_settings&#39;
 ) );
 
-// Fields
-$example_settings-&gt;field(
-    &#39;my_text&#39;,
-    __( &#39;Text field&#39;, &#39;TEXTDOMAIN&#39; ),
-    array(
-        &#39;section&#39; =&gt; &#39;first_section&#39;,
-        &#39;description&#39; =&gt; __( &#39;must_not_match says value cannot contain numbers 0-5.&#39;, &#39;TEXTDOMAIN&#39; ),
-        &#39;must_not_match&#39; =&gt; &#39;/[0-5]/&#39;
-    )
-);
+if ( $example_settings-&gt;is_on_settings_page() ) :
 
-$example_settings-&gt;field(
-    &#39;my_monospaced&#39;,
-    __( &#39;Monospaced text field&#39;, &#39;TEXTDOMAIN&#39; ),
-    array(
-        &#39;type&#39; =&gt; &#39;text_monospace&#39;,
-        &#39;section&#39; =&gt; &#39;first_section&#39;,
-        &#39;description&#39; =&gt; __( &#39;must_match says value must be 3 letters long.&#39;, &#39;TEXTDOMAIN&#39; ),
-        &#39;must_match&#39; =&gt; &#39;/^[a-z]{3}$/&#39;
-    )
-);
-
-$example_settings-&gt;field(
-    &#39;my_checkbox&#39;,
-    __( &#39;Checkbox&#39;, &#39;TEXTDOMAIN&#39; ),
-    array(
-        &#39;type&#39; =&gt; &#39;checkbox&#39;,
-        &#39;section&#39; =&gt; &#39;first_section&#39;,
-        &#39;inline_label&#39; =&gt; __( &#39;Checkboxes need inline labels&#39;, &#39;TEXTDOMAIN&#39; ),
-        &#39;default&#39; =&gt; 1
-    )
-);
-
-$example_settings-&gt;field(
-    &#39;my_select&#39;,
-    __( &#39;Select list&#39;, &#39;TEXTDOMAIN&#39; ),
-    array(
-        &#39;type&#39; =&gt; &#39;select&#39;,
-        &#39;section&#39; =&gt; &#39;second_section&#39;,
-        &#39;options&#39; =&gt; array(
-            &#39;red&#39; =&gt; __( &#39;This is red&#39;, &#39;TEXTDOMAIN&#39; ),
-            &#39;blue&#39; =&gt; __( &#39;Blue is cool&#39;, &#39;TEXTDOMAIN&#39; ),
-            &#39;green&#39; =&gt; __( &#39;Green is... green&#39;, &#39;TEXTDOMAIN&#39; )
-        ),
-        &#39;default&#39; =&gt; &#39;blue&#39;
-    )
-);
-
-$example_settings-&gt;field(
-    &#39;my_radio_buttons&#39;,
-    __( &#39;Radio buttons&#39;, &#39;TEXTDOMAIN&#39; ),
-    array(
-        &#39;type&#39; =&gt; &#39;radios&#39;,
-        &#39;section&#39; =&gt; &#39;second_section&#39;,
-        &#39;description&#39; =&gt; __( &#39;Description goes below.&#39;, &#39;TEXTDOMAIN&#39; ),
-        &#39;options&#39; =&gt; array(
-            &#39;black&#39; =&gt; __( &#39;Black as the night&#39;, &#39;TEXTDOMAIN&#39; ),
-            &#39;white&#39; =&gt; __( &#39;White as an angel&#39;, &#39;TEXTDOMAIN&#39; )
+    // Fields
+    $example_settings-&gt;field(
+        &#39;my_text&#39;,
+        __( &#39;Text field&#39;, &#39;TEXTDOMAIN&#39; ),
+        array(
+            &#39;section&#39; =&gt; &#39;first_section&#39;,
+            &#39;description&#39; =&gt; __( &#39;must_not_match says value cannot contain numbers 0-5.&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;must_not_match&#39; =&gt; &#39;/[0-5]/&#39;
         )
-    )
-);
+    );
 
-$example_settings-&gt;field(
-    &#39;my_checklist&#39;,
-    __( &#39;List of checkboxes&#39;, &#39;TEXTDOMAIN&#39; ),
-    array(
-        &#39;type&#39; =&gt; &#39;checklist&#39;,
-        &#39;section&#39; =&gt; &#39;second_section&#39;,
-        &#39;options&#39; =&gt; array(
-            &#39;strawberries&#39; =&gt; __( &#39;Strawberries&#39;, &#39;TEXTDOMAIN&#39; ),
-            &#39;blueberries&#39; =&gt; __( &#39;Blueberries&#39;, &#39;TEXTDOMAIN&#39; )
+    $example_settings-&gt;field(
+        &#39;my_monospaced&#39;,
+        __( &#39;Monospaced text field&#39;, &#39;TEXTDOMAIN&#39; ),
+        array(
+            &#39;type&#39; =&gt; &#39;text_monospace&#39;,
+            &#39;section&#39; =&gt; &#39;first_section&#39;,
+            &#39;description&#39; =&gt; __( &#39;must_match says value must be 3 letters long.&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;must_match&#39; =&gt; &#39;/^[a-z]{3}$/&#39;
         )
-    )
-);
+    );
+
+    $example_settings-&gt;field(
+        &#39;my_checkbox&#39;,
+        __( &#39;Checkbox&#39;, &#39;TEXTDOMAIN&#39; ),
+        array(
+            &#39;type&#39; =&gt; &#39;checkbox&#39;,
+            &#39;section&#39; =&gt; &#39;first_section&#39;,
+            &#39;inline_label&#39; =&gt; __( &#39;Checkboxes need inline labels&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;default&#39; =&gt; 1
+        )
+    );
+
+    $example_settings-&gt;field(
+        &#39;my_select&#39;,
+        __( &#39;Select list&#39;, &#39;TEXTDOMAIN&#39; ),
+        array(
+            &#39;type&#39; =&gt; &#39;select&#39;,
+            &#39;section&#39; =&gt; &#39;second_section&#39;,
+            &#39;options&#39; =&gt; array(
+                &#39;red&#39; =&gt; __( &#39;This is red&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;blue&#39; =&gt; __( &#39;Blue is cool&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;green&#39; =&gt; __( &#39;Green is... green&#39;, &#39;TEXTDOMAIN&#39; )
+            ),
+            &#39;default&#39; =&gt; &#39;blue&#39;
+        )
+    );
+
+    $example_settings-&gt;field(
+        &#39;my_radio_buttons&#39;,
+        __( &#39;Radio buttons&#39;, &#39;TEXTDOMAIN&#39; ),
+        array(
+            &#39;type&#39; =&gt; &#39;radios&#39;,
+            &#39;section&#39; =&gt; &#39;second_section&#39;,
+            &#39;description&#39; =&gt; __( &#39;Description goes below.&#39;, &#39;TEXTDOMAIN&#39; ),
+            &#39;options&#39; =&gt; array(
+                &#39;black&#39; =&gt; __( &#39;Black as the night&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;white&#39; =&gt; __( &#39;White as an angel&#39;, &#39;TEXTDOMAIN&#39; )
+            )
+        )
+    );
+
+    $example_settings-&gt;field(
+        &#39;my_checklist&#39;,
+        __( &#39;List of checkboxes&#39;, &#39;TEXTDOMAIN&#39; ),
+        array(
+            &#39;type&#39; =&gt; &#39;checklist&#39;,
+            &#39;section&#39; =&gt; &#39;second_section&#39;,
+            &#39;options&#39; =&gt; array(
+                &#39;strawberries&#39; =&gt; __( &#39;Strawberries&#39;, &#39;TEXTDOMAIN&#39; ),
+                &#39;blueberries&#39; =&gt; __( &#39;Blueberries&#39;, &#39;TEXTDOMAIN&#39; )
+            )
+        )
+    );
+
+endif;
 
 $example_settings-&gt;init();</code></pre>
 <h2>Changelog</h2>
+<h3>1.7.0: Dec 09, 2013</h3>
+<ul>
+<li>New: Add <code>is_on_settings_page</code> method, which returns true if the settings page is currently displayed. This can be wrapped in an if statement around the <code>field</code> calls to reduce unnecessary function calls.</li>
+<li>Tweak/fix: Fix some notices and encoding issues, and improve the error highlighting script.</li>
+<li>Fix: Restore missing inline label argument for <code>add_settings_field</code> callbacks.</li>
+</ul>
 <h3>1.6.0: Nov 03, 2013</h3>
 <ul>
 <li>New: Add <code>&#39;output_callback&#39;</code> parameter to <code>field</code>, which allows custom callback methods for the field HTML.</li>

@@ -92,6 +92,8 @@ The `field` method requires an ID and a label, and accepts additional arguments 
 
 When the data is passed through the required checks, an explicitly defined sanitize value of `'none'` is required to save unfiltered data. Any sanitize or validate values take precedence. If no sanitation or validation is defined, the default action is stripping illegal tags with [wp_kses_post](http://codex.wordpress.org/Function_Reference/wp_kses_post).
 
+Wrapping field registration with a `is_on_settings_page` if statement is a good idea, to limit unnecessary function calls on other admin pages.
+
 ### Predefined validation
 
 There are a few predefined validation options:
@@ -174,84 +176,94 @@ Since there are quite a few options, here are some examples to get the gist of i
 		'tab' => 'my_advanced_settings'
 	) );
 
-	// Fields
-	$example_settings->field(
-		'my_text',
-		__( 'Text field', 'TEXTDOMAIN' ),
-		array(
-			'section' => 'first_section',
-			'description' => __( 'must_not_match says value cannot contain numbers 0-5.', 'TEXTDOMAIN' ),
-			'must_not_match' => '/[0-5]/'
-		)
-	);
+	if ( $example_settings->is_on_settings_page() ) :
 
-	$example_settings->field(
-		'my_monospaced',
-		__( 'Monospaced text field', 'TEXTDOMAIN' ),
-		array(
-			'type' => 'text_monospace',
-			'section' => 'first_section',
-			'description' => __( 'must_match says value must be 3 letters long.', 'TEXTDOMAIN' ),
-			'must_match' => '/^[a-z]{3}$/'
-		)
-	);
-
-	$example_settings->field(
-		'my_checkbox',
-		__( 'Checkbox', 'TEXTDOMAIN' ),
-		array(
-			'type' => 'checkbox',
-			'section' => 'first_section',
-			'inline_label' => __( 'Checkboxes need inline labels', 'TEXTDOMAIN' ),
-			'default' => 1
-		)
-	);
-
-	$example_settings->field(
-		'my_select',
-		__( 'Select list', 'TEXTDOMAIN' ),
-		array(
-			'type' => 'select',
-			'section' => 'second_section',
-			'options' => array(
-				'red' => __( 'This is red', 'TEXTDOMAIN' ),
-				'blue' => __( 'Blue is cool', 'TEXTDOMAIN' ),
-				'green' => __( 'Green is... green', 'TEXTDOMAIN' )
-			),
-			'default' => 'blue'
-		)
-	);
-
-	$example_settings->field(
-		'my_radio_buttons',
-		__( 'Radio buttons', 'TEXTDOMAIN' ),
-		array(
-			'type' => 'radios',
-			'section' => 'second_section',
-			'description' => __( 'Description goes below.', 'TEXTDOMAIN' ),
-			'options' => array(
-				'black' => __( 'Black as the night', 'TEXTDOMAIN' ),
-				'white' => __( 'White as an angel', 'TEXTDOMAIN' )
+		// Fields
+		$example_settings->field(
+			'my_text',
+			__( 'Text field', 'TEXTDOMAIN' ),
+			array(
+				'section' => 'first_section',
+				'description' => __( 'must_not_match says value cannot contain numbers 0-5.', 'TEXTDOMAIN' ),
+				'must_not_match' => '/[0-5]/'
 			)
-		)
-	);
+		);
 
-	$example_settings->field(
-		'my_checklist',
-		__( 'List of checkboxes', 'TEXTDOMAIN' ),
-		array(
-			'type' => 'checklist',
-			'section' => 'second_section',
-			'options' => array(
-				'strawberries' => __( 'Strawberries', 'TEXTDOMAIN' ),
-				'blueberries' => __( 'Blueberries', 'TEXTDOMAIN' )
+		$example_settings->field(
+			'my_monospaced',
+			__( 'Monospaced text field', 'TEXTDOMAIN' ),
+			array(
+				'type' => 'text_monospace',
+				'section' => 'first_section',
+				'description' => __( 'must_match says value must be 3 letters long.', 'TEXTDOMAIN' ),
+				'must_match' => '/^[a-z]{3}$/'
 			)
-		)
-	);
+		);
+
+		$example_settings->field(
+			'my_checkbox',
+			__( 'Checkbox', 'TEXTDOMAIN' ),
+			array(
+				'type' => 'checkbox',
+				'section' => 'first_section',
+				'inline_label' => __( 'Checkboxes need inline labels', 'TEXTDOMAIN' ),
+				'default' => 1
+			)
+		);
+
+		$example_settings->field(
+			'my_select',
+			__( 'Select list', 'TEXTDOMAIN' ),
+			array(
+				'type' => 'select',
+				'section' => 'second_section',
+				'options' => array(
+					'red' => __( 'This is red', 'TEXTDOMAIN' ),
+					'blue' => __( 'Blue is cool', 'TEXTDOMAIN' ),
+					'green' => __( 'Green is... green', 'TEXTDOMAIN' )
+				),
+				'default' => 'blue'
+			)
+		);
+
+		$example_settings->field(
+			'my_radio_buttons',
+			__( 'Radio buttons', 'TEXTDOMAIN' ),
+			array(
+				'type' => 'radios',
+				'section' => 'second_section',
+				'description' => __( 'Description goes below.', 'TEXTDOMAIN' ),
+				'options' => array(
+					'black' => __( 'Black as the night', 'TEXTDOMAIN' ),
+					'white' => __( 'White as an angel', 'TEXTDOMAIN' )
+				)
+			)
+		);
+
+		$example_settings->field(
+			'my_checklist',
+			__( 'List of checkboxes', 'TEXTDOMAIN' ),
+			array(
+				'type' => 'checklist',
+				'section' => 'second_section',
+				'options' => array(
+					'strawberries' => __( 'Strawberries', 'TEXTDOMAIN' ),
+					'blueberries' => __( 'Blueberries', 'TEXTDOMAIN' )
+				)
+			)
+		);
+
+	endif;
 
 	$example_settings->init();
 
 ## Changelog
+
+### 1.7.0: Dec 09, 2013
+
+* New: Add `is_on_settings_page` method, which returns true if the settings page is currently displayed. This can be wrapped in an if statement around the `field` calls to reduce unnecessary function calls.
+* Tweak/fix: Fix some notices and encoding issues, and improve the error highlighting script.
+* Fix: Restore missing inline label argument for `add_settings_field` callbacks.
 
 ### 1.6.0: Nov 03, 2013
 

@@ -23,6 +23,7 @@ The `init` hook is a good one to use for registering.
 
 In addition to the standard `register_post_type` arguments, there are some additional customizations.
 
+* `'icon'` **(string)** Hexadecimal/unicode value for a [Dashicon](http://melchoyce.github.io/dashicons/), like `f120` for the WordPress logo. Takes precedence over icon URLs in WordPress 3.8+.
 * `'small_menu_icon_url'` **(string)** Absolute url to to a 16x40 pixels sprite image to use as admin menu icon for the post type. The hover state should be on top of the regular state in the image.
 * `'large_menu_icon_url'` **(string)** Absolute url to a 32x32 image to use as the icon beside the heading in the post edit screen.
 * `'post_type_args'` **(array)** The standard arguments for `register_post_type`, like `'hierarchical'`, `'labels'`, `'supports'` etc. See WordPress Codex link above.
@@ -130,6 +131,10 @@ To get an easier overview, here's a complete example.
 	) );
 
 ## Changelog
+
+### 1.2.0: Dec 09, 2013
+
+* New: Add 'icon' argument for the new Dashicons in WordPress 3.8.
 
 ### 1.1.2: Aug 25, 2013
 

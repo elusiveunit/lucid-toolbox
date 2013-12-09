@@ -22,6 +22,26 @@ Lucid Toolbox is currently available in the following languages:
 
 ## Changelog
 
+### 1.1.10: Dec 09, 2013
+
+* Tweak/fix: Include [this](https://gist.github.com/aubreypwd/7828624) temporary workaround for the issue with `__FILE__` in symlinked plugins, see [trac ticket #16953](http://core.trac.wordpress.org/ticket/16953).
+
+#### Lucid\_Post\_Type 1.2.0
+
+* New: Add `icon` argument for the new Dashicons in WordPress 3.8.
+
+#### Lucid\_Settings 1.7.0
+
+* New: Add `is_on_settings_page` method, which returns true if the settings page is currently displayed. This can be wrapped in an if statement around the `field` calls to reduce unnecessary function calls.
+* Tweak/fix: Fix some notices and encoding issues, and improve the error highlighting script.
+* Fix: Restore missing inline label argument for `add_settings_field` callbacks.
+
+#### WPAlchemy\_MetaBox 1.5.2.lucid-1
+
+* New: Add `area` argument (string). Defaults to `metabox`, which doesn't do anything different. Can also be set to `after_title` or `after_editor`, which will add the metabox template content directly to the page in those places. Since it's not a meta 'box' in those cases, arguments like title, context etc. won't have any effect.
+* Tweak: Move the htmlentities filtering from `get_the_value` to `the_value`, so that the pure data can be passed to a wp_editor instance.
+
+
 ### 1.1.9: Nov 03, 2013
 
 #### Lucid\_Settings 1.6.0

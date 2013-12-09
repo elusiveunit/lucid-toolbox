@@ -38,6 +38,25 @@
 <li>Swedish</li>
 </ul>
 <h2>Changelog</h2>
+<h3>1.1.10: Dec 09, 2013</h3>
+<ul>
+<li>Tweak/fix: Include <a href="https://gist.github.com/aubreypwd/7828624">this</a> temporary workaround for the issue with <code>__FILE__</code> in symlinked plugins, see <a href="http://core.trac.wordpress.org/ticket/16953">trac ticket #16953</a>.</li>
+</ul>
+<h4>Lucid_Post_Type 1.2.0</h4>
+<ul>
+<li>New: Add <code>icon</code> argument for the new Dashicons in WordPress 3.8.</li>
+</ul>
+<h4>Lucid_Settings 1.7.0</h4>
+<ul>
+<li>New: Add <code>is_on_settings_page</code> method, which returns true if the settings page is currently displayed. This can be wrapped in an if statement around the <code>field</code> calls to reduce unnecessary function calls.</li>
+<li>Tweak/fix: Fix some notices and encoding issues, and improve the error highlighting script.</li>
+<li>Fix: Restore missing inline label argument for <code>add_settings_field</code> callbacks.</li>
+</ul>
+<h4>WPAlchemy_MetaBox 1.5.2.lucid-1</h4>
+<ul>
+<li>New: Add <code>area</code> argument (string). Defaults to <code>metabox</code>, which doesn&#39;t do anything different. Can also be set to <code>after_title</code> or <code>after_editor</code>, which will add the metabox template content directly to the page in those places. Since it&#39;s not a meta &#39;box&#39; in those cases, arguments like title, context etc. won&#39;t have any effect.</li>
+<li>Tweak: Move the htmlentities filtering from <code>get_the_value</code> to <code>the_value</code>, so that the pure data can be passed to a wp_editor instance.</li>
+</ul>
 <h3>1.1.9: Nov 03, 2013</h3>
 <h4>Lucid_Settings 1.6.0</h4>
 <ul>

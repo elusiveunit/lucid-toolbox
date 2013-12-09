@@ -27,6 +27,7 @@
 <h2>Additional arguments</h2>
 <p>In addition to the standard <code>register_post_type</code> arguments, there are some additional customizations.</p>
 <ul>
+<li><code>&#39;icon&#39;</code> <strong>(string)</strong> Hexadecimal/unicode value for a <a href="http://melchoyce.github.io/dashicons/">Dashicon</a>, like <code>f120</code> for the WordPress logo. Takes precedence over icon URLs in WordPress 3.8+.</li>
 <li><code>&#39;small_menu_icon_url&#39;</code> <strong>(string)</strong> Absolute url to to a 16x40 pixels sprite image to use as admin menu icon for the post type. The hover state should be on top of the regular state in the image.</li>
 <li><code>&#39;large_menu_icon_url&#39;</code> <strong>(string)</strong> Absolute url to a 32x32 image to use as the icon beside the heading in the post edit screen.</li>
 <li><code>&#39;post_type_args&#39;</code> <strong>(array)</strong> The standard arguments for <code>register_post_type</code>, like <code>&#39;hierarchical&#39;</code>, <code>&#39;labels&#39;</code>, <code>&#39;supports&#39;</code> etc. See WordPress Codex link above.</li>
@@ -122,6 +123,10 @@
     )
 ) );</code></pre>
 <h2>Changelog</h2>
+<h3>1.2.0: Dec 09, 2013</h3>
+<ul>
+<li>New: Add &#39;icon&#39; argument for the new Dashicons in WordPress 3.8.</li>
+</ul>
 <h3>1.1.2: Aug 25, 2013</h3>
 <ul>
 <li>Tweak: Check the post type name before registering and trigger errors if it&#39;s invalid.</li>
