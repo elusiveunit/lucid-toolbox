@@ -635,7 +635,8 @@ class Lucid_Settings {
 
 			// Don't add 'for' to the left column label for checkboxes and radio
 			// buttons, since they will have adjacent labels.
-			if ( in_array( $args['type'], array( 'checkbox', 'checklist', 'radios', 'radio' ) ) ) :
+			if ( in_array( $args['type'], array( 'checkbox', 'checklist', 'radios', 'radio' ) )
+			  || empty( $args['label'] ) ) :
 				$label_for = '';
 
 			// ID for wp_editor can only contain lowercase letters and underscores
@@ -690,6 +691,7 @@ class Lucid_Settings {
 				// Pass arguments to the callback method
 				array_merge( $args, array(
 					'label_for' => $label_for,
+					'label' => $args['inline_label'],
 					'prefix' => $page,
 					'id' => $field_id,
 					'value' => $value
@@ -795,7 +797,7 @@ class Lucid_Settings {
 		<?php // echo $this->page_heading;
 		foreach ( $this->_tabs as $tab => $label ) :
 			$active = ( $current_tab == $tab ) ? ' nav-tab-active' : ''; ?>
-			<a class="nav-tab<?php echo $active; ?>" href="<?php echo "?page={$this->id}&tab={$tab}"; ?>"><?php echo $label; ?></a>
+			<a class="nav-tab<?php echo $active; ?>" href="<?php echo "?page={$this->id}&amp;tab={$tab}"; ?>"><?php echo $label; ?></a>
 		<?php endforeach; ?>
 		</h2>
 	<?php }
@@ -1273,7 +1275,7 @@ class Lucid_Settings {
 		$output = (array) get_option( $settings_id );
 
 		foreach ( $input as $name => $val ) :
-			if ( isset( $input[$name] ) ) :
+			if ( isset( $input[$name] ) && isset( $this->_fields[$name] ) ) :
 
 				// Anti-notice annoyances
 				$f = $this->_fields[$name];
