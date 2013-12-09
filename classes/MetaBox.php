@@ -1681,7 +1681,9 @@ class WPAlchemy_MetaBox
 	 */
 	public function the_value($n = NULL)
 	{
-		echo $this->get_the_value($n);
+		$value = $this->get_the_value($n);
+
+		if ($value) echo htmlentities($value, ENT_QUOTES, 'UTF-8');
 	}
 
 	/**
@@ -1750,7 +1752,7 @@ class WPAlchemy_MetaBox
 		{
 			if ($this->in_template)
 			{
-				return htmlentities($value, ENT_QUOTES, 'UTF-8');
+				return $value;
 			}
 			else
 			{
