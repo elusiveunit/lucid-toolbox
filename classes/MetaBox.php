@@ -4,7 +4,7 @@
  * @copyright	Copyright (c) 2009, Dimas Begunoff, http://farinspace.com
  * @license		http://en.wikipedia.org/wiki/MIT_License The MIT License
  * @package		WPAlchemy
- * @version		1.5.2
+ * @version		1.5.2.lucid-1
  * @link		http://github.com/farinspace/wpalchemy
  * @link		http://farinspace.com
  */
@@ -137,6 +137,19 @@ class WPAlchemy_MetaBox
 	 * @var		string
 	 */
 	public $mode = WPALCHEMY_MODE_ARRAY;
+
+	/**
+	 * What 'area' to use for the metabox.
+	 *
+	 * Other possible values are 'after_title' and 'after_editor', which won't
+	 * actually create a metabox, but add the fields to the page in the
+	 * appropriate places.
+	 *
+	 * @since	1.5.2.lucid-1
+	 * @access	public
+	 * @var		string
+	 */
+	public $area = 'metabox';
 
 	/**
 	 * When the mode option is set to WPALCHEMY_MODE_EXTRACT, you have to take
@@ -569,9 +582,19 @@ class WPAlchemy_MetaBox
 
 		if ($this->can_output())
 		{
-			foreach ($this->types as $type)
+			$post_type = WPAlchemy_MetaBox::_get_current_post_type();
+
+			if (in_array($this->area, array('after_title', 'after_editor')) && in_array($post_type, $this->types))
 			{
-				add_meta_box($this->id . '_metabox', $this->title, array($this, '_setup'), $type, $this->context, $this->priority);
+				$hook = ('after_title' == $this->area) ? 'edit_form_after_title' : 'edit_form_after_editor';
+				add_action($hook, array($this, '_setup'));
+			}
+			else
+			{
+				foreach ($this->types as $type)
+				{
+					add_meta_box($this->id . '_metabox', $this->title, array($this, '_setup'), $type, $this->context, $this->priority);
+				}
 			}
 
 			add_action('save_post', array($this,'_save'));
