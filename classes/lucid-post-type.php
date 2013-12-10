@@ -283,7 +283,8 @@ class Lucid_Post_Type {
 		// Custom sprite
 		else :
 			if ( $small_icon ) :
-				$css .= "#menu-posts-{$post_type} .wp-menu-image{
+				$css .= "menu-posts-{$post_type} .wp-menu-image:before{content:''!important;}
+				#menu-posts-{$post_type} .wp-menu-image{
 					background:url('{$small_icon}') no-repeat 6px -17px!important;
 				}
 				#menu-posts-{$post_type}:hover .wp-menu-image,
