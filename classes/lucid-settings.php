@@ -2,8 +2,7 @@
 /**
  * Settings class definition.
  *
- * @package Lucid
- * @subpackage Toolbox
+ * @package Lucid\Toolbox
  */
 
 // Block direct requests
@@ -14,10 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *
  * Create a new settings object with a unique ID and a heading:
  *
- * <code>
- * $example = new Lucid_Settings( 'example_settings_id' );
- * $example->page_heading = __( 'Settings Lucid', 'TEXTDOMAIN' );
- * </code>
+ *     $example = new Lucid_Settings( 'example_settings_id' );
+ *     $example->page_heading = __( 'Settings Lucid', 'TEXTDOMAIN' );
  *
  * Then add each part with:
  *
@@ -30,8 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  * To use a tabbed settings page, simply add a 'tabs' array to submenu(), see
  * function description.
  *
- * @package Lucid
- * @subpackage Toolbox
+ * @package Lucid\Toolbox
  * @version 1.7.0
  */
 class Lucid_Settings {
@@ -161,6 +157,7 @@ class Lucid_Settings {
 	 *
 	 * @var bool
 	 * @since 1.3.2
+	 * @deprecated 1.5.1 Shouldn't be needed anymore.
 	 * @see _display_page()
 	 */
 	public $pass_settings_errors_id = false;
@@ -525,6 +522,7 @@ class Lucid_Settings {
 	 * If the settings page is currently being viewed.
 	 *
 	 * @since 1.7.0
+	 * @global string $pagenow Current admin page.
 	 * @return bool
 	 */
 	public function is_on_settings_page() {
@@ -1380,12 +1378,14 @@ class Lucid_Settings {
 				? ( preg_match( '/^\w{2,}\.\w{2,15}\/?$/', $value ) )
 				: false;
 
-			// http://daringfireball.net/2010/07/improved_regex_for_matching_urls
-			//
-			// Modifications: Allow up to a 15 character TLD (since new ones can
-			// be bought). Make second capture group optional, so only a single
-			// character after a slash is needed. Match beginning and end of
-			// string.
+			/*
+			 * http://daringfireball.net/2010/07/improved_regex_for_matching_urls
+			 *
+			 * Modifications: Allow up to a 15 character TLD (since new ones can
+			 * be bought). Make second capture group optional, so only a single
+			 * character after a slash is needed. Match beginning and end of
+			 * string.
+			 */
 			$valid = (bool) (
 				( preg_match( '/^((?:https?:\/\/|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,15}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))*(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:\'\".,<>?«»“”‘’]))$/', $value ) )
 				|| $simple_url

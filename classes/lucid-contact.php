@@ -2,8 +2,7 @@
 /**
  * Contact class definition.
  *
- * @package Lucid
- * @subpackage Toolbox
+ * @package Lucid\Toolbox
  */
 
 // Block direct requests
@@ -28,8 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  * There is an unfortunate lack of separation between logic and view, something
  * that will hopefully be remedied someday in the future.
  *
- * @package Lucid
- * @subpackage Toolbox
+ * @package Lucid\Toolbox
  * @version 1.6.2
  */
 class Lucid_Contact {
@@ -210,13 +208,12 @@ class Lucid_Contact {
 	 * appear as is, so separators and the like are possible.
 	 *
 	 * Example:
-	 * <code>
-	 * $instance->message_format = array(
-	 * 	'name',
-	 * 	"\n ----- \n",
-	 * 	'message'
-	 * );
-	 * </code>
+	 *
+	 *     $instance->message_format = array(
+	 *        'name',
+	 *        "\n ----- \n",
+	 *        'message'
+	 *     );
 	 *
 	 * @since 1.0.0
 	 * @var array
@@ -249,22 +246,21 @@ class Lucid_Contact {
 	 * Whitespace is trimmed from begining and end of message.
 	 *
 	 * Example:
-	 * <code>
-	 * $instance->message_template = '
-	 * Message:
-	 * Name: {{name}}
-	 * {{#if}}Not displayed if phone is empty {{phone}}.{{/if}} But this is.
-	 * Email: {{email}}
 	 *
-	 * {{#if_block}}
-	 * This entire block only shows if address is not empty
-	 * Address here: {{address}}
-	 * Use if_block for whole and/or multiple lines, since an extra line break
-	 * needs to be removed.
-	 * In most cases pointless when using an HTML template.
-	 * {{/if_block}}
-	 * ';
-	 * </code>
+	 *     $instance->message_template = '
+	 *     Message:
+	 *     Name: {{name}}
+	 *     {{#if}}Not displayed if phone is empty {{phone}}.{{/if}} But this is.
+	 *     Email: {{email}}
+	 *
+	 *     {{#if_block}}
+	 *     This entire block only shows if address is not empty
+	 *     Address here: {{address}}
+	 *     Use if_block for whole and/or multiple lines, since an extra line break
+	 *     needs to be removed.
+	 *     In most cases pointless when using an HTML template.
+	 *     {{/if_block}}
+	 *     ';
 	 *
 	 * @since 1.4.0
 	 * @var string
@@ -295,12 +291,11 @@ class Lucid_Contact {
 	 * total price.
 	 *
 	 * Example:
-	 * <code>
-	 * $instance->custom_template_tags = array(
-	 *    'tag_name' => 'tag value',
-	 *    'price_total' => 99 * (int) $_POST['number_products']
-	 * );
-	 * </code>
+	 *
+	 *     $instance->custom_template_tags = array(
+	 *        'tag_name' => 'tag value',
+	 *        'price_total' => 99 * (int) $_POST['number_products']
+	 *     );
 	 *
 	 * These can then be used in the template like any other: {{price_total}}.
 	 *

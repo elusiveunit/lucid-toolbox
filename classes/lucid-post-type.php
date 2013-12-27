@@ -2,8 +2,7 @@
 /**
  * Custom post type class definition.
  *
- * @package Lucid
- * @subpackage Toolbox
+ * @package Lucid\Toolbox
  */
 
 // Block direct requests
@@ -15,46 +14,42 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  * The format is very similar to the standard way of registering, with some
  * additional arguments:
  *
- * <code>
- * $post_type_name = new Lucid_Post_Type( 'NAME', array(
- * 	'small_menu_icon_url' => [path_to_image_directory]/16x40_sprite.png',
- * 	'large_menu_icon_url' => [path_to_image_directory]/32x32.png',
- * 	'post_type_args' => array(
- * 		[...]
- * 	),
- * 	'update_messages' => array(
- * 		[...]
- * 	)
- * ) );
- * </code>
+ *     $post_type_name = new Lucid_Post_Type( 'NAME', array(
+ *        'small_menu_icon_url' => [path_to_image_directory]/16x40_sprite.png',
+ *        'large_menu_icon_url' => [path_to_image_directory]/32x32.png',
+ *        'post_type_args' => array(
+ *           [...]
+ *        ),
+ *        'update_messages' => array(
+ *           [...]
+ *        )
+ *     ) );
  *
  * The post_type_args array contains standard register_post_type arguments, see
  * {@link http://codex.wordpress.org/Function_Reference/register_post_type#Arguments the codex}.
  *
  * The labels argument in post_type_args accepts:
- * <code>
- * 'labels' => array(
  *
- * 	// menu_name default, use plural
- * 	'name' =>               _x( 'Movies', 'post type general name', 'TEXTDOMAIN' ),
- * 	'singular_name' =>      _x( 'Movie', 'post type singular name', 'TEXTDOMAIN' ),
- * 	'all_items' =>          __( 'All movies', 'TEXTDOMAIN' ),
- * 	'add_new' =>            __( 'Add new', 'TEXTDOMAIN' ),
- * 	'add_new_item' =>       __( 'Add new movie', 'TEXTDOMAIN' ),
- * 	'edit_item' =>          __( 'Edit movie', 'TEXTDOMAIN' ),
- * 	'new_item' =>           __( 'New movie', 'TEXTDOMAIN' ),
- * 	'view_item' =>          __( 'View movie', 'TEXTDOMAIN' ),
- * 	'search_items' =>       __( 'Search movies', 'TEXTDOMAIN' ),
- * 	'not_found' =>          __( 'No movies found', 'TEXTDOMAIN' ),
- * 	'not_found_in_trash' => __( 'No movies found in trash', 'TEXTDOMAIN' ),
+ *     'labels' => array(
  *
- * 	// Hierarchical only
- * 	'parent_item_colon' =>  __( 'Parent movie:', 'TEXTDOMAIN' )
- * )
- * </code>
+ *        // menu_name default, use plural
+ *        'name' =>               _x( 'Movies', 'post type general name', 'TEXTDOMAIN' ),
+ *        'singular_name' =>      _x( 'Movie', 'post type singular name', 'TEXTDOMAIN' ),
+ *        'all_items' =>          __( 'All movies', 'TEXTDOMAIN' ),
+ *        'add_new' =>            __( 'Add new', 'TEXTDOMAIN' ),
+ *        'add_new_item' =>       __( 'Add new movie', 'TEXTDOMAIN' ),
+ *        'edit_item' =>          __( 'Edit movie', 'TEXTDOMAIN' ),
+ *        'new_item' =>           __( 'New movie', 'TEXTDOMAIN' ),
+ *        'view_item' =>          __( 'View movie', 'TEXTDOMAIN' ),
+ *        'search_items' =>       __( 'Search movies', 'TEXTDOMAIN' ),
+ *        'not_found' =>          __( 'No movies found', 'TEXTDOMAIN' ),
+ *        'not_found_in_trash' => __( 'No movies found in trash', 'TEXTDOMAIN' ),
  *
- * @package Lucid
- * @subpackage Toolbox
+ *        // Hierarchical only
+ *        'parent_item_colon' =>  __( 'Parent movie:', 'TEXTDOMAIN' )
+ *     )
+ *
+ * @package Lucid\Toolbox
  * @version 1.2.0
  */
 class Lucid_Post_Type {
@@ -68,7 +63,7 @@ class Lucid_Post_Type {
 	public $name;
 
 	/**
-	 * Additional post type data.
+	 * Additional post type data; the $args param from the constructor.
 	 *
 	 * @since 1.0.0
 	 * @var array
@@ -178,33 +173,32 @@ class Lucid_Post_Type {
 	 * The array passed in the constructor must follow a specific format.
 	 *
 	 * Regular format:
-	 * <code>
-	 * 'update_messages' => array(
-	 * 	'updated_view' => __( 'Movie updated. <a href="%s">View movie</a>', 'TEXTDOMAIN' ),
-	 * 	'updated'      => __( 'Movie updated.', 'TEXTDOMAIN' ),
-	 * 	'revision'     => __( 'Movie restored to revision from %s.', 'TEXTDOMAIN' ),
-	 * 	'published'    => __( 'Movie published. <a href="%s">View movie</a>', 'TEXTDOMAIN' ),
-	 * 	'saved'        => __( 'Movie saved.', 'TEXTDOMAIN' ),
-	 * 	'submitted'    => __( 'Movie submitted. <a target="_blank" href="%s">Preview movie</a>', 'TEXTDOMAIN' ),
-	 * 	'scheduled'    => __( 'Movie scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview movie</a>', 'TEXTDOMAIN' ),
-	 * 	'draft'        => __( 'Movie draft updated. <a href="%s">Preview movie</a>', 'TEXTDOMAIN' )
-	 * )
-	 * </code>
+	 *
+	 *     'update_messages' => array(
+	 *        'updated_view' => __( 'Movie updated. <a href="%s">View movie</a>', 'TEXTDOMAIN' ),
+	 *        'updated'      => __( 'Movie updated.', 'TEXTDOMAIN' ),
+	 *        'revision'     => __( 'Movie restored to revision from %s.', 'TEXTDOMAIN' ),
+	 *        'published'    => __( 'Movie published. <a href="%s">View movie</a>', 'TEXTDOMAIN' ),
+	 *        'saved'        => __( 'Movie saved.', 'TEXTDOMAIN' ),
+	 *        'submitted'    => __( 'Movie submitted. <a target="_blank" href="%s">Preview movie</a>', 'TEXTDOMAIN' ),
+	 *        'scheduled'    => __( 'Movie scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview movie</a>', 'TEXTDOMAIN' ),
+	 *        'draft'        => __( 'Movie draft updated. <a href="%s">Preview movie</a>', 'TEXTDOMAIN' )
+	 *     )
 	 *
 	 * No links format:
-	 * <code>
-	 * 'update_messages_no_links' => array(
-	 * 	'updated'   => __( 'Movie updated.', 'TEXTDOMAIN' ),
-	 * 	'revision'  => __( 'Movie restored to revision from %s.', 'TEXTDOMAIN' ),
-	 * 	'published' => __( 'Movie published.', 'TEXTDOMAIN' ),
-	 * 	'saved'     => __( 'Movie saved.', 'TEXTDOMAIN' ),
-	 * 	'submitted' => __( 'Movie submitted.', 'TEXTDOMAIN' ),
-	 * 	'scheduled' => __( 'Movie scheduled for: <strong>%1$s</strong>.', 'TEXTDOMAIN' ),
-	 * 	'draft'     => __( 'Movie draft updated.', 'TEXTDOMAIN' )
-	 * )
-	 * </code>
+	 *
+	 *     'update_messages_no_links' => array(
+	 *        'updated'   => __( 'Movie updated.', 'TEXTDOMAIN' ),
+	 *        'revision'  => __( 'Movie restored to revision from %s.', 'TEXTDOMAIN' ),
+	 *        'published' => __( 'Movie published.', 'TEXTDOMAIN' ),
+	 *        'saved'     => __( 'Movie saved.', 'TEXTDOMAIN' ),
+	 *        'submitted' => __( 'Movie submitted.', 'TEXTDOMAIN' ),
+	 *        'scheduled' => __( 'Movie scheduled for: <strong>%1$s</strong>.', 'TEXTDOMAIN' ),
+	 *        'draft'     => __( 'Movie draft updated.', 'TEXTDOMAIN' )
+	 *     )
 	 *
 	 * @since 1.0.0
+	 * @global WP_Post $post Used to get data about the current post.
 	 * @param array $messages Default messages.
 	 * @return array Message array with custom messages added.
 	 */

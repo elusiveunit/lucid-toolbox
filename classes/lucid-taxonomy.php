@@ -2,8 +2,7 @@
 /**
  * Custom taxonomy class definition.
  *
- * @package Lucid
- * @subpackage Toolbox
+ * @package Lucid\Toolbox
  */
 
 // Block direct requests
@@ -15,51 +14,47 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  * The format is very similar to the standard way of registering, with some
  * additional arguments:
  *
- * <code>
- * $taxonomy_name = new Lucid_Taxonomy(
- * 	'NAME',
- * 	array( 'POST_TYPE_1', 'POST_TYPE_2' ),
- * 	array(
- * 		'taxonomy_args' => array(
- * 			[...]
- * 		)
- * 	)
- * );
- * </code>
+ *     $taxonomy_name = new Lucid_Taxonomy(
+ *        'NAME',
+ *        array( 'POST_TYPE_1', 'POST_TYPE_2' ),
+ *        array(
+ *           'taxonomy_args' => array(
+ *              [...]
+ *           )
+ *        )
+ *     );
  *
  * The taxonomy_args array contains standard register_taxonomy arguments, see
  * {@link http://codex.wordpress.org/Function_Reference/register_taxonomy#Arguments the codex}.
  *
  * The labels argument in taxonomy_args accepts:
- * <code>
- * 'labels' => array(
  *
- * 	// menu_name default, use plural
- * 	'name' =>            _x( 'Genres', 'taxonomy general name', 'TEXTDOMAIN' ),
- * 	'singular_name' =>   _x( 'Genre', 'taxonomy singular name', 'TEXTDOMAIN' ),
- * 	'all_items' =>       __( 'All genres', 'TEXTDOMAIN' ),
- * 	'edit_item' =>       __( 'Edit genre', 'TEXTDOMAIN' ),
- * 	'view_item' =>       __( 'View genre', 'TEXTDOMAIN' ),
- * 	'update_item' =>     __( 'Update genre', 'TEXTDOMAIN' ),
- * 	'add_new_item' =>    __( 'Add new genre', 'TEXTDOMAIN' ),
- * 	'new_item_name' =>   __( 'New genre name', 'TEXTDOMAIN' ),
- * 	'search_items' =>    __( 'Search genres', 'TEXTDOMAIN' ),
+ *     'labels' => array(
  *
- * 	// Hierarchical only
- * 	'parent_item' =>       __( 'Parent genre', 'TEXTDOMAIN' ),
- * 	'parent_item_colon' => __( 'Parent genre:', 'TEXTDOMAIN' ),
+ *        // menu_name default, use plural
+ *        'name' =>            _x( 'Genres', 'taxonomy general name', 'TEXTDOMAIN' ),
+ *        'singular_name' =>   _x( 'Genre', 'taxonomy singular name', 'TEXTDOMAIN' ),
+ *        'all_items' =>       __( 'All genres', 'TEXTDOMAIN' ),
+ *        'edit_item' =>       __( 'Edit genre', 'TEXTDOMAIN' ),
+ *        'view_item' =>       __( 'View genre', 'TEXTDOMAIN' ),
+ *        'update_item' =>     __( 'Update genre', 'TEXTDOMAIN' ),
+ *        'add_new_item' =>    __( 'Add new genre', 'TEXTDOMAIN' ),
+ *        'new_item_name' =>   __( 'New genre name', 'TEXTDOMAIN' ),
+ *        'search_items' =>    __( 'Search genres', 'TEXTDOMAIN' ),
  *
- * 	// Non-hierarchical only
- * 	'popular_items' =>              __( 'Popular genres', 'TEXTDOMAIN' ),
- * 	'add_or_remove_items' =>        __( 'Add or remove genres', 'TEXTDOMAIN' ),
- * 	'separate_items_with_commas' => __( 'Separate genres with commas', 'TEXTDOMAIN' ),
- * 	'choose_from_most_used' =>      __( 'Choose from the most used genres', 'TEXTDOMAIN' ),
- * 	'not_found' =>                  __( 'No genres found', 'TEXTDOMAIN' )
- * )
- * </code>
+ *        // Hierarchical only
+ *        'parent_item' =>       __( 'Parent genre', 'TEXTDOMAIN' ),
+ *        'parent_item_colon' => __( 'Parent genre:', 'TEXTDOMAIN' ),
  *
- * @package Lucid
- * @subpackage Toolbox
+ *        // Non-hierarchical only
+ *        'popular_items' =>              __( 'Popular genres', 'TEXTDOMAIN' ),
+ *        'add_or_remove_items' =>        __( 'Add or remove genres', 'TEXTDOMAIN' ),
+ *        'separate_items_with_commas' => __( 'Separate genres with commas', 'TEXTDOMAIN' ),
+ *        'choose_from_most_used' =>      __( 'Choose from the most used genres', 'TEXTDOMAIN' ),
+ *        'not_found' =>                  __( 'No genres found', 'TEXTDOMAIN' )
+ *     )
+ *
+ * @package Lucid\Toolbox
  * @version 1.1.3
  */
 class Lucid_Taxonomy {
@@ -92,6 +87,7 @@ class Lucid_Taxonomy {
 	 * Constructor, pass taxonomy.
 	 *
 	 * Arguments through the $args array:
+	 *
 	 * - 'default_terms' (array) Default terms to set if none is chosen, just
 	 *   like 'uncategorized' for categories. Leave out to not set defaults.
 	 *   Hierarchical terms must always pass the ID rather than the term name
@@ -175,6 +171,8 @@ class Lucid_Taxonomy {
 	 * posts.
 	 *
 	 * @since 1.0.0
+	 * @global string $typenow Current post type.
+	 * @global WP_Query $wp_query Current query object.
 	 */
 	public function _restrict_posts_by_taxonomy() {
 		global $typenow;
@@ -204,7 +202,8 @@ class Lucid_Taxonomy {
 	 * Filter post list based on the selected taxonomy.
 	 *
 	 * @since 1.0.0
-	 * @param object $query The current wp_query.
+	 * @global string $pagenow Current admin page.
+	 * @param object $query The current WP_Query object.
 	 */
 	public function _convert_taxonomy_id_to_term_in_query( $query ) {
 		global $pagenow;

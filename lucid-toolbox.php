@@ -11,8 +11,7 @@
  * Text Domain: lucid-toolbox
  * Domain Path: /lang
  *
- * @package Lucid
- * @subpackage Toolbox
+ * @package Lucid\Toolbox
  */
 
 // Block direct requests

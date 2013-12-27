@@ -2,18 +2,16 @@
 /**
  * Core functionality.
  *
- * @package Lucid
- * @subpackage Toolbox
+ * @package Lucid\Toolbox
  */
 
 // Block direct requests
 if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
 
 /**
- * Currently only loads translation.
+ * Currently only loads translation and adds some links.
  *
- * @package Lucid
- * @subpackage Toolbox
+ * @package Lucid\Toolbox
  */
 class Lucid_Toolbox {
 
