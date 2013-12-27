@@ -155,9 +155,6 @@ class Lucid_Taxonomy {
 		add_filter( 'parse_query', array( $this, '_convert_taxonomy_id_to_term_in_query' ) );
 		add_action( 'admin_head', array( $this, '_admin_css' ) );
 		add_action( 'save_post', array( $this, '_default_terms' ), 100, 2 );
-
-		// In 3.5, taxonomy_args accepts 'show_admin_column' => true
-		//add_action( 'admin_init', array( $this, '_do_taxonomy_columns' ) );
 	}
 
 	/**
@@ -171,31 +168,6 @@ class Lucid_Taxonomy {
 			$this->to_post_types,
 			$this->taxonomy_data['taxonomy_args']
 		);
-	}
-
-	/**
-	 * Add columns to the post lists and populate them with selected terms.
-	 *
-	 * This needs different hooks depending on the post type, as noted in the
-	 * comments. The sutuation for manage_posts_columns is easier to manage in
-	 * the callback function instead of here.
-	 *
-	 * @since 1.0.0
-	 */
-	public function _do_taxonomy_columns() {
-		global $typenow;
-
-		// manage_posts_columns hook for every post type
-		// manage_edit-POSTTYPE_columns hook for specific post types
-		add_filter( 'manage_posts_columns', array( $this, 'add_columns' ) );
-
-		// manage_pages_custom_column for hierarchical post type
-		// manage_posts_custom_column for non-hierarchical post type
-		$column_hook = is_post_type_hierarchical( $typenow )
-			? 'manage_pages_custom_column'
-			: 'manage_posts_custom_column';
-
-		add_action( $column_hook, array( $this, 'populate_columns' ), 10, 2 );
 	}
 
 	/**
@@ -245,83 +217,6 @@ class Lucid_Taxonomy {
 		  && is_numeric( $vars[$taxonomy] ) ) :
 			$term = get_term_by( 'id', $vars[$taxonomy], $taxonomy );
 			$vars[$taxonomy] = $term ? $term->slug : '';
-		endif;
-	}
-
-	/**
-	 * Add custom taxonomy columns in post listing.
-	 *
-	 * Default column positions:
-	 * <code>
-	 * array (
-	 *    'cb' =>; '<input type="checkbox">',            0.
-	 *    'title' => 'Title',                            1.
-	 *    'author' => 'Author',                          2.
-	 *    'categories' => 'Categories',                  3.
-	 *    'tags' => 'Tags',                              4.
-	 *    'comments' => '<span class="vers">[…]</span>', 5.
-	 *    'date' => 'Date'                               6.
-	 * );
-	 * </code>
-	 *
-	 * @since 1.0.0
-	 * @param array $columns The default array of columns.
-	 * @return array The columns with the new one inserted.
-	 */
-	public function add_columns( $columns ) {
-		global $typenow;
-
-		// If we're on a post type page with the taxonomy, add columns
-		if ( in_array( $typenow, (array) $this->to_post_types ) ) :
-			$offset = 4; // Insert before this position
-
-			$columns = array_slice( $columns, 0, $offset, true )
-			+
-			// Columns to insert, taxonomy => label
-			array(
-				$this->name => $this->taxonomy_data['taxonomy_args']['labels']['name']
-			)
-			+
-			array_slice( $columns, $offset, null, true );
-		endif;
-
-		return $columns;
-	}
-
-	/**
-	 * Populate the added custom taxonomy columns.
-	 *
-	 * @since 1.0.0
-	 * @param string $column_name Current column, all columns are looped over.
-	 * @param int $post_id Current post ID.
-	 * @see add_columns()
-	 */
-	public function populate_columns( $column_name, $post_id ) {
-		global $post;
-		global $typenow;
-
-		$taxonomy = $this->name;
-		$tax_name = ( isset( $this->taxonomy_data['taxonomy_args']['labels']['name'] ) )
-			? strtolower( $this->taxonomy_data['taxonomy_args']['labels']['name'] )
-			: '';
-
-		if ( $column_name == $taxonomy ) :
-			$terms = get_the_terms( $post->ID, $taxonomy );
-
-			if ( ! empty( $terms ) ) :
-				$output = array();
-				foreach ( $terms as $tax )
-					$output[] = '<a href="edit.php?' .
-						'post_type=' . $typenow . '&' .
-						$taxonomy . '=' . $tax->term_id . '">' .
-						esc_html( sanitize_term_field( 'name', $tax->name, $tax->term_id, $taxonomy, 'display' ) ) .
-						'</a>';
-				echo implode( ', ', $output );
-
-			// No taxonomy term
-			else :
-				echo '&mdash;';
-			endif;
 		endif;
 	}
 
