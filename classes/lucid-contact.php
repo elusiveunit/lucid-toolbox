@@ -1299,6 +1299,7 @@ class Lucid_Contact {
 				   'file' != $data['type']
 				&& empty( $_POST[$id] )
 				&& ! empty( $this->_fields[$name]['required'] )
+				&& ( empty( $_POST[$id] ) && ! in_array( $_POST[$id], array( 0, 0.0, '0' ), true ) ) // Allow zeroes
 			) || (
 				   'file' == $data['type']
 				&& 4 == $_FILES[$name]['error']
