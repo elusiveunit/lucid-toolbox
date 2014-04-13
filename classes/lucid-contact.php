@@ -2385,6 +2385,16 @@ class Lucid_Contact {
 	}
 
 	/**
+	 * Get the _fields array.
+	 *
+	 * @since 1.7.0
+	 * @return array
+	 */
+	public function get_field_data() {
+		return $this->_fields;
+	}
+
+	/**
 	 * For debug purposes, encodes all fields through array_walk_recursive() so
 	 * the markup is displayed.
 	 *
