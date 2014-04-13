@@ -1736,11 +1736,11 @@ class Lucid_Contact {
 		// Remove CSS comments
 		$message = preg_replace( '/\/\*(?:(?!\*\/).)+\*\//ms', '', $message );
 
-		// Collapse multiple line breaks
-		$message = preg_replace( '/\R+/', "\n", $message );
-
 		// Remove tabs
 		$message = str_replace( "\t", '', $message );
+
+		// Collapse multiple line breaks
+		$message = preg_replace( '/\R+/u', "\n", $message );
 
 		return trim( $message );
 	}
@@ -2616,7 +2616,7 @@ class Lucid_Contact {
 	 * @return string
 	 */
 	public function normalize_line_break( $input, $to_character = "\n" ) {
-		return preg_replace( '/\R/', $to_character, $input );
+		return preg_replace( '/\R/u', $to_character, $input );
 	}
 
 	/**
