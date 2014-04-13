@@ -11,7 +11,7 @@
 
 <h1>Lucid_Contact</h1>
 <p>Handles contact forms; building, validating and sending. Not particularly pretty or flexible, but it gets the job done.</p>
-<p><code>$to_address</code> and <code>$message_template</code> or <code>$message_format</code> are required properties and the sending method will throw errors if they are empty.</p>
+<p><code>to_address</code> and <code>message_template</code> or <code>message_format</code> are required properties and the sending method will throw errors if they are empty.</p>
 <p>Usage is fairly straightforward, create a new form object and set desired properties to match your needs:</p>
 <pre><code>$form = new Lucid_Contact();
 $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
@@ -33,7 +33,10 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
 <li><code>form_action</code> <strong>(string)</strong> The form action. Defaults to the permalink of the form page.</li>
 <li><code>form_method</code> <strong>(string)</strong> The form method, defaults to <code>&#39;post&#39;</code>.</li>
 <li><code>form_attributes</code> <strong>(array)</strong> Additional form attributes, like class. Format: <code>attr =&gt; value</code>.</li>
-<li><code>form_location</code> <strong>(string)</strong> Referer to check when submitting, for a teeny-weeny bit of spoofable extra CSRF security... Pointless? Maybe. Defaults to the permalink of the form page.</li>
+<li><code>handle_post</code> <strong>(bool)</strong> Whether to handle the POST data and sending.</li>
+<li><code>validate_send</code> <strong>(bool)</strong> Whether to validate the POST data before trying to send.</li>
+<li><code>do_email_dns_check</code> <strong>(bool)</strong> If email validation should include DNS lookup.</li>
+<li><code>use_nonce</code> <strong>(bool)</strong> Whether to add a nonce field to the form. This can cause issues if caching is used, since the nonce string can be cached and thus invalid for a time until the cache is renewed.</li>
 </ul>
 <p>Some properties are covered in their own sections:</p>
 <p>Concerning the message:</p>
@@ -52,10 +55,10 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
 </ul>
 <p>Concerning multiple recipients:</p>
 <ul>
-<li><code>$extra_headers</code></li>
-<li><code>$extra_recipients</code></li>
-<li><code>$extras_from_name</code></li>
-<li><code>$extras_from_address</code></li>
+<li><code>extra_headers</code></li>
+<li><code>extra_recipients</code></li>
+<li><code>extras_from_name</code></li>
+<li><code>extras_from_address</code></li>
 </ul>
 <h2>Form messages</h2>
 <p>Messages appear above the form on submission, to inform the user of the current state. There are set with <code>set_form_messages()</code> and <code>set_file_form_messages</code> (for file uploads). The default regular messages are:</p>
@@ -109,7 +112,7 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
 <li><code>&#39;cols&#39;</code> <strong>(string)</strong> Textarea cols attribute.</li>
 <li><code>&#39;value&#39;</code> <strong>(string)</strong> Value attribute, only used for radio buttons.</li>
 <li><code>&#39;field_attributes&#39;</code> <strong>(array)</strong> Additional HTML attributes for the field, format: <code>attr =&gt; value</code>. Some attributes like type, value, name and id are ignored due to usage in the class.</li>
-<li><code>&#39;field_wrap&#39;</code> <strong>(string)</strong> HTML element to wrap around field. Use <code>&#39;default&#39;</code> (which is the default) to wrap with value from the <code>$field_wrap</code> property. Use an empty string to disable wrapping for that particular field.</li>
+<li><code>&#39;field_wrap&#39;</code> <strong>(string)</strong> HTML element to wrap around field. Use <code>&#39;default&#39;</code> (which is the default) to wrap with value from the <code>field_wrap</code> property. Use an empty string to disable wrapping for that particular field.</li>
 <li><code>&#39;wrap_attributes&#39;</code> <strong>(array)</strong> Additional HTML attributes for the element wrapping the field, format: <code>attr =&gt; value</code>.</li>
 <li><code>&#39;options&#39;</code> <strong>(array)</strong> Options for select element, format: <code>value =&gt; text</code>.</li>
 <li><code>&#39;required&#39;</code> <strong>(bool)</strong> If field is required. Defaults to true, except for hidden fields.</li>
@@ -160,7 +163,7 @@ $form-&gt;add_to_field_list( &#39;&lt;/fieldset&gt;&#39; );</code></pre>
 <h2>The message</h2>
 <p>There are two ways to specify the format of the message, an old way and a new way.</p>
 <h3>Message format</h3>
-<p>The old way is through the <code>$message_format</code> property. It&#39;s an array of the form field names whose data should be included in the message. Data from the fields will print in the order they appear in the array, with the string set in <code>$message_format_separator</code> between each.</p>
+<p>The old way is through the <code>message_format</code> property. It&#39;s an array of the form field names whose data should be included in the message. Data from the fields will print in the order they appear in the array, with the string set in <code>message_format_separator</code> between each.</p>
 <p>If a value in this array doesn&#39;t exist as a form field, the value will appear as is, so separators and the like are possible.</p>
 <pre><code>$form-&gt;message_format = array(
     &#39;name&#39;,
@@ -170,7 +173,7 @@ $form-&gt;add_to_field_list( &#39;&lt;/fieldset&gt;&#39; );</code></pre>
 
 $form-&gt;message_format_separator = &quot;\n&quot;;</code></pre>
 <h3>Message template</h3>
-<p>The <code>$message_template</code> property is a string with arbitrary text, accepting mustache-style template tags for field data. <code>{{field_name}}</code> is replaced with the field&#39;s POST content.</p>
+<p>The <code>message_template</code> property is a string with arbitrary text, accepting mustache-style template tags for field data. <code>{{field_name}}</code> is replaced with the field&#39;s POST content.</p>
 <p>Also available are conditional tags wrapping field tags, whose entire content is only displayed if the field POST value is not empty. They start with a hash and end with a slash (groovy!), like <code>{{#if}}content{{/if}}</code>. Tags are different for inline (<code>{{#if}}</code>) and blocks (<code>{{#if_block}}</code>), since an extra line break needs to be removed for blocks (except in HTML where line breaks generally don&#39;t matter). Whitespace is trimmed from the begining and the end of the message.</p>
 <p>Example:</p>
 <pre><code>$form-&gt;message_template = &#39;
@@ -186,15 +189,15 @@ Use if_block for whole and/or multiple lines.
 {{/if_block}}
 &#39;;</code></pre>
 <p><strong>Note:</strong> The conditionals will count the POST value as empty, therefore not showing it, for any falsy values except the number 0.</p>
-<p>Since this class only handles find and replace for template tags, custom tags can be used when processing of the tag value is needed, like for a total price. These are set with the <code>$custom_template_tags</code> property.</p>
+<p>Since this class only handles find and replace for template tags, custom tags can be used when processing of the tag value is needed, like for a total price. These are set with the <code>custom_template_tags</code> property.</p>
 <pre><code>$form-&gt;custom_template_tags = array(
    &#39;tag_name&#39; =&gt; &#39;tag value&#39;,
    &#39;total_price&#39; =&gt; 99 * (int) $_POST[&#39;number_of_products&#39;]
 );</code></pre>
 <p>The custom tags can then be used in the template like any other: <code>{{total_price}}</code>.</p>
 <h3>HTML email</h3>
-<p>HTML email can be sent by setting the <code>$html_template</code> property, which should be a full path (for include, so not a URL) to an HTML file. The necessary headers are sent if a template is set.</p>
-<p>The file content is processed like <code>$message_template</code>, so the same template tag rules apply there. Field data is run through <a href="http://php.net/nl2br">nl2br</a>, so line breaks in textareas should display properly.</p>
+<p>HTML email can be sent by setting the <code>html_template</code> property, which should be a full path (for include, so not a URL) to an HTML file. The necessary headers are sent if a template is set.</p>
+<p>The file content is processed like <code>message_template</code>, so the same template tag rules apply there. Field data is run through <a href="http://php.net/nl2br">nl2br</a>, so line breaks in textareas should display properly.</p>
 <pre><code>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
 &lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
 &lt;head&gt;
@@ -207,7 +210,7 @@ Use if_block for whole and/or multiple lines.
 &lt;/html&gt;</code></pre>
 <p>HTML emails are completely different from regular web development, so be sure to read up on the proper way of building them (yay tables).</p>
 <h3>Multiple recipients and extra headers</h3>
-<p>Multiple recipients can be set in two ways: through adding CC headers with the <code>$extra_headers</code> property, or through the <code>$extra_recipients</code> property. Using extra headers is just like sending a copy in a regular mail client:</p>
+<p>Multiple recipients can be set in two ways: through adding CC headers with the <code>extra_headers</code> property, or through the <code>extra_recipients</code> property. Using extra headers is just like sending a copy in a regular mail client:</p>
 <pre><code>$form-&gt;extra_headers = array(
     &#39;Cc: send_carbon_copy@example.com&#39;,
     &#39;Bcc: send_blind_carbon_copy@example.com&#39;
@@ -215,9 +218,9 @@ Use if_block for whole and/or multiple lines.
 <p>Extra headers aren&#39;t limited to carbon copies of course, anything can be added.</p>
 <p>Sometimes you don&#39;t want to send copies though, for example when the form is used for ordering and both you and the customer should get a copy of the order confirmation. It probably looks more professional for the client to receive a confirmation sent to him/her only. They should possibly also have different &#39;from&#39; and/or &#39;reply-to&#39; data. This is done with these properties:</p>
 <ul>
-<li><code>$extra_recipients</code> <strong>(array)</strong> One email address per array item. Each will get a separate mail sent with <code>wp_mail()</code>.</li>
-<li><code>$extras_from_name</code> <strong>(string)</strong> The &#39;from&#39; name to use when sending to the extra recipients.</li>
-<li><code>$extras_from_address</code> <strong>(string)</strong> The &#39;from&#39; email address to use when sending to the extra recipients.</li>
+<li><code>extra_recipients</code> <strong>(array)</strong> One email address per array item. Each will get a separate mail sent with <code>wp_mail()</code>.</li>
+<li><code>extras_from_name</code> <strong>(string)</strong> The &#39;from&#39; name to use when sending to the extra recipients.</li>
+<li><code>extras_from_address</code> <strong>(string)</strong> The &#39;from&#39; email address to use when sending to the extra recipients.</li>
 </ul>
 <p>The only difference between the extra messages and the regular ones will be the &#39;from&#39; headers (unless set to the same of course).</p>
 <h2>Finishing touches</h2>
@@ -317,6 +320,17 @@ $form-&gt;add_submit( __( &#39;Send message&#39;, &#39;TEXTDOMAIN&#39; ) );
 
 $form-&gt;render_form();</code></pre>
 <h2>Changelog</h2>
+<h3>1.7.0: Apr 13, 2014</h3>
+<ul>
+<li>New: Add <code>reverse_validation</code> argument to <code>add_field</code>, which reverses any custom regex validation result. True by default due to initially stupid thinking and thus backwards compatibility.</li>
+<li>New: Add the self-explanatory <code>get_field_data</code> method.</li>
+<li>New/tweak: Allow any values for checkboxes instead of defaulting to boolean. Derp.</li>
+<li>New/tweak: Validation methods are now public and the default validation can be disabled by setting the new <code>validate_send</code> property to false. Allows &#39;faking&#39; a POST and using data from another source.</li>
+<li>Tweak: Don&#39;t count zeroes as empty values in validation.</li>
+<li>Tweak/fix: Don&#39;t add <code>aria-required</code> to checkboxes, since it&#39;s invalid HTML for some reason.</li>
+<li>Tweak/fix: Remove referer check, since it&#39;s not always set.</li>
+<li>Fix: Add UTF-8 modifier (<code>u</code>) to line break regex. Fixes some other characters getting garbled.</li>
+</ul>
 <h3>1.6.2: Nov 03, 2013</h3>
 <ul>
 <li>New: Add the <code>is_form_sent</code> method for checking the success state.</li>

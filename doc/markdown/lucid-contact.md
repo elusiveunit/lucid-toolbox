@@ -2,7 +2,7 @@
 
 Handles contact forms; building, validating and sending. Not particularly pretty or flexible, but it gets the job done.
 
-`$to_address` and `$message_template` or `$message_format` are required properties and the sending method will throw errors if they are empty.
+`to_address` and `message_template` or `message_format` are required properties and the sending method will throw errors if they are empty.
 
 Usage is fairly straightforward, create a new form object and set desired properties to match your needs:
 
@@ -29,7 +29,10 @@ There are quite a few properties to set. The first three are not forced requirem
 * `form_action` **(string)** The form action. Defaults to the permalink of the form page.
 * `form_method` **(string)** The form method, defaults to `'post'`.
 * `form_attributes` **(array)** Additional form attributes, like class. Format: `attr => value`.
-* `form_location` **(string)** Referer to check when submitting, for a teeny-weeny bit of spoofable extra CSRF security... Pointless? Maybe. Defaults to the permalink of the form page.
+* `handle_post` **(bool)** Whether to handle the POST data and sending.
+* `validate_send` **(bool)** Whether to validate the POST data before trying to send.
+* `do_email_dns_check` **(bool)** If email validation should include DNS lookup.
+* `use_nonce` **(bool)** Whether to add a nonce field to the form. This can cause issues if caching is used, since the nonce string can be cached and thus invalid for a time until the cache is renewed.
 
 Some properties are covered in their own sections:
 
@@ -49,10 +52,10 @@ Concerning attachments:
 
 Concerning multiple recipients:
 
-* `$extra_headers`
-* `$extra_recipients`
-* `$extras_from_name`
-* `$extras_from_address`
+* `extra_headers`
+* `extra_recipients`
+* `extras_from_name`
+* `extras_from_address`
 
 ## Form messages
 
@@ -114,7 +117,7 @@ In addition to the type and name, an array of optional arguments can be passed:
 * `'cols'` **(string)** Textarea cols attribute.
 * `'value'` **(string)** Value attribute, only used for radio buttons.
 * `'field_attributes'` **(array)** Additional HTML attributes for the field, format: `attr => value`. Some attributes like type, value, name and id are ignored due to usage in the class.
-* `'field_wrap'` **(string)** HTML element to wrap around field. Use `'default'` (which is the default) to wrap with value from the `$field_wrap` property. Use an empty string to disable wrapping for that particular field.
+* `'field_wrap'` **(string)** HTML element to wrap around field. Use `'default'` (which is the default) to wrap with value from the `field_wrap` property. Use an empty string to disable wrapping for that particular field.
 * `'wrap_attributes'` **(array)** Additional HTML attributes for the element wrapping the field, format: `attr => value`.
 * `'options'` **(array)** Options for select element, format: `value => text`.
 * `'required'` **(bool)** If field is required. Defaults to true, except for hidden fields.
@@ -181,7 +184,7 @@ There are two ways to specify the format of the message, an old way and a new wa
 
 ### Message format
 
-The old way is through the `$message_format` property. It's an array of the form field names whose data should be included in the message. Data from the fields will print in the order they appear in the array, with the string set in `$message_format_separator` between each.
+The old way is through the `message_format` property. It's an array of the form field names whose data should be included in the message. Data from the fields will print in the order they appear in the array, with the string set in `message_format_separator` between each.
 
 If a value in this array doesn't exist as a form field, the value will appear as is, so separators and the like are possible.
 
@@ -195,7 +198,7 @@ If a value in this array doesn't exist as a form field, the value will appear as
 
 ### Message template
 
-The `$message_template` property is a string with arbitrary text, accepting mustache-style template tags for field data. `{{field_name}}` is replaced with the field's POST content.
+The `message_template` property is a string with arbitrary text, accepting mustache-style template tags for field data. `{{field_name}}` is replaced with the field's POST content.
 
 Also available are conditional tags wrapping field tags, whose entire content is only displayed if the field POST value is not empty. They start with a hash and end with a slash (groovy!), like `{{#if}}content{{/if}}`. Tags are different for inline (`{{#if}}`) and blocks (`{{#if_block}}`), since an extra line break needs to be removed for blocks (except in HTML where line breaks generally don't matter). Whitespace is trimmed from the begining and the end of the message.
 
@@ -216,7 +219,7 @@ Example:
 
 **Note:** The conditionals will count the POST value as empty, therefore not showing it, for any falsy values except the number 0.
 
-Since this class only handles find and replace for template tags, custom tags can be used when processing of the tag value is needed, like for a total price. These are set with the `$custom_template_tags` property.
+Since this class only handles find and replace for template tags, custom tags can be used when processing of the tag value is needed, like for a total price. These are set with the `custom_template_tags` property.
 
 	$form->custom_template_tags = array(
 	   'tag_name' => 'tag value',
@@ -227,9 +230,9 @@ The custom tags can then be used in the template like any other: `{{total_price}
 
 ### HTML email
 
-HTML email can be sent by setting the `$html_template` property, which should be a full path (for include, so not a URL) to an HTML file. The necessary headers are sent if a template is set.
+HTML email can be sent by setting the `html_template` property, which should be a full path (for include, so not a URL) to an HTML file. The necessary headers are sent if a template is set.
 
-The file content is processed like `$message_template`, so the same template tag rules apply there. Field data is run through [nl2br](http://php.net/nl2br), so line breaks in textareas should display properly.
+The file content is processed like `message_template`, so the same template tag rules apply there. Field data is run through [nl2br](http://php.net/nl2br), so line breaks in textareas should display properly.
 
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html xmlns="http://www.w3.org/1999/xhtml">
@@ -246,7 +249,7 @@ HTML emails are completely different from regular web development, so be sure to
 
 ### Multiple recipients and extra headers
 
-Multiple recipients can be set in two ways: through adding CC headers with the `$extra_headers` property, or through the `$extra_recipients` property. Using extra headers is just like sending a copy in a regular mail client:
+Multiple recipients can be set in two ways: through adding CC headers with the `extra_headers` property, or through the `extra_recipients` property. Using extra headers is just like sending a copy in a regular mail client:
 
 	$form->extra_headers = array(
 		'Cc: send_carbon_copy@example.com',
@@ -257,9 +260,9 @@ Extra headers aren't limited to carbon copies of course, anything can be added.
 
 Sometimes you don't want to send copies though, for example when the form is used for ordering and both you and the customer should get a copy of the order confirmation. It probably looks more professional for the client to receive a confirmation sent to him/her only. They should possibly also have different 'from' and/or 'reply-to' data. This is done with these properties:
 
-* `$extra_recipients` **(array)** One email address per array item. Each will get a separate mail sent with `wp_mail()`.
-* `$extras_from_name` **(string)** The 'from' name to use when sending to the extra recipients.
-* `$extras_from_address` **(string)** The 'from' email address to use when sending to the extra recipients.
+* `extra_recipients` **(array)** One email address per array item. Each will get a separate mail sent with `wp_mail()`.
+* `extras_from_name` **(string)** The 'from' name to use when sending to the extra recipients.
+* `extras_from_address` **(string)** The 'from' email address to use when sending to the extra recipients.
 
 The only difference between the extra messages and the regular ones will be the 'from' headers (unless set to the same of course).
 
@@ -375,6 +378,17 @@ An example setup with name, email, honeypot and message.
 	$form->render_form();
 
 ## Changelog
+
+### 1.7.0: Apr 13, 2014
+
+* New: Add `reverse_validation` argument to `add_field`, which reverses any custom regex validation result. True by default due to initially stupid thinking and thus backwards compatibility.
+* New: Add the self-explanatory `get_field_data` method.
+* New/tweak: Allow any values for checkboxes instead of defaulting to boolean. Derp.
+* New/tweak: Validation methods are now public and the default validation can be disabled by setting the new `validate_send` property to false. Allows 'faking' a POST and using data from another source.
+* Tweak: Don't count zeroes as empty values in validation.
+* Tweak/fix: Don't add `aria-required` to checkboxes, since it's invalid HTML for some reason.
+* Tweak/fix: Remove referer check, since it's not always set.
+* Fix: Add UTF-8 modifier (`u`) to line break regex. Fixes some other characters getting garbled.
 
 ### 1.6.2: Nov 03, 2013
 

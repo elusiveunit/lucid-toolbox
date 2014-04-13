@@ -6,7 +6,7 @@
  * Plugin URI: https://github.com/elusiveunit/lucid-toolbox
  * Description: A small collection of tools for speeding up development.
  * Author: Jens Lindberg
- * Version: 1.1.10
+ * Version: 1.1.11
  * License: GPL-2.0+
  * Text Domain: lucid-toolbox
  * Domain Path: /lang
@@ -28,7 +28,7 @@ elseif ( isset( $network_plugin ) && false !== strpos( $network_plugin, $lucid_t
 
 // Plugin constants
 if ( ! defined( 'LUCID_TOOLBOX_VERSION' ) )
-	define( 'LUCID_TOOLBOX_VERSION', '1.1.10' );
+	define( 'LUCID_TOOLBOX_VERSION', '1.1.11' );
 
 if ( ! defined( 'LUCID_TOOLBOX_URL' ) )
 	define( 'LUCID_TOOLBOX_URL', trailingslashit( plugin_dir_url( $lucid_toolbox_plugin_file ) ) );

@@ -22,6 +22,20 @@ Lucid Toolbox is currently available in the following languages:
 
 ## Changelog
 
+### 1.1.11: Apr 13, 2014
+
+#### Lucid\_Contact 1.7.0
+
+* New: Add `reverse_validation` argument to `add_field`, which reverses any custom regex validation result. True by default due to initially stupid thinking and thus backwards compatibility.
+* New: Add the self-explanatory `get_field_data` method.
+* New/tweak: Allow any values for checkboxes instead of defaulting to boolean. Derp.
+* New/tweak: Validation methods are now public and the default validation can be disabled by setting the new `validate_send` property to false. Allows 'faking' a POST and using data from another source.
+* Tweak: Don't count zeroes as empty values in validation.
+* Tweak/fix: Don't add `aria-required` to checkboxes, since it's invalid HTML for some reason.
+* Tweak/fix: Remove referer check, since it's not always set.
+* Fix: Add UTF-8 modifier (`u`) to line break regex. Fixes some other characters getting garbled.
+
+
 ### 1.1.10: Dec 09, 2013
 
 * Tweak/fix: Include [this](https://gist.github.com/aubreypwd/7828624) temporary workaround for the issue with `__FILE__` in symlinked plugins, see [trac ticket #16953](http://core.trac.wordpress.org/ticket/16953).

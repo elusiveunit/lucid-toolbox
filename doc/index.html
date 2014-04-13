@@ -38,6 +38,18 @@
 <li>Swedish</li>
 </ul>
 <h2>Changelog</h2>
+<h3>1.1.11: Apr 13, 2014</h3>
+<h4>Lucid_Contact 1.7.0</h4>
+<ul>
+<li>New: Add <code>reverse_validation</code> argument to <code>add_field</code>, which reverses any custom regex validation result. True by default due to initially stupid thinking and thus backwards compatibility.</li>
+<li>New: Add the self-explanatory <code>get_field_data</code> method.</li>
+<li>New/tweak: Allow any values for checkboxes instead of defaulting to boolean. Derp.</li>
+<li>New/tweak: Validation methods are now public and the default validation can be disabled by setting the new <code>validate_send</code> property to false. Allows &#39;faking&#39; a POST and using data from another source.</li>
+<li>Tweak: Don&#39;t count zeroes as empty values in validation.</li>
+<li>Tweak/fix: Don&#39;t add <code>aria-required</code> to checkboxes, since it&#39;s invalid HTML for some reason.</li>
+<li>Tweak/fix: Remove referer check, since it&#39;s not always set.</li>
+<li>Fix: Add UTF-8 modifier (<code>u</code>) to line break regex. Fixes some other characters getting garbled.</li>
+</ul>
 <h3>1.1.10: Dec 09, 2013</h3>
 <ul>
 <li>Tweak/fix: Include <a href="https://gist.github.com/aubreypwd/7828624">this</a> temporary workaround for the issue with <code>__FILE__</code> in symlinked plugins, see <a href="http://core.trac.wordpress.org/ticket/16953">trac ticket #16953</a>.</li>
