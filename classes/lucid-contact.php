@@ -102,8 +102,8 @@ class Lucid_Contact {
 	| add_submit
 	|
 	| [=Validation and sending]
-	| _verify_post
-	| _validate
+	| is_valid_post
+	| validate
 	| _get_subject
 	| _get_message_from_format
 	| _get_message_conditionals
@@ -117,7 +117,7 @@ class Lucid_Contact {
 	| _get_attachments
 	| _get_unique_file_path
 	| send
-	| _has_required_send_data
+	| has_required_send_data
 	| _clear_send
 	|
 	| [=Form rendering]
@@ -541,7 +541,7 @@ class Lucid_Contact {
 	 *
 	 * @since 1.0.0
 	 * @var string
-	 * @see _validate()
+	 * @see is_valid_data()
 	 */
 	protected $_form_status = '';
 
@@ -552,6 +552,24 @@ class Lucid_Contact {
 	 * @var bool
 	 */
 	public $handle_post = true;
+
+	/**
+	 * Whether to validate the POST data before trying to send.
+	 *
+	 * @since 1.7.0
+	 * @var bool
+	 * @see is_valid_send()
+	 */
+	public $validate_send = true;
+
+	/**
+	 * Cached status from is_valid_send().
+	 *
+	 * @since 1.7.0
+	 * @var bool
+	 * @see is_valid_send()
+	 */
+	protected $_is_valid_send = null;
 
 	/**
 	 * If send() has run and was successful.
@@ -1214,12 +1232,11 @@ class Lucid_Contact {
 	 * @since 1.5.2
 	 * @return bool True if everything passed, false otherwise.
 	 */
-	protected function _verify_post() {
+	public function is_valid_post() {
 
 		// Check POST request and correct referer
 		$posted = ( 'POST' == $_SERVER['REQUEST_METHOD']
-			&& ! empty( $_POST )
-			&& $this->form_location == $_SERVER['HTTP_REFERER'] );
+			&& ! empty( $_POST ) );
 
 		// Check that the correct form is processed
 		if ( $this->use_nonce )
@@ -1245,7 +1262,7 @@ class Lucid_Contact {
 	 * @since 1.0.0
 	 * @return bool True if POST data is valid, false if there were errors.
 	 */
-	protected function _validate() {
+	public function is_valid_data() {
 		$all_is_well = true;
 
 		// Honeypot checks
@@ -1926,6 +1943,24 @@ class Lucid_Contact {
 	}
 
 	/**
+	 * Data validation before constructing a message.
+	 *
+	 * @return bool
+	 */
+	public function is_valid_send() {
+		if ( ! is_null( $this->_is_valid_send ) )
+			return $this->_is_valid_send;
+
+		$this->_is_valid_send = (bool) (
+			   $this->has_required_send_data()
+			&& $this->is_valid_post()
+			&& $this->is_valid_data()
+		);
+
+		return $this->_is_valid_send;
+	}
+
+	/**
 	 * Send with wp_mail().
 	 *
 	 * TODO: Separate this a bit.
@@ -1937,9 +1972,7 @@ class Lucid_Contact {
 	public function send() {
 
 		// Check posting and data validation
-		if ( ! $this->_verify_post()
-		  || ! $this->_validate()
-		  || ! $this->_has_required_send_data() )
+		if ( $this->validate_send && ! $this->is_valid_send() )
 			return false;
 
 		// Get form data
@@ -2034,7 +2067,7 @@ class Lucid_Contact {
 	 * @since 1.0.0
 	 * @return boolean
 	 */
-	protected function _has_required_send_data() {
+	public function has_required_send_data() {
 		$has_data = true;
 
 		// Show some errors instead of failing silently
