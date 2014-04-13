@@ -1140,6 +1140,10 @@ class Lucid_Contact {
 		$aria_required = ( $args['required'] ) ? 'aria-required="true"' : 'aria-required="false"';
 		$checkbox_value = ( $args['value'] ) ? $args['value'] : '1';
 
+		// "Attribute aria-required not allowed on element input at this point."
+		if ( 'checkbox' == $type )
+			$aria_required = '';
+
 		// Start field tag
 		$field_part = "<input type=\"{$type}\" name=\"{$name}\" id=\"{$name}\" {$aria_required}";
 
