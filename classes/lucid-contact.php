@@ -779,8 +779,9 @@ class Lucid_Contact {
 	 *   for radio buttons and select lists.
 	 * - 'validation' (string) What type of validation to use. Predefined
 	 *   validation exists for strings 'email' and 'tel'. Any other string is
-	 *   passed as a regex to preg_match(). If a regex is passed, it should
-	 *   MATCH INVALID characters, i.e. '/[\d]/' to NOT allow digits.
+	 *   passed as a regex to preg_match().
+	 * - 'reverse_validation' (bool) Whether to reverse results of custom regex
+	 *   in the 'validation' argument, i.e. '/[\d]/' to NOT allow digits.
 	 * - 'error_empty' (string) Error message for when a required field is empty
 	 *   on submission.
 	 * - 'error_invalid' (string) Error message for when a field with validation
@@ -809,6 +810,7 @@ class Lucid_Contact {
 			'required' => ( 'hidden' != $type ), // Hidden never required
 			'message_prefix' => $message_prefix,
 			'validation' => '',
+			'reverse_validation' => true,
 			'error_empty' => __( 'The field is required', 'lucid-toolbox' ),
 			'error_invalid' => __( 'The provided information is invalid', 'lucid-toolbox' )
 		);
@@ -825,6 +827,7 @@ class Lucid_Contact {
 		$field['type'] = $type;
 		$field['required'] = (bool) $args['required'];
 		$field['message_prefix'] = (string) $args['message_prefix'];
+		$field['reverse_validation'] = (bool) $args['reverse_validation'];
 		if ( ! empty( $args['validation'] ) ) $field['validation'] = $args['validation'];
 		if ( ! empty( $args['error_empty'] ) ) $field['error_empty'] = $args['error_empty'];
 		if ( ! empty( $args['error_invalid'] ) ) $field['error_invalid'] = $args['error_invalid'];
@@ -1325,10 +1328,9 @@ class Lucid_Contact {
 						break;
 
 					default :
-						// Non-reserved strings assumed to be regex. If something
-						// matches, is_valid should be false, so preg_match is
-						// reversed
-						$is_valid = ! preg_match( $validation, $_POST[$id] );
+						// Non-reserved strings assumed to be regex.
+						$is_valid = (bool) preg_match( $validation, $_POST[$id] );
+						$is_valid = ( $data['reverse_validation'] ) ? ! $is_valid : $is_valid;
 						break;
 				endswitch;
 
