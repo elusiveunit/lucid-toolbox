@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  * that will hopefully be remedied someday in the future.
  *
  * @package Lucid\Toolbox
- * @version 1.6.2
+ * @version 1.7.0
  */
 class Lucid_Contact {
 
@@ -1282,18 +1282,18 @@ class Lucid_Contact {
 		foreach ( $this->_fields as $name => $data ) :
 
 			// Skip submit fields
-			if ( isset( $this->_fields[$name]['type'] )
-			  && 'submit' == $this->_fields[$name]['type'] ) continue;
+			if ( isset( $data['type'] )
+			  && 'submit' == $data['type'] ) continue;
 
 			$error_msg = '';
-			$validation = isset( $this->_fields[$name]['validation'] )
-				? $this->_fields[$name]['validation']
-				: '';
+			$validation = isset( $data['validation'] ) ? $data['validation'] : '';
 
 			// Radio button ID clash handling, remove added -# string
 			$id = $name;
 			if ( 'radio' == $data['type'] )
 				$id = preg_replace( '/-\d+$/', '', $name );
+
+			$value = ( isset( $_POST[$id] ) ) ? $_POST[$id] : null;
 
 			// If field is required and empty
 			// Some ugly stuff here, but file and other inputs needs different
@@ -1301,19 +1301,18 @@ class Lucid_Contact {
 			// level for elseif to kick in on non-empty fields.
 			if ( (
 				   'file' != $data['type']
-				&& empty( $_POST[$id] )
-				&& ! empty( $this->_fields[$name]['required'] )
-				&& ( empty( $_POST[$id] ) && ! in_array( $_POST[$id], array( 0, 0.0, '0' ), true ) ) // Allow zeroes
+				&& ! empty( $data['required'] )
+				&& ( empty( $value ) && ! in_array( $value, array( 0, 0.0, '0' ), true ) ) // Allow zeroes
 			) || (
 				   'file' == $data['type']
 				&& 4 == $_FILES[$name]['error']
-				&& ! empty( $this->_fields[$name]['required'] )
+				&& ! empty( $data['required'] )
 			) ) :
 				$error_count++;
 
 				// Add error message for 'empty' if it exists
-				if ( ! empty( $this->_fields[$name]['error_empty'] ) ) :
-					$error_msg = $this->_fields[$name]['error_empty'];
+				if ( ! empty( $data['error_empty'] ) ) :
+					$error_msg = $data['error_empty'];
 				endif;
 
 			// If field has some kind of validation defined and a message for
@@ -1323,26 +1322,26 @@ class Lucid_Contact {
 
 				switch ( $validation ) :
 					case 'email' :
-						$is_valid = $this->is_valid_email( $_POST[$id] );
+						$is_valid = $this->is_valid_email( $value );
 						break;
 
 					case 'tel' :
-						$is_valid = $this->is_valid_tel( $_POST[$id] );
+						$is_valid = $this->is_valid_tel( $value );
 						break;
 
 					case 'honeypot' :
-						$is_valid = ( '' == $_POST[$id] );
+						$is_valid = ( '' == $value );
 						break;
 
 					default :
 						// Non-reserved strings assumed to be regex.
-						$is_valid = (bool) preg_match( $validation, $_POST[$id] );
+						$is_valid = (bool) preg_match( $validation, $value );
 						$is_valid = ( $data['reverse_validation'] ) ? ! $is_valid : $is_valid;
 						break;
 				endswitch;
 
 				// If the field is optional and empty, ignore any validation done
-				if ( empty( $this->_fields[$name]['required'] ) && empty( $_POST[$id] ) )
+				if ( empty( $data['required'] ) && empty( $value ) )
 					$is_valid = true;
 
 				// Invalid, add relevant data
@@ -1350,8 +1349,8 @@ class Lucid_Contact {
 					$error_count++;
 
 					// Add error message for 'invalid' if it exists
-					if ( ! empty( $this->_fields[$name]['error_invalid'] ) )
-						$error_msg = $this->_fields[$name]['error_invalid'];
+					if ( ! empty( $data['error_invalid'] ) )
+						$error_msg = $data['error_invalid'];
 
 					// See large comment about honeypot below
 					if ( 'honeypot' == $validation )
@@ -1364,7 +1363,7 @@ class Lucid_Contact {
 				$all_is_well = false;
 
 				// Add error span before closing wrap tag if it exists in $fields
-				if ( isset( $this->_fields[$name]['close'] ) ) :
+				if ( isset( $data['close'] ) ) :
 					$this->_fields[$name] = $this->_array_insert(
 						'after',
 						'tag_close',
@@ -1378,7 +1377,7 @@ class Lucid_Contact {
 					$this->_fields[$name]['error'] = '<span class="error field-error">' . $error_msg . '</span>';
 				endif;
 
-				$tag = $this->_fields[$name]['tag_open'];
+				$tag = $data['tag_open'];
 
 				// Update form tag with error classes and aria-invalid. If there is
 				// a class attribute, add to it. Otherwise, add a class attribute
@@ -2015,7 +2014,7 @@ class Lucid_Contact {
 			echo '<i>To</i>: ' . $to . '<br><br>';
 			echo '<i>Subject</i>: ' . $subject . '<br><br>';
 			echo '<i>Headers</i>:<br>' . htmlspecialchars( implode( "\n", $headers ) ) . '<br><br>';
-			echo '<i>Message</i>:<br>' . htmlspecialchars( $message ) . '<br><br>';
+			echo '<i>Message</i>:<br>' . htmlspecialchars( $message, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE ) . '<br><br>';
 			$this->_debug_close();
 		endif;
 
@@ -2195,6 +2194,16 @@ class Lucid_Contact {
 	public function get_form_start( $include_status = true ) {
 		self::$_form_count++;
 
+		// --Debug--
+		// Print the $_fields array
+		if ( $this->debug_mode ) :
+			$this->_debug_open( '$this->_fields' );
+			$debug_fields =  $this->_fields;
+			array_walk_recursive( $debug_fields, array( 'self', '_debug_filter' ) );
+			print_r( $debug_fields );
+			$this->_debug_close();
+		endif;
+
 		$this->_form_id = ( $this->use_nonce ) ? 'lucid-form-' . self::$_form_count : self::$_form_count;
 
 		if ( $this->handle_post )
@@ -2302,16 +2311,6 @@ class Lucid_Contact {
 	 * @see assemble_form()
 	 */
 	public function render_form() {
-
-		// --Debug--
-		// Print the $_fields array
-		if ( $this->debug_mode ) :
-			$this->_debug_open( '$this->_fields' );
-			array_walk_recursive( $this->_fields, array( 'self', '_debug_filter' ) );
-			print_r( $this->_fields );
-			$this->_debug_close();
-		endif;
-
 		echo $this->get_form();
 	}
 
