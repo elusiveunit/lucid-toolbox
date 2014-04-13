@@ -827,6 +827,7 @@ class Lucid_Contact {
 		$field['type'] = $type;
 		$field['required'] = (bool) $args['required'];
 		$field['message_prefix'] = (string) $args['message_prefix'];
+		$field['value'] = (string) $args['value'];
 		$field['reverse_validation'] = (bool) $args['reverse_validation'];
 		if ( ! empty( $args['validation'] ) ) $field['validation'] = $args['validation'];
 		if ( ! empty( $args['error_empty'] ) ) $field['error_empty'] = $args['error_empty'];
@@ -1137,12 +1138,13 @@ class Lucid_Contact {
 	 */
 	protected function _get_input_field( $type, $name, $args ) {
 		$aria_required = ( $args['required'] ) ? 'aria-required="true"' : 'aria-required="false"';
+		$checkbox_value = ( $args['value'] ) ? $args['value'] : '1';
 
 		// Start field tag
 		$field_part = "<input type=\"{$type}\" name=\"{$name}\" id=\"{$name}\" {$aria_required}";
 
 		if ( 'checkbox' == $type )
-			$field_part .= ' value="1"';
+			$field_part .= " value=\"{$checkbox_value}\"";
 
 		// Additional attributes
 		$field_part .= $this->_get_attributes_string( $args['field_attributes'] );
@@ -1153,7 +1155,7 @@ class Lucid_Contact {
 		// Checkboxes keep checked state, other inputs have the value attribute.
 		if ( isset( $_POST[$name] ) ) :
 			if ( 'checkbox' == $type ) :
-				$field['post'] = ( 1 === (int) $_POST[$name] ) ? ' checked="checked"' : '';
+				$field['post'] = ( (string) $checkbox_value === (string) $_POST[$name] ) ? ' checked="checked"' : '';
 			else :
 				$field['post'] = ' value="' . esc_attr( $_POST[$name] ) . '"';
 			endif;
@@ -1596,7 +1598,7 @@ class Lucid_Contact {
 					? nl2br( $this->filter_html( $_POST[$field] ) )
 					: $_POST[$field];
 
-				$replace = ( $this->is_checkbox( $field ) )
+				$replace = ( $this->is_checkbox( $field ) && ! $this->_fields[$field]['value'] )
 					? str_replace( $tag, _x( 'yes', 'checkbox yes', 'lucid-toolbox' ), $cond_content )
 					: str_replace( $tag, $post_value, $cond_content );
 
@@ -1609,7 +1611,7 @@ class Lucid_Contact {
 
 			// Otherwise replace checkbox with 'no' and remove others
 			else :
-				$replace = ( $this->is_checkbox( $field ) )
+				$replace = ( $this->is_checkbox( $field ) && ! $this->_fields[$field]['value'] )
 					? str_replace( $tag, _x( 'no', 'checkbox no', 'lucid-toolbox' ), $cond_content )
 					: '';
 			endif;
@@ -1647,7 +1649,7 @@ class Lucid_Contact {
 		if ( isset( $_POST[$field] ) ) :
 
 			// Checkbox is set as yes or no
-			if ( $this->is_checkbox( $field ) ) :
+			if ( $this->is_checkbox( $field ) && ! $this->_fields[$field]['value'] ) :
 				$text = str_replace( $tag, _x( 'yes', 'checkbox yes', 'lucid-toolbox' ), $text );
 
 			// Regular fields just have their data added
