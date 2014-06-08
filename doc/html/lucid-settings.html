@@ -9,7 +9,7 @@
 </head>
 <body id="intro">
 
-<h1>Lucid_Settings</h1>
+<h1 id="lucid-_settings">Lucid_Settings</h1>
 <p>Simple settings page generation, using the Settings API.</p>
 <p>Setup is simple, create a new settings object with a unique ID and a heading:</p>
 <pre><code>$example_settings = new Lucid_Settings( &#39;example_settings_id&#39; );
@@ -22,13 +22,13 @@ $example_settings-&gt;page_heading = __( &#39;My settings&#39;, &#39;TEXTDOMAIN&
 </ul>
 <p>Finally initialize the page with <code>$example_settings-&gt;init();</code>.</p>
 <p>Settings are accessed with the ID (<code>get_option( &#39;example_settings_id&#39; )</code>) when using a single page and tab ID when using tabs. To use a tabbed settings page, simply add a &#39;tabs&#39; array to <code>submenu()</code>, see below.</p>
-<h2>Properties</h2>
+<h2 id="properties">Properties</h2>
 <p>Some options are controlled through properties: <code>$instance-&gt;prop = &#39;value&#39;</code>.</p>
 <ul>
 <li><code>capability</code> <strong>(string)</strong> Capability required to edit the settings. Defaults to <code>&#39;manage_options&#39;</code>.</li>
 <li><code>pass_settings_errors_id</code> <strong>(bool)</strong> <em>Should no longer be needed as of 1.5.1</em>. Whether to pass setting ID to <code>settings_errors</code>. This is sometimes needed to avoid multiple update messages, other times it causes update messages to not be displayed at all. I have yet to find the reason for the issue. Defaults to false.</li>
 </ul>
-<h2>Submenu</h2>
+<h2 id="submenu">Submenu</h2>
 <p>The <code>submenu</code> method requires a menu label text, and accepts some optional arguments through an array:</p>
 <ul>
 <li><code>&#39;add_to&#39;</code> <strong>(string)</strong> Slug for the parent menu, or the file name of a standard WordPress admin page (wp-admin/<file_name>). Includes .php extension and defaults to <code>&#39;options-general.php&#39;</code>.</li>
@@ -46,14 +46,14 @@ $example_settings-&gt;page_heading = __( &#39;My settings&#39;, &#39;TEXTDOMAIN&
     )
 ) );</code></pre>
 <p>When using tabs, each tab is saved as a separate option (<code>get_option( &#39;my_advanced_settings&#39; )</code>).</p>
-<h2>Section</h2>
+<h2 id="section">Section</h2>
 <p>Fields are added to sections, so at least one section must be added. The <code>section</code> method requires an ID, and accepts some optional arguments through an array:</p>
 <ul>
 <li><code>&#39;heading&#39;</code> <strong>(string)</strong> Section heading.</li>
 <li><code>&#39;tab&#39;</code> <strong>(string)</strong> Tab to add section to. Tabs are defined with <code>submenu()</code>. Defaults to first tab if there are any.</li>
 <li><code>&#39;output&#39;</code> <strong>(string)</strong> HTML to display at the top of the section, below the heading.</li>
 </ul>
-<h2>Field</h2>
+<h2 id="field">Field</h2>
 <p>The <code>field</code> method requires an ID and a label, and accepts additional arguments through an array (see the pattern?):</p>
 <ul>
 <li><code>&#39;type&#39;</code> <strong>(string)</strong> Type of field. Fields without specific &#39;support&#39; will fall back to just an input with the specified type. Supported types:<ul>
@@ -92,14 +92,14 @@ $example_settings-&gt;page_heading = __( &#39;My settings&#39;, &#39;TEXTDOMAIN&
 </ul>
 <p>When the data is passed through the required checks, an explicitly defined sanitize value of <code>&#39;none&#39;</code> is required to save unfiltered data. Any sanitize or validate values take precedence. If no sanitation or validation is defined, the default action is stripping illegal tags with <a href="http://codex.wordpress.org/Function_Reference/wp_kses_post">wp_kses_post</a>.</p>
 <p>Wrapping field registration with a <code>is_on_settings_page</code> if statement is a good idea, to limit unnecessary function calls on other admin pages.</p>
-<h3>Predefined validation</h3>
+<h3 id="predefined-validation">Predefined validation</h3>
 <p>There are a few predefined validation options:</p>
 <ul>
 <li><code>&#39;email&#39;</code> Email address, uses the PHP <code>FILTER_VALIDATE_EMAIL</code></li>
 <li><code>&#39;url&#39;</code> URL, uses a modified regex by <a href="http://daringfireball.net/2010/07/improved_regex_for_matching_urls">John Gruber</a></li>
 <li><code>&#39;hex_color&#39;</code> Hexadecimal color (like 101 or bada55, hash is optional)</li>
 </ul>
-<h3>Predefined sanitation</h3>
+<h3 id="predefined-sanitation">Predefined sanitation</h3>
 <p>There are a few predefined sanitation options:</p>
 <ul>
 <li><code>&#39;checkbox&#39;</code> Always 1 or 0.</li>
@@ -112,7 +112,7 @@ $example_settings-&gt;page_heading = __( &#39;My settings&#39;, &#39;TEXTDOMAIN&
 <li><code>&#39;shortcode&#39;</code> Removes greater/less than and forces enclosing square brackets.</li>
 <li><code>&#39;empty&#39;</code> No value. Useful for fields acting as &#39;tools&#39; that shouldn&#39;t save anything.</li>
 </ul>
-<h3>Custom output callback</h3>
+<h3 id="custom-output-callback">Custom output callback</h3>
 <p>For fine-grained control of the output, a custom callback can be used. The format is standard PHP, so a string for regular functions and the array notation for class methods.</p>
 <pre><code>$example_settings-&gt;field(
     &#39;my_field&#39;,
@@ -134,14 +134,14 @@ function my_field_callback( $args ) { ?&gt;
 
 &lt;?php }</code></pre>
 <p>Arguments like <code>sanitize</code> that are not related to output work the same. The <code>$args</code> parameter contains all the <code>field</code> arguments, as well as some extras like <code>prefix</code>, <code>id</code> and <code>value</code>. Keeping the id, name and value attributes like the example is recommended, to ensure labels and saving works as intended.</p>
-<h2>HTML</h2>
+<h2 id="html">HTML</h2>
 <p>Arbitrary HTML can be added with the <code>html</code> method, which takes two arguments:</p>
 <ul>
 <li>A field ID, which the HTML will be inserted after.</li>
 <li>The string of HTML to be added.</li>
 </ul>
 <p>An alternative is to use the <code>field</code> method with an empty label and a custom output callback. The benefit with that is that it&#39;s not dependant on another field.</p>
-<h2>Complete examples</h2>
+<h2 id="complete-examples">Complete examples</h2>
 <p>Since there are quite a few options, here are some examples to get the gist of it.</p>
 <pre><code>// Setup
 $example_settings = new Lucid_Settings( &#39;example_settings&#39;, __( &#39;My example settings&#39;, &#39;TEXTDOMAIN&#39; ) );
@@ -244,76 +244,76 @@ if ( $example_settings-&gt;is_on_settings_page() ) :
 endif;
 
 $example_settings-&gt;init();</code></pre>
-<h2>Changelog</h2>
-<h3>1.7.0: Dec 09, 2013</h3>
+<h2 id="changelog">Changelog</h2>
+<h3 id="1-7-0-dec-09-2013">1.7.0: Dec 09, 2013</h3>
 <ul>
 <li>New: Add <code>is_on_settings_page</code> method, which returns true if the settings page is currently displayed. This can be wrapped in an if statement around the <code>field</code> calls to reduce unnecessary function calls.</li>
 <li>Tweak/fix: Fix some notices and encoding issues, and improve the error highlighting script.</li>
 <li>Fix: Restore missing inline label argument for <code>add_settings_field</code> callbacks.</li>
 </ul>
-<h3>1.6.0: Nov 03, 2013</h3>
+<h3 id="1-6-0-nov-03-2013">1.6.0: Nov 03, 2013</h3>
 <ul>
 <li>New: Add <code>&#39;output_callback&#39;</code> parameter to <code>field</code>, which allows custom callback methods for the field HTML.</li>
 <li>New/tweak: What should have been done right from the start: if a field type is not &#39;supported&#39;, just add it as input [type] instead of converting to text.</li>
 <li>Tweak: Add <code>novalidate</code> to the form, to disable inconsistent browser validation of some field types.</li>
 <li>Fix: The <code>html</code> method now works with checklists.</li>
 </ul>
-<h3>1.5.1: Oct 20, 2013</h3>
+<h3 id="1-5-1-oct-20-2013">1.5.1: Oct 20, 2013</h3>
 <ul>
 <li>Tweak: Don&#39;t call <code>settings_errors</code> on options pages, since they&#39;re apparently <a href="http://wordpress.stackexchange.com/a/18637/33110">called automatically there</a>. If I&#39;ve finally understood this correctly, <code>pass_settings_errors_id</code> should no longer be needed.</li>
 </ul>
-<h3>1.5.0: Oct 06, 2013</h3>
+<h3 id="1-5-0-oct-06-2013">1.5.0: Oct 06, 2013</h3>
 <ul>
 <li>New: Add <code>color_picker</code> field type, to show a color picker (duh).</li>
 <li>Tweak: Default <code>pass_settings_errors_id</code> to false instead of true. I seem to always set this to false nowadays, so the double message behavior may have been a bug that has been fixed.</li>
 </ul>
-<h3>1.4.0: Aug 25, 2013</h3>
+<h3 id="1-4-0-aug-25-2013">1.4.0: Aug 25, 2013</h3>
 <ul>
 <li>New: Add post and page select list fields, named <code>post_select</code> and <code>page_select</code> respectively. The value saved from the field is the selected post&#39;s ID. The fields work pretty much the same way, only difference being that <code>page_select</code> displayes hierarchy. The post type used for a <code>page_select</code> field must be hierarchial. What post type(s) to use can be set with the <code>select_post_type</code> argument.</li>
 <li>Tweak: Change hex color validation to make the hash optional, instead of stripping it beforehand.</li>
 </ul>
-<h3>1.3.6: June 13, 2013</h3>
+<h3 id="1-3-6-june-13-2013">1.3.6: June 13, 2013</h3>
 <ul>
 <li>Fix: Set required save capability with <code>option_page_capability_[id]</code> when using a custom one. The Settings API requires posting to <code>options.php</code>, which defaults to requiring the <code>manage_options</code> capability, regardless of what the option page with the form is set to require.</li>
 </ul>
-<h3>1.3.5: June 11, 2013</h3>
+<h3 id="1-3-5-june-11-2013">1.3.5: June 11, 2013</h3>
 <ul>
 <li>New: Add <code>editor</code> field type, to show a visual editor/WYSIWYG area/TinyMCE box.</li>
 </ul>
-<h3>1.3.4: May 22, 2013</h3>
+<h3 id="1-3-4-may-22-2013">1.3.4: May 22, 2013</h3>
 <ul>
 <li>Fix: Don&#39;t validate empty values, since that could prevent erasing them.</li>
 </ul>
-<h3>1.3.3: May 18, 2013</h3>
+<h3 id="1-3-3-may-18-2013">1.3.3: May 18, 2013</h3>
 <ul>
 <li>Fix: Prevent notice with unsaved checklists.</li>
 </ul>
-<h3>1.3.2: Apr 14, 2013</h3>
+<h3 id="1-3-2-apr-14-2013">1.3.2: Apr 14, 2013</h3>
 <ul>
 <li>New: Add <code>pass_settings_errors_id</code> property to control <code>settings_errors</code>. Passing the ID seems to be needed sometimes to prevent double update messages. Other times, passing it prevents messages from showing up at all. I don&#39;t know the reason yet, so this is all trial and error.</li>
 </ul>
-<h3>1.3.1: Mar 27, 2013</h3>
+<h3 id="1-3-1-mar-27-2013">1.3.1: Mar 27, 2013</h3>
 <ul>
 <li>Initial public release.</li>
 <li>Fix: Prevent notices with default values when using checklists by not overwriting the ID variable.</li>
 </ul>
-<h3>1.3.0</h3>
+<h3 id="1-3-0">1.3.0</h3>
 <ul>
 <li>New: Add &#39;button field&#39;.</li>
 <li>Tweak: A lot of internal restructuring.</li>
 </ul>
-<h3>1.2.0</h3>
+<h3 id="1-2-0">1.2.0</h3>
 <ul>
 <li>New: Add custom validation and sanitation.</li>
 <li>New: Highlight fields with errors.</li>
 <li>New: Add ability to include general HTML.</li>
 </ul>
-<h3>1.1.0</h3>
+<h3 id="1-1-0">1.1.0</h3>
 <ul>
 <li>New: Add checklists, a grouped list of checkboxes, as a field type.</li>
 <li>New: Add ability to set default values.</li>
 </ul>
-<h3>1.0.0</h3>
+<h3 id="1-0-0">1.0.0</h3>
 <ul>
 <li>Initial version.</li>
 </ul>

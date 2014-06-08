@@ -19,7 +19,7 @@
 
 <p class="pointer">&larr; Choose a section</p>
 
-<h1>Lucid Toolbox</h1>
+<h1 id="lucid-toolbox">Lucid Toolbox</h1>
 <p>A set of classes used to speed up and automate common tasks.</p>
 <ul>
 <li><code>Lucid_Post_Type</code> for creating custom post types.</li>
@@ -37,9 +37,9 @@
 <li>English</li>
 <li>Swedish</li>
 </ul>
-<h2>Changelog</h2>
-<h3>1.1.11: Apr 13, 2014</h3>
-<h4>Lucid_Contact 1.7.0</h4>
+<h2 id="changelog">Changelog</h2>
+<h3 id="1-1-11-apr-13-2014">1.1.11: Apr 13, 2014</h3>
+<h4 id="lucid-_contact-1-7-0">Lucid_Contact 1.7.0</h4>
 <ul>
 <li>New: Add <code>reverse_validation</code> argument to <code>add_field</code>, which reverses any custom regex validation result. True by default due to initially stupid thinking and thus backwards compatibility.</li>
 <li>New: Add the self-explanatory <code>get_field_data</code> method.</li>
@@ -50,80 +50,80 @@
 <li>Tweak/fix: Remove referer check, since it&#39;s not always set.</li>
 <li>Fix: Add UTF-8 modifier (<code>u</code>) to line break regex. Fixes some other characters getting garbled.</li>
 </ul>
-<h3>1.1.10: Dec 09, 2013</h3>
+<h3 id="1-1-10-dec-09-2013">1.1.10: Dec 09, 2013</h3>
 <ul>
 <li>Tweak/fix: Include <a href="https://gist.github.com/aubreypwd/7828624">this</a> temporary workaround for the issue with <code>__FILE__</code> in symlinked plugins, see <a href="http://core.trac.wordpress.org/ticket/16953">trac ticket #16953</a>.</li>
 </ul>
-<h4>Lucid_Post_Type 1.2.0</h4>
+<h4 id="lucid-_post-_type-1-2-0">Lucid_Post_Type 1.2.0</h4>
 <ul>
 <li>New: Add <code>icon</code> argument for the new Dashicons in WordPress 3.8.</li>
 </ul>
-<h4>Lucid_Settings 1.7.0</h4>
+<h4 id="lucid-_settings-1-7-0">Lucid_Settings 1.7.0</h4>
 <ul>
 <li>New: Add <code>is_on_settings_page</code> method, which returns true if the settings page is currently displayed. This can be wrapped in an if statement around the <code>field</code> calls to reduce unnecessary function calls.</li>
 <li>Tweak/fix: Fix some notices and encoding issues, and improve the error highlighting script.</li>
 <li>Fix: Restore missing inline label argument for <code>add_settings_field</code> callbacks.</li>
 </ul>
-<h4>WPAlchemy_MetaBox 1.5.2.lucid-1</h4>
+<h4 id="wpalchemy-_metabox-1-5-2-lucid-1">WPAlchemy_MetaBox 1.5.2.lucid-1</h4>
 <ul>
 <li>New: Add <code>area</code> argument (string). Defaults to <code>metabox</code>, which doesn&#39;t do anything different. Can also be set to <code>after_title</code> or <code>after_editor</code>, which will add the metabox template content directly to the page in those places. Since it&#39;s not a meta &#39;box&#39; in those cases, arguments like title, context etc. won&#39;t have any effect.</li>
 <li>Tweak: Move the htmlentities filtering from <code>get_the_value</code> to <code>the_value</code>, so that the pure data can be passed to a wp_editor instance.</li>
 </ul>
-<h3>1.1.9: Nov 03, 2013</h3>
-<h4>Lucid_Settings 1.6.0</h4>
+<h3 id="1-1-9-nov-03-2013">1.1.9: Nov 03, 2013</h3>
+<h4 id="lucid-_settings-1-6-0">Lucid_Settings 1.6.0</h4>
 <ul>
 <li>New: Add <code>&#39;output_callback&#39;</code> parameter to <code>field</code>, which allows custom callback methods for the field HTML.</li>
 <li>New/tweak: What should have been done right from the start: if a field type is not &#39;supported&#39;, just add it as input [type] instead of converting to text.</li>
 <li>Tweak: Add <code>novalidate</code> to the form, to disable inconsistent browser validation of some field types.</li>
 <li>Fix: The <code>html</code> method now works with checklists.</li>
 </ul>
-<h4>Lucid_Contact 1.6.2</h4>
+<h4 id="lucid-_contact-1-6-2">Lucid_Contact 1.6.2</h4>
 <ul>
 <li>New: Add the <code>is_form_sent</code> method for checking the success state.</li>
 <li>New: Add <code>aria-required</code> and <code>aria-invalid</code> attributes to fields when appropriate.</li>
 </ul>
-<h3>1.1.8: Oct 20, 2013</h3>
-<h4>Lucid_Settings 1.5.1</h4>
+<h3 id="1-1-8-oct-20-2013">1.1.8: Oct 20, 2013</h3>
+<h4 id="lucid-_settings-1-5-1">Lucid_Settings 1.5.1</h4>
 <ul>
 <li>Tweak: Don&#39;t call <code>settings_errors</code> on options pages, since they&#39;re apparently <a href="http://wordpress.stackexchange.com/a/18637/33110">called automatically there</a>. If I&#39;ve finally understood this correctly, <code>pass_settings_errors_id</code> should no longer be needed.</li>
 </ul>
-<h3>1.1.7: Oct 06, 2013</h3>
-<h4>Lucid_Settings 1.5.0</h4>
+<h3 id="1-1-7-oct-06-2013">1.1.7: Oct 06, 2013</h3>
+<h4 id="lucid-_settings-1-5-0">Lucid_Settings 1.5.0</h4>
 <ul>
 <li>New: Add <code>color_picker</code> field type, to show a color picker (duh).</li>
 <li>Tweak: Default <code>pass_settings_errors_id</code> to false instead of true. I seem to always set this to false nowadays, so the double message behavior may have been a bug that has been fixed.</li>
 </ul>
-<h4>Lucid_Contact 1.6.1</h4>
+<h4 id="lucid-_contact-1-6-1">Lucid_Contact 1.6.1</h4>
 <ul>
 <li>Tweak: Ignore validation on optional fields if the value is empty. This allows validation on optional fields, while still allowing them to be optional. One example would be an optional email field; an empty value shouldn&#39;t cause an error, but a filled one should if the email is invalid.</li>
 <li>Tweak: Set <code>input-error</code> CSS class on input fields with errors.</li>
 </ul>
-<h3>1.1.6: Sep 16, 2013</h3>
-<h4>Lucid_Contact 1.6.0</h4>
+<h3 id="1-1-6-sep-16-2013">1.1.6: Sep 16, 2013</h3>
+<h4 id="lucid-_contact-1-6-0">Lucid_Contact 1.6.0</h4>
 <ul>
 <li>New: Finally add a stupidly obvious way of freely using HTML without <code>add_to_field_list</code>, by separating the form assembly and render methods. See new &#39;Separate field rendering&#39; section in the documentation.</li>
 <li>Tweak: Disable the nonce field added in 1.5.2 by default. A nonce can cause issues if caching is used, since the nonce string can be cached and thus invalid for a time until the cache is renewed. A hidden field with the internal form ID is used instead, so there can still be multiple forms on the same page. The new <code>use_nonce</code> property (defaults to false) can be used to get the old behavior.</li>
 </ul>
-<h3>1.1.5: Aug 25, 2013</h3>
-<h4>Lucid_Post_Type 1.1.2</h4>
+<h3 id="1-1-5-aug-25-2013">1.1.5: Aug 25, 2013</h3>
+<h4 id="lucid-_post-_type-1-1-2">Lucid_Post_Type 1.1.2</h4>
 <ul>
 <li>Tweak: Check the post type name before registering and trigger errors if it&#39;s invalid.</li>
 </ul>
-<h4>Lucid_Taxonomy 1.1.3</h4>
+<h4 id="lucid-_taxonomy-1-1-3">Lucid_Taxonomy 1.1.3</h4>
 <ul>
 <li>Tweak: Check the taxonomy name before registering and trigger errors if it&#39;s invalid.</li>
 </ul>
-<h4>Lucid_Settings 1.4.0</h4>
+<h4 id="lucid-_settings-1-4-0">Lucid_Settings 1.4.0</h4>
 <ul>
 <li>New: Add post and page select list fields, named <code>post_select</code> and <code>page_select</code> respectively. The value saved from the field is the selected post&#39;s ID. The fields work pretty much the same way, only difference being that <code>page_select</code> displayes hierarchy. The post type used for a <code>page_select</code> field must be hierarchial. What post type(s) to use can be set with the <code>select_post_type</code> argument.</li>
 <li>Tweak: Change hex color validation to make the hash optional, instead of stripping it beforehand.</li>
 </ul>
-<h4>WPAlchemy_MetaBox</h4>
+<h4 id="wpalchemy-_metabox">WPAlchemy_MetaBox</h4>
 <ul>
 <li>Tweak: Update PHP 4-style declarations to PHP 5. This prevents Strict Standards notices in WordPress 3.6 on PHP 5.4.</li>
 </ul>
-<h3>1.1.4: June 30, 2013</h3>
-<h4>Lucid_Contact 1.5.2</h4>
+<h3 id="1-1-4-june-30-2013">1.1.4: June 30, 2013</h3>
+<h4 id="lucid-_contact-1-5-2">Lucid_Contact 1.5.2</h4>
 <ul>
 <li>New: Add a nonce field for more secure forms and to differentiate between multiple forms on the same page.</li>
 <li>New: Add new error message (with key <code>invalid_post</code>) for when the nonce check fails.</li>
@@ -131,66 +131,66 @@
 <li>Tweak: Change form errors from <code>p</code> tags to <code>div</code> tags. Add the better classes <code>form-error</code> and <code>field-error</code>, to the form error and field errors respectively.</li>
 <li>Tweak: Remove plain text word wrapping, since it&#39;s wrapping at weird places sometimes.</li>
 </ul>
-<h3>1.1.3: June 13, 2013</h3>
-<h4>Lucid_Settings 1.3.6</h4>
+<h3 id="1-1-3-june-13-2013">1.1.3: June 13, 2013</h3>
+<h4 id="lucid-_settings-1-3-6">Lucid_Settings 1.3.6</h4>
 <ul>
 <li>Fix: Set required save capability with <code>option_page_capability_[id]</code> when using a custom one. The Settings API requires posting to <code>options.php</code>, which defaults to requiring the <code>manage_options</code> capability, regardless of what the option page with the form is set to require.</li>
 </ul>
-<h3>1.1.2: June 11, 2013</h3>
-<h4>Lucid_Settings 1.3.5</h4>
+<h3 id="1-1-2-june-11-2013">1.1.2: June 11, 2013</h3>
+<h4 id="lucid-_settings-1-3-5">Lucid_Settings 1.3.5</h4>
 <ul>
 <li>New: Add <code>editor</code> field type, to show a visual editor/WYSIWYG area/TinyMCE box.</li>
 </ul>
-<h3>1.1.1: May 22, 2013</h3>
-<h4>Lucid_Post_Type 1.1.1</h4>
+<h3 id="1-1-1-may-22-2013">1.1.1: May 22, 2013</h3>
+<h4 id="lucid-_post-_type-1-1-1">Lucid_Post_Type 1.1.1</h4>
 <ul>
 <li>Tweak: Register post type in the constructor, allowing the user to choose the hook.</li>
 </ul>
-<h4>Lucid_Taxonomy 1.1.2</h4>
+<h4 id="lucid-_taxonomy-1-1-2">Lucid_Taxonomy 1.1.2</h4>
 <ul>
 <li>Tweak: Register taxonomy in the constructor, allowing the user to choose the hook.</li>
 </ul>
-<h4>Lucid_Settings 1.3.4</h4>
+<h4 id="lucid-_settings-1-3-4">Lucid_Settings 1.3.4</h4>
 <ul>
 <li>Fix: Don&#39;t validate empty values, since that could prevent erasing them.</li>
 </ul>
-<h4>Lucid_Contact 1.5.1</h4>
+<h4 id="lucid-_contact-1-5-1">Lucid_Contact 1.5.1</h4>
 <ul>
 <li>Fix: Rewrite overly complicated regex that could cause a stack overflow, and thus crash Apache or PHP. This was a very interesting bug that would show itself if the message string passed to the conditional tag regex was too large or complex (probably when using an HTML template). The crash is due to a PHP issue, described in detail in this <a href="http://stackoverflow.com/questions/7620910/regexp-in-preg-match-function-returning-browser-error">Stack Overflow (hey!) answer</a>.</li>
 <li>Tweak: Allow the number 0 in template tags.</li>
 </ul>
-<h3>1.1.0: May 18, 2013</h3>
-<h4>General</h4>
+<h3 id="1-1-0-may-18-2013">1.1.0: May 18, 2013</h3>
+<h4 id="general">General</h4>
 <ul>
 <li>New: Add @since tags to docblocks. Since I didn&#39;t have this properly version controlled until the public release this March, they are mostly from memory and very possibly incorrect in a few places.</li>
 <li>New: Update changelogs to include versions before release, mostly for myself to keep track. Won&#39;t be dated or as detailed since they&#39;re from memory.</li>
 <li>New: Add documentation link to description on the plugins page.</li>
 </ul>
-<h4>Lucid_Settings 1.3.3</h4>
+<h4 id="lucid-_settings-1-3-3">Lucid_Settings 1.3.3</h4>
 <ul>
 <li>Fix: Prevent notice with unsaved checklists.</li>
 </ul>
-<h4>Lucid_Contact 1.5.0</h4>
+<h4 id="lucid-_contact-1-5-0">Lucid_Contact 1.5.0</h4>
 <ul>
 <li>New: It&#39;s now possible to add extra recipients and extra headers. See documentation section &#39;Multiple recipients and extra headers&#39;.</li>
 <li>New: Add form message for <code>some_sent</code>. This is displayed when sending to multiple recipients and at least one message, but not all, fail to send.</li>
 <li>Tweak: Improve line break normalization.</li>
 </ul>
-<h3>1.0.2: Apr 14, 2013</h3>
-<h4>Lucid_Taxonomy 1.1.1</h4>
+<h3 id="1-0-2-apr-14-2013">1.0.2: Apr 14, 2013</h3>
+<h4 id="lucid-_taxonomy-1-1-1">Lucid_Taxonomy 1.1.1</h4>
 <ul>
 <li>Tweak: Change the select list width &#39;algorithm&#39; and prevent double digit result.</li>
 </ul>
-<h4>Lucid_Settings 1.3.2</h4>
+<h4 id="lucid-_settings-1-3-2">Lucid_Settings 1.3.2</h4>
 <ul>
 <li>New: Add <code>pass_settings_errors_id</code> property to control <code>settings_errors</code>. Passing the ID seems to be needed sometimes to prevent double update messages. Other times, passing it prevents messages from showing up at all. I don&#39;t know the reason yet, so this is all trial and error.</li>
 </ul>
-<h3>1.0.1: Apr 14, 2013</h3>
-<h4>WPAlchemy_MetaBox</h4>
+<h3 id="1-0-1-apr-14-2013">1.0.1: Apr 14, 2013</h3>
+<h4 id="wpalchemy-_metabox">WPAlchemy_MetaBox</h4>
 <ul>
 <li>Tweak: Minify the JS output slightly.</li>
 </ul>
-<h3>1.0.0: Mar 27, 2013</h3>
+<h3 id="1-0-0-mar-27-2013">1.0.0: Mar 27, 2013</h3>
 <ul>
 <li>Initial version.</li>
 </ul>

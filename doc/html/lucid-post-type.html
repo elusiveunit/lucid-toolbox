@@ -9,7 +9,7 @@
 </head>
 <body id="intro">
 
-<h1>Lucid_Post_Type</h1>
+<h1 id="lucid-_post-_type">Lucid_Post_Type</h1>
 <p>Handles custom post types; registering, update messages etc.</p>
 <p>The format is very similar to the standard way of registering, with some additional arguments:</p>
 <pre><code>$post_type_name = new Lucid_Post_Type( &#39;NAME&#39;, array(
@@ -24,7 +24,7 @@
 ) );</code></pre>
 <p>The <code>post_type_args</code> array contains standard <code>register_post_type</code> arguments, see <a href="http://codex.wordpress.org/Function_Reference/register_post_type#Arguments">the codex</a>.</p>
 <p>The <code>init</code> hook is a good one to use for registering.</p>
-<h2>Additional arguments</h2>
+<h2 id="additional-arguments">Additional arguments</h2>
 <p>In addition to the standard <code>register_post_type</code> arguments, there are some additional customizations.</p>
 <ul>
 <li><code>&#39;icon&#39;</code> <strong>(string)</strong> Hexadecimal/unicode value for a <a href="http://melchoyce.github.io/dashicons/">Dashicon</a>, like <code>f120</code> for the WordPress logo. Takes precedence over icon URLs in WordPress 3.8+.</li>
@@ -34,7 +34,7 @@
 <li><code>&#39;update_messages&#39;</code> <strong>(array)</strong> Update messages to display instead of the standard <code>&#39;post updated&#39;</code> etc. See below for examples.</li>
 <li><code>&#39;update_messages_no_links&#39;</code> <strong>(array)</strong> Same as <code>update_messages</code>, but without show/preview links to the post. This can be appropriate if the post isn&#39;t supposed to be viewed in itself (probably has <code>&#39;public&#39;</code> set to false), like a post type for gallery images. See below for examples.</li>
 </ul>
-<h2>Labels</h2>
+<h2 id="labels">Labels</h2>
 <p>The labels argument in <code>post_type_args</code> accepts:</p>
 <pre><code>&#39;labels&#39; =&gt; array(
 
@@ -54,7 +54,7 @@
     // Hierarchical only
     &#39;parent_item_colon&#39; =&gt;  __( &#39;Parent movie:&#39;, &#39;TEXTDOMAIN&#39; )
 )</code></pre>
-<h2>Update messages</h2>
+<h2 id="update-messages">Update messages</h2>
 <p>There are two possible variants for update messages. The regular <code>&#39;update_messages&#39;</code> takes precedence, should both be provided.</p>
 <p>Regular messages:</p>
 <pre><code>&#39;update_messages&#39; =&gt; array(
@@ -77,7 +77,7 @@
     &#39;scheduled&#39; =&gt; __( &#39;Movie scheduled for: &lt;strong&gt;%1$s&lt;/strong&gt;.&#39;, &#39;TEXTDOMAIN&#39; ),
     &#39;draft&#39;     =&gt; __( &#39;Movie draft updated.&#39;, &#39;TEXTDOMAIN&#39; )
 )</code></pre>
-<h2>Complete example</h2>
+<h2 id="complete-example">Complete example</h2>
 <p>To get an easier overview, here&#39;s a complete example.</p>
 <pre><code>$my_movie_post_type = new Lucid_Post_Type( &#39;movie&#39;, array(
     &#39;small_menu_icon_url&#39; =&gt; $my_plugin_url . &#39;img/icon-movie.png&#39;,
@@ -122,26 +122,26 @@
         &#39;draft&#39;        =&gt; __( &#39;Movie draft updated. &lt;a href=&quot;%s&quot;&gt;Preview movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; )
     )
 ) );</code></pre>
-<h2>Changelog</h2>
-<h3>1.2.0: Dec 09, 2013</h3>
+<h2 id="changelog">Changelog</h2>
+<h3 id="1-2-0-dec-09-2013">1.2.0: Dec 09, 2013</h3>
 <ul>
 <li>New: Add &#39;icon&#39; argument for the new Dashicons in WordPress 3.8.</li>
 </ul>
-<h3>1.1.2: Aug 25, 2013</h3>
+<h3 id="1-1-2-aug-25-2013">1.1.2: Aug 25, 2013</h3>
 <ul>
 <li>Tweak: Check the post type name before registering and trigger errors if it&#39;s invalid.</li>
 </ul>
-<h3>1.1.1: May 22, 2013</h3>
+<h3 id="1-1-1-may-22-2013">1.1.1: May 22, 2013</h3>
 <ul>
 <li>Tweak: Register post type in the constructor, allowing the user to choose the hook.</li>
 </ul>
-<h3>1.1.0: Mar 27, 2013</h3>
+<h3 id="1-1-0-mar-27-2013">1.1.0: Mar 27, 2013</h3>
 <ul>
 <li>Initial public release.</li>
 <li>New/tweak: Change the way update messages are handled.</li>
 <li>Tweak: &#39;Minify&#39; icon CSS by removing unnecessary whitespace.</li>
 </ul>
-<h3>1.0.0</h3>
+<h3 id="1-0-0">1.0.0</h3>
 <ul>
 <li>Initial version.</li>
 </ul>

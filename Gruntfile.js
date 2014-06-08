@@ -9,34 +9,33 @@ module.exports = function(grunt) {
 		// Compile markdown
 		markdown: {
 			docIndex: {
-				files: ['README.md'],
-				template: 'doc/assets/index-template.html',
-				dest: 'doc',
+				files: {'doc/index.html': 'README.md'},
 				options: {
-					gfm: false, // Github flavored markdown
-					highlight: function(code, lang) {
-						return code; // No code highlighting
+					template: 'doc/assets/index-template.html',
+					markdownOptions: {
+						gfm: false, // Github flavored markdown
+						highlight: function () {}
+					},
+					preCompile: function( src, context ) {
+						return src.replace( /\s?\[!\[devDep.+devDependencies\)/, '' );
 					}
 				}
 			},
 			doc: {
-				files: ['doc/markdown/*.md'],
-				template: 'doc/assets/template.html',
-				dest: 'doc/html',
+				files: [{
+					expand: true,
+					flatten: true,
+					src: 'doc/markdown/*.md',
+					dest: 'doc/html/',
+					ext: '.html'
+				}],
 				options: {
-					gfm: false, // Github flavored markdown
-					highlight: function(code, lang) {
-						return code; // No code highlighting
+					template: 'doc/assets/template.html',
+					markdownOptions: {
+						gfm: false, // Github flavored markdown
+						highlight: function () {}
 					}
 				}
-			}
-		},
-
-		// Rename files
-		rename: {
-			doc: {
-				src: 'doc/README.html',
-				dest: 'doc/index.html'
 			}
 		},
 
@@ -48,8 +47,7 @@ module.exports = function(grunt) {
 				'curly  '  : true,
 				'eqeqeq'   : true,
 				'eqnull'   : true,
-				'es5'      : false,
-				'esnext'   : false,
+				'es3'      : true,
 				'forin'    : true,
 				'immed'    : true,
 				'indent'   : false,
@@ -69,7 +67,9 @@ module.exports = function(grunt) {
 				'globals': {
 					'jQuery': true,
 					'alert': true
-				}
+				},
+
+				reporter: require('jshint-stylish')
 			},
 			doc: {
 				src: [
@@ -105,18 +105,13 @@ module.exports = function(grunt) {
 	});
 
 	// Load tasks
-	grunt.loadNpmTasks('grunt-markdown');
-	grunt.loadNpmTasks('grunt-rename');
-	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-cssmin');
+	require('load-grunt-tasks')(grunt);
 
 	// Register tasks.
 	// Default, documentation: 'grunt'
 	grunt.registerTask('default', [
 		'markdown:docIndex',
 		'markdown:doc',
-		'rename:doc',
 		'jshint:doc',
 		'uglify:doc',
 		'cssmin:doc'

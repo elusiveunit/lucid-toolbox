@@ -9,7 +9,7 @@
 </head>
 <body id="intro">
 
-<h1>Lucid_Contact</h1>
+<h1 id="lucid-_contact">Lucid_Contact</h1>
 <p>Handles contact forms; building, validating and sending. Not particularly pretty or flexible, but it gets the job done.</p>
 <p><code>to_address</code> and <code>message_template</code> or <code>message_format</code> are required properties and the sending method will throw errors if they are empty.</p>
 <p>Usage is fairly straightforward, create a new form object and set desired properties to match your needs:</p>
@@ -21,7 +21,7 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
 <li>Use <code>render_form()</code> to show the form. This automatically includes validation and sending with <a href="http://codex.wordpress.org/Function_Reference/wp_mail">wp_mail()</a>.</li>
 </ul>
 <p>There is an unfortunate lack of separation between logic and view, something that will hopefully be remedied someday in the future.</p>
-<h2>Properties</h2>
+<h2 id="properties">Properties</h2>
 <p>There are quite a few properties to set. The first three are not forced requirements, but highly recommended.</p>
 <ul>
 <li><code>from_name</code> <strong>(string)</strong> Sender&#39;s name. Set to a field name like &#39;name&#39; to use the data from that field.</li>
@@ -60,7 +60,7 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
 <li><code>extras_from_name</code></li>
 <li><code>extras_from_address</code></li>
 </ul>
-<h2>Form messages</h2>
+<h2 id="form-messages">Form messages</h2>
 <p>Messages appear above the form on submission, to inform the user of the current state. There are set with <code>set_form_messages()</code> and <code>set_file_form_messages</code> (for file uploads). The default regular messages are:</p>
 <pre><code>$defaults = array(
     &#39;success&#39;      =&gt; __( &#39;Thank you for your message!&#39;, &#39;lucid-toolbox&#39; ),
@@ -100,7 +100,7 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
     &#39;invalid_file_type&#39; =&gt; __( &#39;The file seems to have an invalid format.&#39;, &#39;lucid-toolbox&#39; )
 );</code></pre>
 <p>More about files in its own section.</p>
-<h2>Adding fields</h2>
+<h2 id="adding-fields">Adding fields</h2>
 <p>Fields are added with the <code>field()</code> method, which requires a type and a name. A majority of the regular field types are handled and for unknown or future stuff, it falls back to an input with <code>type=&quot;&lt;type&gt;&quot;</code>.</p>
 <p>In addition to the type and name, an array of optional arguments can be passed:</p>
 <ul>
@@ -130,18 +130,18 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
     &#39;wrap_attributes&#39; =&gt; array( &#39;id&#39; =&gt; &#39;honeypot&#39; )
 ) );</code></pre>
 <p>Read more about honeypots under &#39;Finishing touches&#39;.</p>
-<h3>Miscellaneous HTML</h3>
+<h3 id="miscellaneous-html">Miscellaneous HTML</h3>
 <p>Any additional HTML outside the fields can be added with the strangely named <code>add_to_field_list()</code> method. It adds a strings as-is, so any HTML is allowed. Since version 1.6.0, a better way could be used, see the section under &#39;Finishing touches&#39;.</p>
 <pre><code>$form-&gt;add_to_field_list( &#39;&lt;fieldset&gt;&#39; );
 
 [Add some fields]
 
 $form-&gt;add_to_field_list( &#39;&lt;/fieldset&gt;&#39; );</code></pre>
-<h3>Submit button</h3>
+<h3 id="submit-button">Submit button</h3>
 <p>The submit button has its own simple method:</p>
 <pre><code>$form-&gt;add_submit( __( &#39;Send the message&#39;, &#39;TEXTDOMAIN&#39; ) );</code></pre>
 <p>It also accepts the same <code>attr =&gt; value</code> format array as the field, if additional attributes are needed.</p>
-<h3>Attachments</h3>
+<h3 id="attachments">Attachments</h3>
 <p>Getting attachments working only requires adding a file input with <code>add_field()</code>. There are of course some options available though, starting with properties:</p>
 <ul>
 <li><code>handle_attachments</code> <strong>(bool)</strong> If email attachments should be handled. Defaults to false and is automatically set to true if there is a file input added.</li>
@@ -160,9 +160,9 @@ $form-&gt;add_to_field_list( &#39;&lt;/fieldset&gt;&#39; );</code></pre>
 <li>application/vnd.openxmlformats-officedocument.wordprocessingml.document = .docx</li>
 </ul>
 <p>Defaults are only set if the <code>set_allowed_files()</code> parameters are empty (the default values), so adding .bmp with <code>set_allowed_files( array( &#39;.bmp&#39; ) )</code> would get rid of jpg and all the others, only allowing bmp. Same is true for MIME types, so be sure to set everything explicitly when going custom.</p>
-<h2>The message</h2>
+<h2 id="the-message">The message</h2>
 <p>There are two ways to specify the format of the message, an old way and a new way.</p>
-<h3>Message format</h3>
+<h3 id="message-format">Message format</h3>
 <p>The old way is through the <code>message_format</code> property. It&#39;s an array of the form field names whose data should be included in the message. Data from the fields will print in the order they appear in the array, with the string set in <code>message_format_separator</code> between each.</p>
 <p>If a value in this array doesn&#39;t exist as a form field, the value will appear as is, so separators and the like are possible.</p>
 <pre><code>$form-&gt;message_format = array(
@@ -172,7 +172,7 @@ $form-&gt;add_to_field_list( &#39;&lt;/fieldset&gt;&#39; );</code></pre>
 );
 
 $form-&gt;message_format_separator = &quot;\n&quot;;</code></pre>
-<h3>Message template</h3>
+<h3 id="message-template">Message template</h3>
 <p>The <code>message_template</code> property is a string with arbitrary text, accepting mustache-style template tags for field data. <code>{{field_name}}</code> is replaced with the field&#39;s POST content.</p>
 <p>Also available are conditional tags wrapping field tags, whose entire content is only displayed if the field POST value is not empty. They start with a hash and end with a slash (groovy!), like <code>{{#if}}content{{/if}}</code>. Tags are different for inline (<code>{{#if}}</code>) and blocks (<code>{{#if_block}}</code>), since an extra line break needs to be removed for blocks (except in HTML where line breaks generally don&#39;t matter). Whitespace is trimmed from the begining and the end of the message.</p>
 <p>Example:</p>
@@ -195,7 +195,7 @@ Use if_block for whole and/or multiple lines.
    &#39;total_price&#39; =&gt; 99 * (int) $_POST[&#39;number_of_products&#39;]
 );</code></pre>
 <p>The custom tags can then be used in the template like any other: <code>{{total_price}}</code>.</p>
-<h3>HTML email</h3>
+<h3 id="html-email">HTML email</h3>
 <p>HTML email can be sent by setting the <code>html_template</code> property, which should be a full path (for include, so not a URL) to an HTML file. The necessary headers are sent if a template is set.</p>
 <p>The file content is processed like <code>message_template</code>, so the same template tag rules apply there. Field data is run through <a href="http://php.net/nl2br">nl2br</a>, so line breaks in textareas should display properly.</p>
 <pre><code>&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;
@@ -209,7 +209,7 @@ Use if_block for whole and/or multiple lines.
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
 <p>HTML emails are completely different from regular web development, so be sure to read up on the proper way of building them (yay tables).</p>
-<h3>Multiple recipients and extra headers</h3>
+<h3 id="multiple-recipients-and-extra-headers">Multiple recipients and extra headers</h3>
 <p>Multiple recipients can be set in two ways: through adding CC headers with the <code>extra_headers</code> property, or through the <code>extra_recipients</code> property. Using extra headers is just like sending a copy in a regular mail client:</p>
 <pre><code>$form-&gt;extra_headers = array(
     &#39;Cc: send_carbon_copy@example.com&#39;,
@@ -223,13 +223,13 @@ Use if_block for whole and/or multiple lines.
 <li><code>extras_from_address</code> <strong>(string)</strong> The &#39;from&#39; email address to use when sending to the extra recipients.</li>
 </ul>
 <p>The only difference between the extra messages and the regular ones will be the &#39;from&#39; headers (unless set to the same of course).</p>
-<h2>Finishing touches</h2>
+<h2 id="finishing-touches">Finishing touches</h2>
 <p>Complete the form by calling:</p>
 <pre><code>$form-&gt;render_form();</code></pre>
 <p>Form messages will display above the form, wrapped in <code>&lt;p class=&quot;error&quot;&gt;</code> (or class &#39;success&#39; when sent). Any individual form field errors will display below the field, wrapped in <code>&lt;span class=&quot;error&quot;&gt;</code>.</p>
 <p>A special case is the honeypot error, where the form message will be wrapped in <code>&lt;p class=&quot;error error-honeypot&quot;&gt;</code>. If you are unfamiliar with <em>honeypots</em>, they are used to stop spam. The field must be empty to pass validation and spambots are presumed to automatically fill in every field, thus getting stuck. To help humans, a proper label should be included and the field should be hidden with CSS.</p>
 <p>In the case where a human fills in the field, this special error class allows the honeypot field to be displayed with a general sibling combinator, like so: <code>.error-honeypot ~ form #honeypot</code> (or whatever ID/class you use for the field, IE7+). This may be needed if some sort of auto form filler is used by a human. The special error class is only added if the honeypot is the only invalid field.</p>
-<h3>Separate field rendering</h3>
+<h3 id="separate-field-rendering">Separate field rendering</h3>
 <p>Since version 1.6.0, the assembly and render methods are separated to enable free use of HTML between fields. Let&#39;s start with the new methods:</p>
 <ul>
 <li><code>form_status</code> (return with <code>get_form_status</code>) The form status message. This is included at the top of <code>form_start</code> by default; pass <code>false</code> to it and use this method to place the message somewhere else.</li>
@@ -264,9 +264,9 @@ $form-&gt;form_status(); // Form message at the bottom
 
 $form-&gt;form_end();</code></pre>
 <p>As demonstrated, the difference between this and <code>render_form</code> is really only in how the rendering is handled.</p>
-<h3>Check if something was sent</h3>
+<h3 id="check-if-something-was-sent">Check if something was sent</h3>
 <p>Sometimes a task outside the form depends on the state of it, like updating an option every time the form is successfully sent. This can be checked with the <code>is_form_sent</code> method, which returns true if everything, including validation and extra recipients, passed. Keep in mind that it will always be false if used before the <code>send</code> method has been called.</p>
-<h2>Complete example</h2>
+<h2 id="complete-example">Complete example</h2>
 <p>An example setup with name, email, honeypot and message.</p>
 <pre><code>$form = new Lucid_Contact();
 $form-&gt;from_name = &#39;from_name&#39;;
@@ -319,8 +319,8 @@ $form-&gt;add_to_field_list( &#39;&lt;/div&gt;&#39; );
 $form-&gt;add_submit( __( &#39;Send message&#39;, &#39;TEXTDOMAIN&#39; ) );
 
 $form-&gt;render_form();</code></pre>
-<h2>Changelog</h2>
-<h3>1.7.0: Apr 13, 2014</h3>
+<h2 id="changelog">Changelog</h2>
+<h3 id="1-7-0-apr-13-2014">1.7.0: Apr 13, 2014</h3>
 <ul>
 <li>New: Add <code>reverse_validation</code> argument to <code>add_field</code>, which reverses any custom regex validation result. True by default due to initially stupid thinking and thus backwards compatibility.</li>
 <li>New: Add the self-explanatory <code>get_field_data</code> method.</li>
@@ -331,22 +331,22 @@ $form-&gt;render_form();</code></pre>
 <li>Tweak/fix: Remove referer check, since it&#39;s not always set.</li>
 <li>Fix: Add UTF-8 modifier (<code>u</code>) to line break regex. Fixes some other characters getting garbled.</li>
 </ul>
-<h3>1.6.2: Nov 03, 2013</h3>
+<h3 id="1-6-2-nov-03-2013">1.6.2: Nov 03, 2013</h3>
 <ul>
 <li>New: Add the <code>is_form_sent</code> method for checking the success state.</li>
 <li>New: Add <code>aria-required</code> and <code>aria-invalid</code> attributes to fields when appropriate.</li>
 </ul>
-<h3>1.6.1: Oct 06, 2013</h3>
+<h3 id="1-6-1-oct-06-2013">1.6.1: Oct 06, 2013</h3>
 <ul>
 <li>Tweak: Ignore validation on optional fields if the value is empty. This allows validation on optional fields, while still allowing them to be optional. One example would be an optional email field; an empty value shouldn&#39;t cause an error, but a filled one should if the email is invalid.</li>
 <li>Tweak: Set <code>input-error</code> CSS class on input fields with errors.</li>
 </ul>
-<h3>1.6.0: Sep 16, 2013</h3>
+<h3 id="1-6-0-sep-16-2013">1.6.0: Sep 16, 2013</h3>
 <ul>
 <li>New: Finally add a stupidly obvious way of freely using HTML without <code>add_to_field_list</code>, by separating the form assembly and render methods. See new &#39;Separate field rendering&#39; section in the documentation.</li>
 <li>Tweak: Disable the nonce field added in 1.5.2 by default. A nonce can cause issues if caching is used, since the nonce string can be cached and thus invalid for a time until the cache is renewed. A hidden field with the internal form ID is used instead, so there can still be multiple forms on the same page. The new <code>use_nonce</code> property (defaults to false) can be used to get the old behavior.</li>
 </ul>
-<h3>1.5.2: June 30, 2013</h3>
+<h3 id="1-5-2-june-30-2013">1.5.2: June 30, 2013</h3>
 <ul>
 <li>New: Add a nonce field for more secure forms and to differentiate between multiple forms on the same page.</li>
 <li>New: Add new error message (with key <code>invalid_post</code>) for when the nonce check fails.</li>
@@ -354,42 +354,42 @@ $form-&gt;render_form();</code></pre>
 <li>Tweak: Change form errors from <code>p</code> tags to <code>div</code> tags. Add the better classes <code>form-error</code> and <code>field-error</code>, to the form error and field errors respectively.</li>
 <li>Tweak: Remove plain text word wrapping, since it&#39;s wrapping at weird places sometimes.</li>
 </ul>
-<h3>1.5.1: May 22, 2013</h3>
+<h3 id="1-5-1-may-22-2013">1.5.1: May 22, 2013</h3>
 <ul>
 <li>Fix: Rewrite overly complicated regex that could cause a stack overflow, and thus crash Apache or PHP. This was a very interesting bug that would show itself if the message string passed to the conditional tag regex was too large or complex (probably when using an HTML template). The crash is due to a PHP issue, described in detail in this <a href="http://stackoverflow.com/questions/7620910/regexp-in-preg-match-function-returning-browser-error">Stack Overflow (hey!) answer</a>.</li>
 <li>Tweak: Allow the number 0 in template tags.</li>
 </ul>
-<h3>1.5.0: May 18, 2013</h3>
+<h3 id="1-5-0-may-18-2013">1.5.0: May 18, 2013</h3>
 <ul>
 <li>New: It&#39;s now possible to add extra recipients and extra headers. See documentation section &#39;Multiple recipients and extra headers&#39;.</li>
 <li>New: Add form message for <code>some_sent</code>. This is displayed when sending to multiple recipients and at least one message, but not all, fail to send.</li>
 <li>Tweak: Improve line break normalization.</li>
 </ul>
-<h3>1.4.1: Mar 27, 2013</h3>
+<h3 id="1-4-1-mar-27-2013">1.4.1: Mar 27, 2013</h3>
 <ul>
 <li>Initial public release.</li>
 <li>Fix: Prevent some notices with the new template system.</li>
 </ul>
-<h3>1.4.0</h3>
+<h3 id="1-4-0">1.4.0</h3>
 <ul>
 <li>New: Add a template system for the message, with the ability to use mustache-style template tags as well as conditional blocks.</li>
 <li>New: Add ability to send HTML email. The template tag system is also available in HTML templates.</li>
 </ul>
-<h3>1.3.0</h3>
+<h3 id="1-3-0">1.3.0</h3>
 <ul>
 <li>New: Add attachment handling. To enable, the <code>handle_attachments</code> property must be set to <code>true</code> (which happens automatically if a file input is added with <code>add_field()</code>).</li>
 </ul>
-<h3>1.2.0</h3>
+<h3 id="1-2-0">1.2.0</h3>
 <ul>
 <li>New: Filter headers against email injection.</li>
 <li>Tweak: A lot of code cleanup and restructuring of the field methods.</li>
 </ul>
-<h3>1.1.0</h3>
+<h3 id="1-1-0">1.1.0</h3>
 <ul>
 <li>New: Add subject label property.</li>
 <li>Tweak: A lot of code cleanup and restructuring of the assembly and send process.</li>
 </ul>
-<h3>1.0.0</h3>
+<h3 id="1-0-0">1.0.0</h3>
 <ul>
 <li>Initial version.</li>
 </ul>

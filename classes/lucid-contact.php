@@ -546,7 +546,7 @@ class Lucid_Contact {
 	protected $_form_status = '';
 
 	/**
-	 * Handle the $_POST data and sending.
+	 * Handle the POST data and sending.
 	 *
 	 * @since 1.0.0
 	 * @var bool
