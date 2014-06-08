@@ -1,4 +1,4 @@
-# Lucid Toolbox
+# Lucid Toolbox [![devDependency Status](https://david-dm.org/elusiveunit/lucid-toolbox/dev-status.svg)](https://david-dm.org/elusiveunit/lucid-toolbox#info=devDependencies)
 
 A set of classes used to speed up and automate common tasks.
 
