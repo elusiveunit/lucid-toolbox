@@ -17,28 +17,19 @@
 // Block direct requests
 if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
 
-// Symlink workaround, see http://core.trac.wordpress.org/ticket/16953
-// The root check is to stop a fatal error on activation
-$lucid_toolbox_plugin_file = __FILE__;
-$lucid_toolbox_document_root = str_replace( array( '\\', '/' ), DIRECTORY_SEPARATOR, $_SERVER['DOCUMENT_ROOT'] );
-if ( isset( $plugin ) && false !== strpos( $plugin, $lucid_toolbox_document_root ) )
-	$lucid_toolbox_plugin_file = $plugin;
-elseif ( isset( $network_plugin ) && false !== strpos( $network_plugin, $lucid_toolbox_document_root ) )
-	$lucid_toolbox_plugin_file = $network_plugin;
-
 // Plugin constants
 if ( ! defined( 'LUCID_TOOLBOX_VERSION' ) )
 	define( 'LUCID_TOOLBOX_VERSION', '1.1.11' );
 
 if ( ! defined( 'LUCID_TOOLBOX_URL' ) )
-	define( 'LUCID_TOOLBOX_URL', trailingslashit( plugin_dir_url( $lucid_toolbox_plugin_file ) ) );
+	define( 'LUCID_TOOLBOX_URL', trailingslashit( plugin_dir_url( __FILE__ ) ) );
 
 if ( ! defined( 'LUCID_TOOLBOX_PATH' ) )
-	define( 'LUCID_TOOLBOX_PATH', trailingslashit( plugin_dir_path( $lucid_toolbox_plugin_file ) ) );
+	define( 'LUCID_TOOLBOX_PATH', trailingslashit( plugin_dir_path( __FILE__ ) ) );
 
 if ( ! defined( 'LUCID_TOOLBOX_CLASS' ) )
 	define( 'LUCID_TOOLBOX_CLASS', LUCID_TOOLBOX_PATH . 'classes/' );
 
 // Load and initialize the plugin parts
 require LUCID_TOOLBOX_PATH . 'inc/core.php';
-$lucid_toolbox = new Lucid_Toolbox( $lucid_toolbox_plugin_file );
+$lucid_toolbox = new Lucid_Toolbox( __FILE__ );
