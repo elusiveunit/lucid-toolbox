@@ -419,7 +419,8 @@ class Lucid_Settings {
 			'error_message' => '',
 			'sanitize' => '',
 			'sanitize_custom' => '',
-			'output_callback' => ''
+			'output_callback' => '',
+			'editor_settings' => array()
 		);
 
 		// Probably no reason not to sanitize checkboxes as 0 or 1
@@ -1029,10 +1030,16 @@ class Lucid_Settings {
 		// Editor ID can only contain lowercase letters and underscores
 		$id = preg_replace( '/[^a-z_]/', '', strtolower( $args['id'] ) );
 
-		wp_editor( $args['value'], $id, array(
-			'textarea_name' => "{$args['prefix']}[{$args['id']}]",
-			'textarea_rows' => 12
+		// Force textarea_name so saving works properly
+		$settings = array_merge( $args['editor_settings'], array(
+			'textarea_name' => "{$args['prefix']}[{$args['id']}]"
 		) );
+
+		// The default height is a bit large, set a tighter default
+		if ( empty( $settings['textarea_rows'] ) )
+			$settings['textarea_rows'] = 12;
+
+		wp_editor( $args['value'], $id, $settings );
 	}
 
 	/**
