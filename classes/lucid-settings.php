@@ -128,6 +128,15 @@ class Lucid_Settings {
 	public $page_heading = '';
 
 	/**
+	 * Function to run on the load-[page-id] hook. Only runs on the settings
+	 * page.
+	 *
+	 * @var callable
+	 * @since 1.8.0
+	 */
+	public $load_callback = null;
+
+	/**
 	 * The screen ID of the settings page.
 	 *
 	 * @var string
@@ -572,12 +581,15 @@ class Lucid_Settings {
 	/**
 	 * Load settings page content.
 	 *
-	 * Callback for the load-[page-id] hook, which only runs on the added
+	 * Callback for the load-(page) hook, which only runs on the added
 	 * settings page.
 	 *
 	 * @since 1.5.0
 	 */
 	public function _load_settings_page() {
+		if ( is_callable( $this->load_callback ) )
+			call_user_func( $this->load_callback );
+
 		$this->_add_sections();
 		$this->_add_fields();
 
