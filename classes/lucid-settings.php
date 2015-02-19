@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  * function description.
  *
  * @package Lucid\Toolbox
- * @version 1.7.0
+ * @version 1.8.0
  */
 class Lucid_Settings {
 
@@ -182,6 +182,15 @@ class Lucid_Settings {
 	public $init_color_picker = false;
 
 	/**
+	 * The menu item for the settings page.
+	 *
+	 * @var array
+	 * @since 1.8.0
+	 * @see menu()
+	 */
+	protected $_menu = array();
+
+	/**
 	 * The submenu item for the settings page.
 	 *
 	 * @var array
@@ -271,24 +280,67 @@ class Lucid_Settings {
 	}
 
 	/**
+	 * Add an item to the admin menu.
+	 *
+	 * @since 1.8.0
+	 * @param string $menu_label Text for the link in the menu.
+	 * @param array $args {
+	 *    Additional arguments.
+	 *
+	 *    @type string $title HTML <title> text.
+	 *    @type array $tabs Tabs to add, format 'unique_id' => 'Tab label'.
+	 *       If used, each tab ID will be its own setting, instead of saving
+	 *       everything the ID set with the constructor.
+	 *    @type string $capability Capability needed to edit the settings. If
+	 *       not set, the $capability property is used, which defaults to
+	 *       manage_options.
+	 *    @type string $icon Probably a Dashicon ID. See Codex for more options.
+	 *    @type int|string $position Menu position. Must be unique to not
+	 *       overwrite other menu items. Use quoted decimal numbers to reduce
+	 *       the risk, like '27.5648'.
+	 * }
+	 * @link http://codex.wordpress.org/Function_Reference/add_menu_page
+	 * @link http://codex.wordpress.org/Roles_and_Capabilities
+	 */
+	public function menu( $menu_label, array $args = array() ) {
+		$defaults = array(
+			'title' => $menu_label,
+			'tabs' => array(),
+			'capability' => $this->capability,
+			'icon' => '',
+			'position' => null
+		);
+		$args = array_merge( $defaults, $args );
+
+		$this->added_to = $this->id;
+
+		if ( $args['tabs'] )
+			$this->_tabs = (array) $args['tabs'];
+
+		$this->_menu = array_merge( array(
+			'menu_label' => $menu_label
+		), $args );
+	}
+
+	/**
 	 * Add a submenu to an admin menu.
-	 *
-	 * NOTE: If tabs are used, each tab ID will be used as the key for the
-	 * settings on that tab page, not the ID set with the constructor.
-	 *
-	 * Additional arguments through the $args array:
-	 *
-	 * - 'add_to' (string) Slug for the parent menu, or the file name of a
-	 *   standard WordPress admin page (wp-admin/<file_name>). Includes .php
-	 *   extension and defaults to 'options-general.php'.
-	 * - 'title' (string) HTML <title> text.
-	 * - 'tabs' (array) Tabs to add, format 'unique_id' => 'Tab label'.
-	 * - 'capability' (string) Capability needed to edit the settings. If not
-	 *   set, the $capability property is used, which defaults to manage_options.
 	 *
 	 * @since 1.0.0
 	 * @param string $menu_label Text for the link in the menu.
-	 * @param array $args Additional arguments.
+	 * @param array $args {
+	 *    Additional arguments.
+	 *
+	 *    @type string $add_to Slug for the parent menu, or the file name of a
+	 *       standard WordPress admin page (wp-admin/<file_name>). Includes .php
+	 *       file extension and defaults to 'options-general.php'.
+	 *    @type string $title HTML <title> text.
+	 *    @type array $tabs Tabs to add, format 'unique_id' => 'Tab label'.
+	 *       If used, each tab ID will be its own setting, instead of saving
+	 *       everything the ID set with the constructor.
+	 *    @type string $capability Capability needed to edit the settings. If
+	 *       not set, the $capability property is used, which defaults to
+	 *       manage_options.
+	 * }
 	 * @link http://codex.wordpress.org/Function_Reference/add_submenu_page
 	 * @link http://codex.wordpress.org/Roles_and_Capabilities
 	 */
@@ -314,17 +366,17 @@ class Lucid_Settings {
 	/**
 	 * Add a settings section.
 	 *
-	 * Additional arguments through the $args array:
-	 *
-	 * - 'heading' (string) Section heading.
-	 * - 'tab' (string) Tab to add section to. Tabs are defined with submenu().
-	 *   Defaults to first tab if there are any.
-	 * - 'output' (string) HTML to display at the top of the section, below the
-	 *   heading.
-	 *
 	 * @since 1.0.0
 	 * @param string $id A unique section ID.
-	 * @param array $args Additional arguments.
+	 * @param array $args {
+	 *    Additional arguments.
+	 *
+	 *    @type string $heading Section heading.
+	 *    @type string $tab Tab to add section to. Tabs are defined with menu()
+	 *       or submenu(). Defaults to first tab if there are any.
+	 *    @type string $output HTML to display at the top of the section, below
+	 *       the heading.
+	 * }
 	 * @link http://codex.wordpress.org/Function_Reference/add_submenu_page
 	 * @link http://codex.wordpress.org/Roles_and_Capabilities
 	 */
@@ -352,56 +404,62 @@ class Lucid_Settings {
 	/**
 	 * Add a settings field.
 	 *
-	 * Additional arguments through the $args array:
-	 *
-	 * - 'type' (string) Type of field. Unsupported types will fall back to
-	 *   'text', which is also the default. Supported types:
-	 *   - 'text'
-	 *   - 'text_monospace'
-	 *   - 'textarea'
-	 *   - 'textarea_large'
-	 *   - 'textarea_monospace'
-	 *   - 'textarea_large_monospace'
-	 *   - 'editor'
-	 *   - 'checkbox'
-	 *   - 'checklist' (List of checkboxes)
-	 *   - 'radios'
-	 *   - 'select'
-	 *   - 'post_select'
-	 *   - 'page_select'
-	 *   - 'color_picker'
-	 *   - 'button_field' (Text field with a button beside it)
-	 *   - 'button_field_monospace'
-	 * - 'section' (string) Section to add the field to, defined with section().
-	 * - 'default' (mixed) Default field value. Is only set if options don't
-	 *   exist, so will probably only run on theme/plugin activation.
-	 * - 'description' (string) A help text to show under the field. Prints
-	 *   unfiltered, so beware if user input is somehow involved.
-	 * - 'inline_label' (string) Field label for checkbox and radio button.
-	 * - 'options' (array) Options for types 'select', 'radios', and 'checklist',
-	 *   format: value => text.
-	 * - 'button_text' (string) Text for the button when using button_field.
-	 * - 'select_post_type' (string) Post type to use when using post_select or
-	 *   page_select. Defaults to 'post' for post_select and 'page' for
-	 *   page_select.
-	 * - 'validate' (string) Validate value against predefined functions, see
-	 *   _validate().
-	 * - 'must_match' (regex) A regular expression that is matched against
-	 *   the value, i.e. '/^\d{3}$/' to require exactly three digits.
-	 * - 'must_not_match' (regex) A regular expression that is matched against
-	 *   the value, where the result is reversed. So something like
-	 *   '/\d{3}/' would mean the value can not contain three digits in a row.
-	 * - 'error_message' (string) Message for when validation fails.
-	 * - 'sanitize' (string) Sanitize value against predefined functions, see
-	 *   _sanitize(). Defaults to 'checkbox' for checkboxes.
-	 * - 'sanitize_custom' (regex) Sanitize value with a regular expression.
-	 *   Value will go through preg_replace.
-	 * - 'output_callback' (callback) Custom method for the field output.
-	 *
 	 * @since 1.0.0
 	 * @param string $id A unique ID for the field.
 	 * @param string $label The field label.
-	 * @param array $args Array of additional arguments.
+	 * @param array $args {
+	 *    Additional arguments.
+	 *
+	 *    @type string $heading Section heading.
+	 *
+	 *    @type string $type Type of field. Unsupported types will fall back to
+	 *       text, which is also the default. Supported types:
+	 *       - 'text'
+	 *       - 'text_monospace'
+	 *       - 'textarea'
+	 *       - 'textarea_large'
+	 *       - 'textarea_monospace'
+	 *       - 'textarea_large_monospace'
+	 *       - 'editor'
+	 *       - 'checkbox'
+	 *       - 'checklist' (List of checkboxes)
+	 *       - 'radios'
+	 *       - 'select'
+	 *       - 'post_select'
+	 *       - 'page_select'
+	 *       - 'color_picker'
+	 *       - 'button_field' (Text field with a button beside it)
+	 *       - 'button_field_monospace'
+	 *    @type string $section Section to add the field to, defined with
+	 *       section().
+	 *    @type mixed $default Default field value. Is only set if options don't
+	 *       exist, so will probably only run on theme/plugin activation.
+	 *    @type string $description A help text to show under the field. Prints
+	 *       unfiltered, so beware if user input is somehow involved.
+	 *    @type string $inline_label Field label for checkbox and radio button.
+	 *    @type array $options Options for types 'select', 'radios', and
+	 *       'checklist', format: value => text.
+	 *    @type string $button_text Text for the button when using button_field.
+	 *    @type string $select_post_type Post type to use when using post_select
+	 *       or page_select. Defaults to 'post' for post_select and 'page' for
+	 *       page_select.
+	 *    @type string $validate Validate value against predefined functions, see
+	 *       _validate().
+	 *    @type string $must_match A regular expression that is matched against
+	 *       the value, i.e. '/^\d{3}$/' to require exactly three digits.
+	 *    @type string $must_not_match A regular expression that is matched
+	 *       against the value, where the result is reversed. So something like
+	 *       '/\d{3}/' would mean the value can not contain three digits in a
+	 *       row.
+	 *    @type string $error_message Message for when validation fails.
+	 *    @type string $sanitize Sanitize value against predefined functions,
+	 *       see _sanitize(). Defaults to 'checkbox' for checkboxes.
+	 *    @type string $sanitize_custom Sanitize value with a regular expression.
+	 *       Value will go through preg_replace.
+	 *    @type callable $output_callback Custom method for the field output.
+	 *    @type array $editor_settings Custom arguments to wp_editor, see Codex.
+	 * }
+	 * @link http://codex.wordpress.org/Function_Reference/wp_editor
 	 */
 	public function field( $id, $label, array $args = array() ) {
 		$defaults = array(
@@ -538,11 +596,13 @@ class Lucid_Settings {
 	public function is_on_settings_page() {
 		global $pagenow;
 
+		$is_get_id = ( isset( $_GET['page'] ) && $_GET['page'] == $this->id );
+
+		// Technically options.php isn't the settings page, but it
 		return (
-		     ( 'options.php' == $pagenow )
-		  || ( $this->added_to == $pagenow
-		    && ! empty( $_GET['page'] )
-		    && $_GET['page'] == $this->id )
+			   ( 'options.php' == $pagenow && ! empty( $_POST ) )
+			|| ( 'admin.php' == $pagenow && $is_get_id )
+			|| ( $this->added_to == $pagenow && $is_get_id )
 		);
 	}
 
@@ -563,16 +623,28 @@ class Lucid_Settings {
 	 * @since 1.0.0
 	 */
 	public function _load_settings() {
-		if ( ! $this->_submenu ) return;
-
-		$this->_screen_id = add_submenu_page(
-			$this->_submenu['add_to'],
-			$this->_submenu['title'],
-			$this->_submenu['menu_label'],
-			$this->_submenu['capability'],
-			$this->id,
-			array( $this, '_display_page' )
-		);
+		if ( $this->_menu ) :
+			$this->_screen_id = add_menu_page(
+				$this->_menu['title'],
+				$this->_menu['menu_label'],
+				$this->_menu['capability'],
+				$this->id,
+				array( $this, '_display_page' ),
+				$this->_menu['icon'],
+				$this->_menu['position']
+			);
+		elseif ( $this->_submenu ) :
+			$this->_screen_id = add_submenu_page(
+				$this->_submenu['add_to'],
+				$this->_submenu['title'],
+				$this->_submenu['menu_label'],
+				$this->_submenu['capability'],
+				$this->id,
+				array( $this, '_display_page' )
+			);
+		else :
+			return;
+		endif;
 
 		// Only load the settings content when on the added submenu page
 		if ( $this->_screen_id )
