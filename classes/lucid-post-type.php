@@ -50,7 +50,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *     )
  *
  * @package Lucid\Toolbox
- * @version 1.2.0
+ * @version 1.2.1
  */
 class Lucid_Post_Type {
 
@@ -73,36 +73,36 @@ class Lucid_Post_Type {
 	/**
 	 * Constructor, pass post type.
 	 *
-	 * Arguments through the $args array:
-	 *
-	 * - 'small_menu_icon_url' (string) Absolute url to to a 16x40 pixels sprite
-	 *   image to use as admin menu icon for the post type. The hover state
-	 *   should be on top of the regular state in the image.
-	 * - 'large_menu_icon_url' (string) Absolute url to a 32x32 image to use as
-	 *   the icon beside the heading in the post edit screen.
-	 * - 'icon' (string) For WordPress 3.8+, an icon from the included icon font
-	 *   can be used. Pass the hexadecimal/unicode code for the icon, like 'f120'
-	 *   for the WordPress logo. See the Dashicons link.
-	 * - 'post_type_args' (array) The standard arguments for register_post_type,
-	 *   like 'hierarchical', 'labels', 'supports' etc. See WordPress Codex.
-	 * - 'update_messages' (array) Update messages to display instead of the
-	 *   standard 'post updated' etc. See _update_messages() for examples.
-	 * - 'update_messages_no_links' (array) Same as update_messages, but without
-	 *   show/preview links to the post. This can be appropriate if the post
-	 *   isn't supposed to be viewed in itself (probably has 'public' set to
-	 *   false), like a post type for gallery images. See _update_messages()
-	 *   for examples.
-	 *
-	 * The 'icon' argument will take predecence over the custom URL ones for
-	 * WordPress 3.8+.
-	 *
 	 * @since 1.0.0
 	 * @param string $post_type The unique post type name. Maximum 20
 	 *   characters, can not contain capital letters or spaces.
 	 * @param array $args Additional post type data.
+	 * @param array $args {
+	 *    Additional post type data.
+	 *
+	 *    @type string $small_menu_icon_url DEPRECATED. Absolute url to to a
+	 *       16x40 pixels sprite image to use as admin menu icon for the post
+	 *       type. The hover state should be on top of the regular state in the
+	 *       image.*
+	 *    @type string $large_menu_icon_url DEPRECATED. Absolute url to a 32x32
+	 *       image to use as the icon beside the heading in the post edit screen.
+	 *    @type string $icon DEPRECATED. An icon from the included icon font
+	 *       can be used. Pass the hexadecimal/unicode code for the icon, like
+	 *       'f120' for the WordPress logo. See the Dashicons link.
+	 *    @type array $post_type_args The arguments for register_post_type, like
+	 *       'hierarchical', 'labels', 'supports' etc. See WordPress Codex.
+	 *    @type array $update_messages Update messages to display instead of the
+	 *       standard 'post updated' etc. See _update_messages() for examples.
+	 *    @type array $update_messages_no_links Same as update_messages, but
+	 *       without show/preview links to the post. This can be appropriate if
+	 *       the post isn't supposed to be viewed in itself (probably has
+	 *       'public' set to false), like a post type for gallery images. See
+	 *       _update_messages() for examples.
+	 * }
 	 * @see _update_messages() For message array structure.
 	 * @link http://codex.wordpress.org/Function_Reference/register_post_type
-	 * @link http://melchoyce.github.io/dashicons/ The Dashicons icon font
+	 * @link https://developer.wordpress.org/resource/dashicons/ The Dashicons
+	 *    icon font
 	 */
 	public function __construct( $post_type, array $args = array() ) {
 		$this->name = (string) $post_type;
@@ -110,7 +110,15 @@ class Lucid_Post_Type {
 		if ( ! $this->_is_valid_post_type_name() )
 			return;
 
-		$this->post_type_data = $args;
+		$defaults = array(
+			'small_menu_icon_url' => '',
+			'large_menu_icon_url' => '',
+			'icon' => '',
+			'post_type_args' => array(),
+			'update_messages' => array(),
+			'update_messages_no_links' => array()
+		);
+		$this->post_type_data = array_merge( $defaults, $args );
 
 		$this->_add_post_type();
 		$this->_add_hooks();
@@ -146,7 +154,13 @@ class Lucid_Post_Type {
 	 * @since 1.0.0
 	 */
 	protected function _add_hooks() {
-		add_action( 'admin_head', array( $this, '_admin_icons' ) );
+		if ( $this->post_type_data['small_menu_icon_url']
+		  || $this->post_type_data['large_menu_icon_url']
+		  || $this->post_type_data['icon'] ) :
+			add_action( 'admin_head', array( $this, '_admin_icons' ) );
+			add_action( 'admin_notices', array( $this, '_admin_icons_notice' ) );
+		endif;
+
 		add_action( 'post_updated_messages', array( $this, '_update_messages' ) );
 	}
 
@@ -258,15 +272,15 @@ class Lucid_Post_Type {
 	public function _admin_icons() {
 		$post_type = $this->name;
 
-		$small_icon = ( isset( $this->post_type_data['small_menu_icon_url'] ) )
+		$small_icon = ( $this->post_type_data['small_menu_icon_url'] )
 			? $this->post_type_data['small_menu_icon_url']
 			: '';
 
-		$large_icon = ( isset( $this->post_type_data['large_menu_icon_url'] ) )
+		$large_icon = ( $this->post_type_data['large_menu_icon_url'] )
 			? $this->post_type_data['large_menu_icon_url']
 			: '';
 
-		$font_icon = ( isset( $this->post_type_data['icon'] ) ) ? $this->post_type_data['icon'] : '';
+		$font_icon = ( $this->post_type_data['icon'] ) ? $this->post_type_data['icon'] : '';
 
 		$css = '';
 
@@ -301,5 +315,14 @@ class Lucid_Post_Type {
 		$output = str_replace( array( "\n", "\t" ), '', $css );
 
 		echo "<style>{$output}</style>\n";
+	}
+
+	/**
+	 * Show a notice about the deprecated icon arguments.
+	 *
+	 * Added to admin_notice to prevent the dashboard menu from breaking.
+	 */
+	public function _admin_icons_notice() {
+		trigger_error( sprintf( 'The custom icon arguments are deprecated, use the core menu_icon in post_type_args instead (post type %s).', $this->name ), E_USER_NOTICE );
 	}
 }
