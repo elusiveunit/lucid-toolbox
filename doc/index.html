@@ -30,14 +30,34 @@
 </ul>
 <p>The plugin doesn&#39;t do anything by itself, apart from loading language files. It simply allows usage of the classes through something like:</p>
 <pre><code>if ( defined( &#39;LUCID_TOOLBOX_CLASS&#39; ) &amp;&amp; ! class_exists( &#39;Lucid_Settings&#39; ) )
-    require LUCID_TOOLBOX_CLASS . &#39;lucid-settings.php&#39;;</code></pre>
-<p>Read more about each class in the included documentation, located in the &#39;doc&#39; directory.</p>
+    require LUCID_TOOLBOX_CLASS . &#39;lucid-settings.php&#39;;
+</code></pre><p>Read more about each class in the included documentation, located in the &#39;doc&#39; directory.</p>
 <p>Lucid Toolbox is currently available in the following languages:</p>
 <ul>
 <li>English</li>
 <li>Swedish</li>
 </ul>
 <h2 id="changelog">Changelog</h2>
+<h3 id="1-1-12-feb-23-2015">1.1.12: Feb 23, 2015</h3>
+<h4 id="lucid-_post-_type-1-2-1">Lucid_Post_Type 1.2.1</h4>
+<ul>
+<li>Tweak: Deprecate the custom icon arguments, use the built-in <code>menu_icon</code> instead.</li>
+</ul>
+<h4 id="lucid-_settings-1-8-0">Lucid_Settings 1.8.0</h4>
+<ul>
+<li>New: Add <code>menu</code> method to create top level menu items.</li>
+<li>New: Add <code>&#39;editor_settings&#39;</code> parameter to <code>field</code> for custom arguments to wp_editor when adding editor fields.</li>
+<li>New: Add <code>load_callback</code> property that can be set to a callable, which is called on the load-(page) hook only when on the settings page.</li>
+</ul>
+<h4 id="wpalchemy-_metabox-1-5-2-lucid-2-now-lucid-_wpalchemy">WPAlchemy_MetaBox 1.5.2.lucid-2, now Lucid_WPAlchemy</h4>
+<p>With this version it&#39;s a complete fork and will not fully match the original class.</p>
+<ul>
+<li>New: Add defaults to checkbox, select and radio from upstream.</li>
+<li>Tweak: Change the class name to <code>Lucid_WPAlchemy</code>. If no <code>WPAlchemy_MetaBox</code> class exists, it will be defined and extend <code>Lucid_WPAlchemy</code> to keep backwards compatibility. This may be removed eventually.</li>
+<li>Tweak/fix: Improve the JavaScript for repeatable field&#39;s copy/delete and make it work when using the <code>area</code> argument.</li>
+<li>Tweak: Some general code style changes and cleanup.</li>
+<li>Remove: All display options have been removed: <code>hide_title</code>, <code>hide_editor</code>, <code>lock</code>, <code>view</code> and <code>hide_screen_option</code>. They were relying on JavaScript and CSS to accomplish their purpose and didn&#39;t feel future proof or maintainable. Removing the editor can be done on the post type itself and the <code>area</code> argument can handle different placements. The title should always be editable, even if it&#39;s not used publicly.</li>
+</ul>
 <h3 id="1-1-11-apr-13-2014">1.1.11: Apr 13, 2014</h3>
 <h4 id="lucid-_contact-1-7-0">Lucid_Contact 1.7.0</h4>
 <ul>

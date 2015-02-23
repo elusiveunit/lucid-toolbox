@@ -10,12 +10,31 @@
 <body id="intro">
 
 <h1 id="wpalchemy-_metabox">WPAlchemy_MetaBox</h1>
-<p>For metaboxes, this easy to use class by Dimas Begunoff is included. The only customization is the JavaScript alert message when deleting repeatable items, which has been localized.</p>
-<p>Until the need arises for improved or different functionality, this works wonders.</p>
+<p>For metaboxes, this easy to use class by Dimas Begunoff is included. Since the original inclusion, the code has been modified enough that it&#39;s now a complete fork with some different features to the original.</p>
+<ul>
+<li><code>area</code> argument for adding fields inline <code>after_title</code> or <code>after_editor</code>.</li>
+<li>The display options from the original are removed, as they didn&#39;t use standard WordPress ways of doing stuff.</li>
+<li>Various code style and execution tweaks.</li>
+</ul>
 <p>A note outside the documentation that I tend to forget myself: prefix metabox ID with underscore to hide it in the custom fields view.</p>
 <ul>
 <li><a href="http://www.farinspace.com/wpalchemy-metabox/">Documentation</a></li>
 <li><a href="https://github.com/farinspace/wpalchemy">Github</a></li>
+</ul>
+<h2 id="fork-changelog">Fork changelog</h2>
+<h3 id="1-5-2-lucid-2-now-lucid-_wpalchemy-feb-23-2015">1.5.2.lucid-2, now Lucid_WPAlchemy: Feb 23, 2015</h3>
+<p>With this version it&#39;s a complete fork and will not fully match the original class.</p>
+<ul>
+<li>New: Add defaults to checkbox, select and radio from upstream.</li>
+<li>Tweak: Change the class name to <code>Lucid_WPAlchemy</code>. If no <code>WPAlchemy_MetaBox</code> class exists, it will be defined and extend <code>Lucid_WPAlchemy</code> to keep backwards compatibility. This may be removed eventually.</li>
+<li>Tweak/fix: Improve the JavaScript for repeatable field&#39;s copy/delete and make it work when using the <code>area</code> argument.</li>
+<li>Tweak: Some general code style changes and cleanup.</li>
+<li>Remove: All display options have been removed: <code>hide_title</code>, <code>hide_editor</code>, <code>lock</code>, <code>view</code> and <code>hide_screen_option</code>. They were relying on JavaScript and CSS to accomplish their purpose and didn&#39;t feel future proof or maintainable. Removing the editor can be done on the post type itself and the <code>area</code> argument can handle different placements. The title should always be editable, even if it&#39;s not used publicly.</li>
+</ul>
+<h3 id="1-5-2-lucid-1-dec-09-2013">1.5.2.lucid-1: Dec 09, 2013</h3>
+<ul>
+<li>New: Add <code>area</code> argument (string). Defaults to <code>metabox</code>, which doesn&#39;t do anything different. Can also be set to <code>after_title</code> or <code>after_editor</code>, which will add the metabox template content directly to the page in those places. Since it&#39;s not a meta &#39;box&#39; in those cases, arguments like title, context etc. won&#39;t have any effect.</li>
+<li>Tweak: Move the htmlentities filtering from <code>get_the_value</code> to <code>the_value</code>, so that the pure data can be passed to a wp_editor instance.</li>
 </ul>
 
 

@@ -20,8 +20,8 @@
             [...]
         )
     )
-);</code></pre>
-<p>The <code>taxonomy_args</code> array contains standard <code>register_taxonomy</code> arguments, see <a href="http://codex.wordpress.org/Function_Reference/register_taxonomy#Arguments">the codex</a>.</p>
+);
+</code></pre><p>The <code>taxonomy_args</code> array contains standard <code>register_taxonomy</code> arguments, see <a href="http://codex.wordpress.org/Function_Reference/register_taxonomy#Arguments">the codex</a>.</p>
 <p>The <code>init</code> hook is a good one to use for registering.</p>
 <h2 id="additional-arguments">Additional arguments</h2>
 <p>In addition to the standard <code>register_taxonomy</code> arguments, there are some additional customizations.</p>
@@ -54,8 +54,8 @@
     &#39;separate_items_with_commas&#39; =&gt; __( &#39;Separate genres with commas&#39;, &#39;TEXTDOMAIN&#39; ),
     &#39;choose_from_most_used&#39; =&gt;      __( &#39;Choose from the most used genres&#39;, &#39;TEXTDOMAIN&#39; ),
     &#39;not_found&#39; =&gt;                  __( &#39;No genres found&#39;, &#39;TEXTDOMAIN&#39; )
-)</code></pre>
-<h2 id="complete-example">Complete example</h2>
+)
+</code></pre><h2 id="complete-example">Complete example</h2>
 <p>To get an easier overview, here&#39;s a complete example.</p>
 <pre><code>$my_genre_taxonomy = new Lucid_Taxonomy(
     &#39;genre&#39;,
@@ -87,8 +87,8 @@
             &#39;update_count_callback&#39; =&gt; &#39;_update_post_term_count&#39;
         )
     )
-);</code></pre>
-<h2 id="changelog">Changelog</h2>
+);
+</code></pre><h2 id="changelog">Changelog</h2>
 <h3 id="1-1-3-aug-25-2013">1.1.3: Aug 25, 2013</h3>
 <ul>
 <li>Tweak: Check the taxonomy name before registering and trigger errors if it&#39;s invalid.</li>

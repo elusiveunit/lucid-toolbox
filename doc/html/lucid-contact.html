@@ -14,8 +14,8 @@
 <p><code>to_address</code> and <code>message_template</code> or <code>message_format</code> are required properties and the sending method will throw errors if they are empty.</p>
 <p>Usage is fairly straightforward, create a new form object and set desired properties to match your needs:</p>
 <pre><code>$form = new Lucid_Contact();
-$form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
-<p>Continue with building the actual form:</p>
+$form-&gt;from_name = &#39;from_name&#39;; // Field name
+</code></pre><p>Continue with building the actual form:</p>
 <ul>
 <li>Use <code>add_field()</code>, <code>add_to_field_list()</code> and <code>add_submit()</code> to build the form.</li>
 <li>Use <code>render_form()</code> to show the form. This automatically includes validation and sending with <a href="http://codex.wordpress.org/Function_Reference/wp_mail">wp_mail()</a>.</li>
@@ -69,8 +69,8 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
     &#39;not_sent&#39;     =&gt; __( &#39;Due to a technical issue, the message could not be sent, we apologize.&#39;, &#39;lucid-toolbox&#39; ),
     &#39;some_sent&#39;    =&gt; __( &#39;There was an isuue sending the message, some recipients may not receive it properly.&#39;, &#39;lucid-toolbox&#39; ),
     &#39;invalid_post&#39; =&gt; __( &#39;The request could not be verified, please try again.&#39;, &#39;lucid-toolbox&#39; )
-);</code></pre>
-<p>To clarify:</p>
+);
+</code></pre><p>To clarify:</p>
 <ul>
 <li><code>&#39;success&#39;</code> If the message was successfully sent.</li>
 <li><code>&#39;error&#39;</code> Some problem with the information provided by the user, like missing fields and validation errors.</li>
@@ -98,8 +98,8 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
 
     // Additional custom
     &#39;invalid_file_type&#39; =&gt; __( &#39;The file seems to have an invalid format.&#39;, &#39;lucid-toolbox&#39; )
-);</code></pre>
-<p>More about files in its own section.</p>
+);
+</code></pre><p>More about files in its own section.</p>
 <h2 id="adding-fields">Adding fields</h2>
 <p>Fields are added with the <code>field()</code> method, which requires a type and a name. A majority of the regular field types are handled and for unknown or future stuff, it falls back to an input with <code>type=&quot;&lt;type&gt;&quot;</code>.</p>
 <p>In addition to the type and name, an array of optional arguments can be passed:</p>
@@ -128,19 +128,19 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name</code></pre>
     &#39;required&#39;        =&gt; false,
     &#39;validation&#39;      =&gt; &#39;honeypot&#39;,
     &#39;wrap_attributes&#39; =&gt; array( &#39;id&#39; =&gt; &#39;honeypot&#39; )
-) );</code></pre>
-<p>Read more about honeypots under &#39;Finishing touches&#39;.</p>
+) );
+</code></pre><p>Read more about honeypots under &#39;Finishing touches&#39;.</p>
 <h3 id="miscellaneous-html">Miscellaneous HTML</h3>
 <p>Any additional HTML outside the fields can be added with the strangely named <code>add_to_field_list()</code> method. It adds a strings as-is, so any HTML is allowed. Since version 1.6.0, a better way could be used, see the section under &#39;Finishing touches&#39;.</p>
 <pre><code>$form-&gt;add_to_field_list( &#39;&lt;fieldset&gt;&#39; );
 
 [Add some fields]
 
-$form-&gt;add_to_field_list( &#39;&lt;/fieldset&gt;&#39; );</code></pre>
-<h3 id="submit-button">Submit button</h3>
+$form-&gt;add_to_field_list( &#39;&lt;/fieldset&gt;&#39; );
+</code></pre><h3 id="submit-button">Submit button</h3>
 <p>The submit button has its own simple method:</p>
-<pre><code>$form-&gt;add_submit( __( &#39;Send the message&#39;, &#39;TEXTDOMAIN&#39; ) );</code></pre>
-<p>It also accepts the same <code>attr =&gt; value</code> format array as the field, if additional attributes are needed.</p>
+<pre><code>$form-&gt;add_submit( __( &#39;Send the message&#39;, &#39;TEXTDOMAIN&#39; ) );
+</code></pre><p>It also accepts the same <code>attr =&gt; value</code> format array as the field, if additional attributes are needed.</p>
 <h3 id="attachments">Attachments</h3>
 <p>Getting attachments working only requires adding a file input with <code>add_field()</code>. There are of course some options available though, starting with properties:</p>
 <ul>
@@ -171,8 +171,8 @@ $form-&gt;add_to_field_list( &#39;&lt;/fieldset&gt;&#39; );</code></pre>
     &#39;message&#39;
 );
 
-$form-&gt;message_format_separator = &quot;\n&quot;;</code></pre>
-<h3 id="message-template">Message template</h3>
+$form-&gt;message_format_separator = &quot;\n&quot;;
+</code></pre><h3 id="message-template">Message template</h3>
 <p>The <code>message_template</code> property is a string with arbitrary text, accepting mustache-style template tags for field data. <code>{{field_name}}</code> is replaced with the field&#39;s POST content.</p>
 <p>Also available are conditional tags wrapping field tags, whose entire content is only displayed if the field POST value is not empty. They start with a hash and end with a slash (groovy!), like <code>{{#if}}content{{/if}}</code>. Tags are different for inline (<code>{{#if}}</code>) and blocks (<code>{{#if_block}}</code>), since an extra line break needs to be removed for blocks (except in HTML where line breaks generally don&#39;t matter). Whitespace is trimmed from the begining and the end of the message.</p>
 <p>Example:</p>
@@ -187,14 +187,14 @@ This entire block only shows if address is not empty
 Address here: {{address}}
 Use if_block for whole and/or multiple lines.
 {{/if_block}}
-&#39;;</code></pre>
-<p><strong>Note:</strong> The conditionals will count the POST value as empty, therefore not showing it, for any falsy values except the number 0.</p>
+&#39;;
+</code></pre><p><strong>Note:</strong> The conditionals will count the POST value as empty, therefore not showing it, for any falsy values except the number 0.</p>
 <p>Since this class only handles find and replace for template tags, custom tags can be used when processing of the tag value is needed, like for a total price. These are set with the <code>custom_template_tags</code> property.</p>
 <pre><code>$form-&gt;custom_template_tags = array(
    &#39;tag_name&#39; =&gt; &#39;tag value&#39;,
    &#39;total_price&#39; =&gt; 99 * (int) $_POST[&#39;number_of_products&#39;]
-);</code></pre>
-<p>The custom tags can then be used in the template like any other: <code>{{total_price}}</code>.</p>
+);
+</code></pre><p>The custom tags can then be used in the template like any other: <code>{{total_price}}</code>.</p>
 <h3 id="html-email">HTML email</h3>
 <p>HTML email can be sent by setting the <code>html_template</code> property, which should be a full path (for include, so not a URL) to an HTML file. The necessary headers are sent if a template is set.</p>
 <p>The file content is processed like <code>message_template</code>, so the same template tag rules apply there. Field data is run through <a href="http://php.net/nl2br">nl2br</a>, so line breaks in textareas should display properly.</p>
@@ -207,15 +207,15 @@ Use if_block for whole and/or multiple lines.
     &lt;h1&gt;Hello&lt;/h1&gt;
     {{#if}}&lt;p&gt;&lt;b&gt;From:&lt;/b&gt; {{from_name}}&lt;/p&gt;{{/if}}
 &lt;/body&gt;
-&lt;/html&gt;</code></pre>
-<p>HTML emails are completely different from regular web development, so be sure to read up on the proper way of building them (yay tables).</p>
+&lt;/html&gt;
+</code></pre><p>HTML emails are completely different from regular web development, so be sure to read up on the proper way of building them (yay tables).</p>
 <h3 id="multiple-recipients-and-extra-headers">Multiple recipients and extra headers</h3>
 <p>Multiple recipients can be set in two ways: through adding CC headers with the <code>extra_headers</code> property, or through the <code>extra_recipients</code> property. Using extra headers is just like sending a copy in a regular mail client:</p>
 <pre><code>$form-&gt;extra_headers = array(
     &#39;Cc: send_carbon_copy@example.com&#39;,
     &#39;Bcc: send_blind_carbon_copy@example.com&#39;
-);</code></pre>
-<p>Extra headers aren&#39;t limited to carbon copies of course, anything can be added.</p>
+);
+</code></pre><p>Extra headers aren&#39;t limited to carbon copies of course, anything can be added.</p>
 <p>Sometimes you don&#39;t want to send copies though, for example when the form is used for ordering and both you and the customer should get a copy of the order confirmation. It probably looks more professional for the client to receive a confirmation sent to him/her only. They should possibly also have different &#39;from&#39; and/or &#39;reply-to&#39; data. This is done with these properties:</p>
 <ul>
 <li><code>extra_recipients</code> <strong>(array)</strong> One email address per array item. Each will get a separate mail sent with <code>wp_mail()</code>.</li>
@@ -225,8 +225,8 @@ Use if_block for whole and/or multiple lines.
 <p>The only difference between the extra messages and the regular ones will be the &#39;from&#39; headers (unless set to the same of course).</p>
 <h2 id="finishing-touches">Finishing touches</h2>
 <p>Complete the form by calling:</p>
-<pre><code>$form-&gt;render_form();</code></pre>
-<p>Form messages will display above the form, wrapped in <code>&lt;p class=&quot;error&quot;&gt;</code> (or class &#39;success&#39; when sent). Any individual form field errors will display below the field, wrapped in <code>&lt;span class=&quot;error&quot;&gt;</code>.</p>
+<pre><code>$form-&gt;render_form();
+</code></pre><p>Form messages will display above the form, wrapped in <code>&lt;p class=&quot;error&quot;&gt;</code> (or class &#39;success&#39; when sent). Any individual form field errors will display below the field, wrapped in <code>&lt;span class=&quot;error&quot;&gt;</code>.</p>
 <p>A special case is the honeypot error, where the form message will be wrapped in <code>&lt;p class=&quot;error error-honeypot&quot;&gt;</code>. If you are unfamiliar with <em>honeypots</em>, they are used to stop spam. The field must be empty to pass validation and spambots are presumed to automatically fill in every field, thus getting stuck. To help humans, a proper label should be included and the field should be hidden with CSS.</p>
 <p>In the case where a human fills in the field, this special error class allows the honeypot field to be displayed with a general sibling combinator, like so: <code>.error-honeypot ~ form #honeypot</code> (or whatever ID/class you use for the field, IE7+). This may be needed if some sort of auto form filler is used by a human. The special error class is only added if the honeypot is the only invalid field.</p>
 <h3 id="separate-field-rendering">Separate field rendering</h3>
@@ -262,8 +262,8 @@ $form-&gt;form_start( false ); // Don&#39;t include form message
 
 $form-&gt;form_status(); // Form message at the bottom
 
-$form-&gt;form_end();</code></pre>
-<p>As demonstrated, the difference between this and <code>render_form</code> is really only in how the rendering is handled.</p>
+$form-&gt;form_end();
+</code></pre><p>As demonstrated, the difference between this and <code>render_form</code> is really only in how the rendering is handled.</p>
 <h3 id="check-if-something-was-sent">Check if something was sent</h3>
 <p>Sometimes a task outside the form depends on the state of it, like updating an option every time the form is successfully sent. This can be checked with the <code>is_form_sent</code> method, which returns true if everything, including validation and extra recipients, passed. Keep in mind that it will always be false if used before the <code>send</code> method has been called.</p>
 <h2 id="complete-example">Complete example</h2>
@@ -318,8 +318,8 @@ $form-&gt;add_to_field_list( &#39;&lt;/div&gt;&#39; );
 
 $form-&gt;add_submit( __( &#39;Send message&#39;, &#39;TEXTDOMAIN&#39; ) );
 
-$form-&gt;render_form();</code></pre>
-<h2 id="changelog">Changelog</h2>
+$form-&gt;render_form();
+</code></pre><h2 id="changelog">Changelog</h2>
 <h3 id="1-7-0-apr-13-2014">1.7.0: Apr 13, 2014</h3>
 <ul>
 <li>New: Add <code>reverse_validation</code> argument to <code>add_field</code>, which reverses any custom regex validation result. True by default due to initially stupid thinking and thus backwards compatibility.</li>

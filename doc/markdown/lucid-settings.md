@@ -24,27 +24,37 @@ Some options are controlled through properties: `$instance->prop = 'value'`.
 * `capability` **(string)** Capability required to edit the settings. Defaults to `'manage_options'`.
 * `pass_settings_errors_id` **(bool)** *Should no longer be needed as of 1.5.1*. Whether to pass setting ID to `settings_errors`. This is sometimes needed to avoid multiple update messages, other times it causes update messages to not be displayed at all. I have yet to find the reason for the issue. Defaults to false.
 
-## Submenu
+## Menu
 
-The `submenu` method requires a menu label text, and accepts some optional arguments through an array:
+The `menu` method requires a menu label text, and accepts some optional arguments through an array:
 
-* `'add_to'` **(string)** Slug for the parent menu, or the file name of a standard WordPress admin page (wp-admin/<file_name>). Includes .php extension and defaults to `'options-general.php'`.
 * `'title'` **(string)** HTML `<title>` text, defaults to the menu label.
 * `'tabs'` **(array)** Tabs to add, format `'unique_id' => 'Tab label'`.
 * `'capability'` **(string)** Capability needed to edit the settings. If not set, the $capability property is used, which defaults to `manage_options`.
+* `'icon'` **(string)** Menu item icon, probably a Dashicon ID.
+* `'position'` **(int|string)** Menu position. Must be unique to not overwrite other menu items. Use quoted decimal numbers to reduce the risk, like '27.5648'.
+
+Some arguments are directly used in [add_menu_page](http://codex.wordpress.org/Function_Reference/add_menu_page). The codex has more info on those.
+
+When using tabs, each tab is saved as a separate option (`get_option( 'my_advanced_settings' )`).
 
 Example:
 
-	$example_settings->submenu( __( 'Menu label', 'TEXTDOMAIN' ), array(
+	$example_settings->menu( __( 'Menu label', 'TEXTDOMAIN' ), array(
 		'title' => __( 'HTML title element text', 'TEXTDOMAIN' ),
-		'add_to' => 'themes.php',
+		'icon' => 'dashicons-palmtree',
 		'tabs' => array(
 			'my_general_settings' => __( 'General', 'TEXTDOMAIN' ),
 			'my_advanced_settings' => __( 'Advanced', 'TEXTDOMAIN' )
 		)
 	) );
 
-When using tabs, each tab is saved as a separate option (`get_option( 'my_advanced_settings' )`).
+## Submenu
+
+The `submenu` method is almost the same as `menu`, just with slightly different argument:
+
+* `'add_to'` **(string)** Slug for the parent menu, or the file name of a standard WordPress admin page (wp-admin/<file_name>). Includes .php extension and defaults to `'options-general.php'`.
+* Also has `'title'`, `'tabs'` and `'capability'` arguments, which are the same as for `menu`.
 
 ## Section
 
@@ -89,6 +99,7 @@ The `field` method requires an ID and a label, and accepts additional arguments 
 * `'sanitize'` **(string)** Sanitize value against predefined functions, see below. Defaults to `'checkbox'` for checkboxes.
 * `'sanitize_custom'` **(regex)** Sanitize value with a regular expression. Value will go through preg_replace.
 * `'output_callback'` **(callback)** Custom method for the field output, see _Custom output callback_ below.
+* `'editor_settings'` **(array)** Custom arguments to wp_editor, like `media_buttons` and `editor_class`. [See the Codex article](http://codex.wordpress.org/Function_Reference/wp_editor) for available options. **The `textarea_name` argument is ignored**, to make sure saving works properly.
 
 When the data is passed through the required checks, an explicitly defined sanitize value of `'none'` is required to save unfiltered data. Any sanitize or validate values take precedence. If no sanitation or validation is defined, the default action is stripping illegal tags with [wp_kses_post](http://codex.wordpress.org/Function_Reference/wp_kses_post).
 
@@ -150,6 +161,13 @@ Arbitrary HTML can be added with the `html` method, which takes two arguments:
 * The string of HTML to be added.
 
 An alternative is to use the `field` method with an empty label and a custom output callback. The benefit with that is that it's not dependant on another field.
+
+## Load callback
+
+A callback for the load-(page) action can be added to the `$load_callback` property, which is then only called when the settings page is loaded.
+
+	$example_settings->load_callback = 'my_function';
+	function my_function() { /* Do stuff only on the settings page */ }
 
 ## Complete examples
 
@@ -258,6 +276,12 @@ Since there are quite a few options, here are some examples to get the gist of i
 	$example_settings->init();
 
 ## Changelog
+
+### 1.8.0: Feb 23, 2015
+
+* New: Add `menu` method to create top level menu items.
+* New: Add `'editor_settings'` parameter to `field` for custom arguments to wp_editor when adding editor fields.
+* New: Add `load_callback` property that can be set to a callable, which is called on the load-(page) hook only when on the settings page.
 
 ### 1.7.0: Dec 09, 2013
 

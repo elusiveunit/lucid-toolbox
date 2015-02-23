@@ -24,6 +24,29 @@ Lucid Toolbox is currently available in the following languages:
 
 ## Changelog
 
+### 1.1.12: Feb 23, 2015
+
+#### Lucid\_Post\_Type 1.2.1
+
+* Tweak: Deprecate the custom icon arguments, use the built-in `menu_icon` instead.
+
+#### Lucid\_Settings 1.8.0
+
+* New: Add `menu` method to create top level menu items.
+* New: Add `'editor_settings'` parameter to `field` for custom arguments to wp_editor when adding editor fields.
+* New: Add `load_callback` property that can be set to a callable, which is called on the load-(page) hook only when on the settings page.
+
+#### WPAlchemy\_MetaBox 1.5.2.lucid-2, now Lucid\_WPAlchemy
+
+With this version it's a complete fork and will not fully match the original class.
+
+* New: Add defaults to checkbox, select and radio from upstream.
+* Tweak: Change the class name to `Lucid_WPAlchemy`. If no `WPAlchemy_MetaBox` class exists, it will be defined and extend `Lucid_WPAlchemy` to keep backwards compatibility. This may be removed eventually.
+* Tweak/fix: Improve the JavaScript for repeatable field's copy/delete and make it work when using the `area` argument.
+* Tweak: Some general code style changes and cleanup.
+* Remove: All display options have been removed: `hide_title`, `hide_editor`, `lock`, `view` and `hide_screen_option`. They were relying on JavaScript and CSS to accomplish their purpose and didn't feel future proof or maintainable. Removing the editor can be done on the post type itself and the `area` argument can handle different placements. The title should always be editable, even if it's not used publicly.
+
+
 ### 1.1.11: Apr 13, 2014
 
 #### Lucid\_Contact 1.7.0

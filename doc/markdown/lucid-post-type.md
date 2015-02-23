@@ -23,9 +23,6 @@ The `init` hook is a good one to use for registering.
 
 In addition to the standard `register_post_type` arguments, there are some additional customizations.
 
-* `'icon'` **(string)** Hexadecimal/unicode value for a [Dashicon](http://melchoyce.github.io/dashicons/), like `f120` for the WordPress logo. Takes precedence over icon URLs in WordPress 3.8+.
-* `'small_menu_icon_url'` **(string)** Absolute url to to a 16x40 pixels sprite image to use as admin menu icon for the post type. The hover state should be on top of the regular state in the image.
-* `'large_menu_icon_url'` **(string)** Absolute url to a 32x32 image to use as the icon beside the heading in the post edit screen.
 * `'post_type_args'` **(array)** The standard arguments for `register_post_type`, like `'hierarchical'`, `'labels'`, `'supports'` etc. See WordPress Codex link above.
 * `'update_messages'` **(array)** Update messages to display instead of the standard `'post updated'` etc. See below for examples.
 * `'update_messages_no_links'` **(array)** Same as `update_messages`, but without show/preview links to the post. This can be appropriate if the post isn't supposed to be viewed in itself (probably has `'public'` set to false), like a post type for gallery images. See below for examples.
@@ -87,7 +84,6 @@ Messages without links:
 To get an easier overview, here's a complete example.
 
 	$my_movie_post_type = new Lucid_Post_Type( 'movie', array(
-		'small_menu_icon_url' => $my_plugin_url . 'img/icon-movie.png',
 		'post_type_args' => array(
 			'hierarchical' => true,
 			'labels' => array(
@@ -107,6 +103,7 @@ To get an easier overview, here's a complete example.
 			),
 			'show_in_nav_menus' => false,
 			'menu_position' => 5,
+			'menu_icon' => 'dashicons-palmtree',
 			'supports' => array(
 				'title',
 				'editor',
@@ -131,6 +128,10 @@ To get an easier overview, here's a complete example.
 	) );
 
 ## Changelog
+
+### 1.2.1: Feb 23, 2015
+
+* Tweak: Deprecate the custom icon arguments, use the built-in `menu_icon` instead.
 
 ### 1.2.0: Dec 09, 2013
 

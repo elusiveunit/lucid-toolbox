@@ -410,8 +410,6 @@ class Lucid_Settings {
 	 * @param array $args {
 	 *    Additional arguments.
 	 *
-	 *    @type string $heading Section heading.
-	 *
 	 *    @type string $type Type of field. Unsupported types will fall back to
 	 *       text, which is also the default. Supported types:
 	 *       - 'text'

@@ -21,15 +21,12 @@
     &#39;update_messages&#39; =&gt; array(
         [...]
     )
-) );</code></pre>
-<p>The <code>post_type_args</code> array contains standard <code>register_post_type</code> arguments, see <a href="http://codex.wordpress.org/Function_Reference/register_post_type#Arguments">the codex</a>.</p>
+) );
+</code></pre><p>The <code>post_type_args</code> array contains standard <code>register_post_type</code> arguments, see <a href="http://codex.wordpress.org/Function_Reference/register_post_type#Arguments">the codex</a>.</p>
 <p>The <code>init</code> hook is a good one to use for registering.</p>
 <h2 id="additional-arguments">Additional arguments</h2>
 <p>In addition to the standard <code>register_post_type</code> arguments, there are some additional customizations.</p>
 <ul>
-<li><code>&#39;icon&#39;</code> <strong>(string)</strong> Hexadecimal/unicode value for a <a href="http://melchoyce.github.io/dashicons/">Dashicon</a>, like <code>f120</code> for the WordPress logo. Takes precedence over icon URLs in WordPress 3.8+.</li>
-<li><code>&#39;small_menu_icon_url&#39;</code> <strong>(string)</strong> Absolute url to to a 16x40 pixels sprite image to use as admin menu icon for the post type. The hover state should be on top of the regular state in the image.</li>
-<li><code>&#39;large_menu_icon_url&#39;</code> <strong>(string)</strong> Absolute url to a 32x32 image to use as the icon beside the heading in the post edit screen.</li>
 <li><code>&#39;post_type_args&#39;</code> <strong>(array)</strong> The standard arguments for <code>register_post_type</code>, like <code>&#39;hierarchical&#39;</code>, <code>&#39;labels&#39;</code>, <code>&#39;supports&#39;</code> etc. See WordPress Codex link above.</li>
 <li><code>&#39;update_messages&#39;</code> <strong>(array)</strong> Update messages to display instead of the standard <code>&#39;post updated&#39;</code> etc. See below for examples.</li>
 <li><code>&#39;update_messages_no_links&#39;</code> <strong>(array)</strong> Same as <code>update_messages</code>, but without show/preview links to the post. This can be appropriate if the post isn&#39;t supposed to be viewed in itself (probably has <code>&#39;public&#39;</code> set to false), like a post type for gallery images. See below for examples.</li>
@@ -53,8 +50,8 @@
 
     // Hierarchical only
     &#39;parent_item_colon&#39; =&gt;  __( &#39;Parent movie:&#39;, &#39;TEXTDOMAIN&#39; )
-)</code></pre>
-<h2 id="update-messages">Update messages</h2>
+)
+</code></pre><h2 id="update-messages">Update messages</h2>
 <p>There are two possible variants for update messages. The regular <code>&#39;update_messages&#39;</code> takes precedence, should both be provided.</p>
 <p>Regular messages:</p>
 <pre><code>&#39;update_messages&#39; =&gt; array(
@@ -66,8 +63,8 @@
     &#39;submitted&#39;    =&gt; __( &#39;Movie submitted. &lt;a target=&quot;_blank&quot; href=&quot;%s&quot;&gt;Preview movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; ),
     &#39;scheduled&#39;    =&gt; __( &#39;Movie scheduled for: &lt;strong&gt;%1$s&lt;/strong&gt;. &lt;a target=&quot;_blank&quot; href=&quot;%2$s&quot;&gt;Preview movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; ),
     &#39;draft&#39;        =&gt; __( &#39;Movie draft updated. &lt;a href=&quot;%s&quot;&gt;Preview movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; )
-)</code></pre>
-<p>Messages without links:</p>
+)
+</code></pre><p>Messages without links:</p>
 <pre><code>&#39;update_messages_no_links&#39; =&gt; array(
     &#39;updated&#39;   =&gt; __( &#39;Movie updated.&#39;, &#39;TEXTDOMAIN&#39; ),
     &#39;revision&#39;  =&gt; __( &#39;Movie restored to revision from %s.&#39;, &#39;TEXTDOMAIN&#39; ),
@@ -76,11 +73,10 @@
     &#39;submitted&#39; =&gt; __( &#39;Movie submitted.&#39;, &#39;TEXTDOMAIN&#39; ),
     &#39;scheduled&#39; =&gt; __( &#39;Movie scheduled for: &lt;strong&gt;%1$s&lt;/strong&gt;.&#39;, &#39;TEXTDOMAIN&#39; ),
     &#39;draft&#39;     =&gt; __( &#39;Movie draft updated.&#39;, &#39;TEXTDOMAIN&#39; )
-)</code></pre>
-<h2 id="complete-example">Complete example</h2>
+)
+</code></pre><h2 id="complete-example">Complete example</h2>
 <p>To get an easier overview, here&#39;s a complete example.</p>
 <pre><code>$my_movie_post_type = new Lucid_Post_Type( &#39;movie&#39;, array(
-    &#39;small_menu_icon_url&#39; =&gt; $my_plugin_url . &#39;img/icon-movie.png&#39;,
     &#39;post_type_args&#39; =&gt; array(
         &#39;hierarchical&#39; =&gt; true,
         &#39;labels&#39; =&gt; array(
@@ -100,6 +96,7 @@
         ),
         &#39;show_in_nav_menus&#39; =&gt; false,
         &#39;menu_position&#39; =&gt; 5,
+        &#39;menu_icon&#39; =&gt; &#39;dashicons-palmtree&#39;,
         &#39;supports&#39; =&gt; array(
             &#39;title&#39;,
             &#39;editor&#39;,
@@ -121,8 +118,12 @@
         &#39;scheduled&#39;    =&gt; __( &#39;Movie scheduled for: &lt;strong&gt;%1$s&lt;/strong&gt;. &lt;a target=&quot;_blank&quot; href=&quot;%2$s&quot;&gt;Preview movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; ),
         &#39;draft&#39;        =&gt; __( &#39;Movie draft updated. &lt;a href=&quot;%s&quot;&gt;Preview movie&lt;/a&gt;&#39;, &#39;TEXTDOMAIN&#39; )
     )
-) );</code></pre>
-<h2 id="changelog">Changelog</h2>
+) );
+</code></pre><h2 id="changelog">Changelog</h2>
+<h3 id="1-2-1-feb-23-2015">1.2.1: Feb 23, 2015</h3>
+<ul>
+<li>Tweak: Deprecate the custom icon arguments, use the built-in <code>menu_icon</code> instead.</li>
+</ul>
 <h3 id="1-2-0-dec-09-2013">1.2.0: Dec 09, 2013</h3>
 <ul>
 <li>New: Add &#39;icon&#39; argument for the new Dashicons in WordPress 3.8.</li>
