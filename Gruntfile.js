@@ -9,33 +9,37 @@ module.exports = function(grunt) {
 		// Compile markdown
 		markdown: {
 			docIndex: {
-				files: {'doc/index.html': 'README.md'},
 				options: {
 					template: 'doc/assets/index-template.html',
-					markdownOptions: {
-						gfm: false, // Github flavored markdown
-						highlight: function () {}
+					gfm: false, // Github flavored markdown
+					preCompile: function (src, context) {
+						// Remove David badge
+						return src.replace(/\[!\[devDependency.+Dependencies\)/, '');
 					},
-					preCompile: function( src, context ) {
-						return src.replace( /\s?\[!\[devDep.+devDependencies\)/, '' );
-					}
-				}
+					//highlight: function(code, lang) {
+					//	return code; // No code highlighting
+					//}
+				},
+				files: {'doc/index.html': ['README.md']}
 			},
 			doc: {
-				files: [{
-					expand: true,
-					flatten: true,
-					src: 'doc/markdown/*.md',
-					dest: 'doc/html/',
-					ext: '.html'
-				}],
 				options: {
 					template: 'doc/assets/template.html',
-					markdownOptions: {
-						gfm: false, // Github flavored markdown
-						highlight: function () {}
+					gfm: false, // Github flavored markdown
+					//highlight: function(code, lang) {
+					//	return code; // No code highlighting
+					//}
+				},
+				files: [{
+					expand: true,
+					src: 'doc/markdown/*.md',
+					dest: 'doc/html/',
+					ext: '.html',
+					rename: function (dest, src) {
+						var file = src.split('/').pop()
+						return dest + file;
 					}
-				}
+				}]
 			}
 		},
 
