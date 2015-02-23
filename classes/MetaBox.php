@@ -1,65 +1,30 @@
 <?php
 /**
- * @author		Dimas Begunoff
- * @copyright	Copyright (c) 2009, Dimas Begunoff, http://farinspace.com
- * @license		http://en.wikipedia.org/wiki/MIT_License The MIT License
- * @package		WPAlchemy
- * @version		1.5.2.lucid-1
- * @link		http://github.com/farinspace/wpalchemy
- * @link		http://farinspace.com
- */
-
-/*
- * There are some customizations made, preceded by 'LSJL CUSTOM':
+ * A forked version of the original WPAlchemy_MetaBox.
  *
- * - The JavaScript alert with repeatable items is made translatable.
- * - Some light minifying of JavaScript output.
+ * @author    Dimas Begunoff
+ * @copyright Copyright (c) 2009, Dimas Begunoff, http://farinspace.com
+ * @license   http://en.wikipedia.org/wiki/MIT_License The MIT License
+ * @package   WPAlchemy
+ * @version   1.5.2.lucid-2
+ * @link      http://github.com/farinspace/wpalchemy
+ * @link      http://farinspace.com
  */
 
-// todo: perhaps move _global_head and _global_foot locally, when first run
-// define a constant to prevent other instances from running again ...
+// Compat for when the original class was used as is. May be removed in the
+// future.
+if (!class_exists('WPAlchemy_MetaBox')) {
+	class WPAlchemy_MetaBox extends Lucid_WPAlchemy {}
+}
 
-add_action('admin_head', array('WPAlchemy_MetaBox', '_global_head'));
+if (!defined('WPALCHEMY_MODE_ARRAY'))
+	define('WPALCHEMY_MODE_ARRAY', 'array');
 
-add_action('admin_footer', array('WPAlchemy_MetaBox', '_global_foot'));
+if (!defined('WPALCHEMY_MODE_EXTRACT'))
+	define('WPALCHEMY_MODE_EXTRACT', 'extract');
 
-define('WPALCHEMY_MODE_ARRAY', 'array');
+class Lucid_WPAlchemy {
 
-define('WPALCHEMY_MODE_EXTRACT', 'extract');
-
-define('WPALCHEMY_FIELD_HINT_TEXT', 'text');
-
-define('WPALCHEMY_FIELD_HINT_TEXTAREA', 'textarea');
-
-define('WPALCHEMY_FIELD_HINT_CHECKBOX', 'checkbox');
-
-define('WPALCHEMY_FIELD_HINT_CHECKBOX_MULTI', 'checkbox_multi');
-
-define('WPALCHEMY_FIELD_HINT_RADIO', 'radio');
-
-define('WPALCHEMY_FIELD_HINT_SELECT', 'select');
-
-define('WPALCHEMY_FIELD_HINT_SELECT_MULTI', 'select_multi');
-
-// depreciated, use WPALCHEMY_FIELD_HINT_SELECT_MULTI instead
-define('WPALCHEMY_FIELD_HINT_SELECT_MULTIPLE', 'select_multiple');
-
-define('WPALCHEMY_LOCK_TOP', 'top');
-
-define('WPALCHEMY_LOCK_BOTTOM', 'bottom');
-
-define('WPALCHEMY_LOCK_BEFORE_POST_TITLE', 'before_post_title');
-
-define('WPALCHEMY_LOCK_AFTER_POST_TITLE', 'after_post_title');
-
-define('WPALCHEMY_VIEW_START_OPENED', 'opened');
-
-define('WPALCHEMY_VIEW_START_CLOSED', 'closed');
-
-define('WPALCHEMY_VIEW_ALWAYS_OPENED', 'always_opened');
-
-class WPAlchemy_MetaBox
-{
 	/**
 	 * User defined identifier for the meta box, prefix with an underscore to
 	 * prevent option(s) form showing up in the custom fields meta box, this
@@ -344,115 +309,17 @@ class WPAlchemy_MetaBox
 	 */
 	public $foot_action;
 
-	/**
-	 * Used to hide the default content editor in a page or post, this option
-	 * should be used when instantiating the class.
-	 *
-	 * @since	1.3
-	 * @access	public
-	 * @var		bool optional
-	 */
-	public $hide_editor = FALSE;
-
-	/**
-	 * Used in conjunction with the "hide_editor" option, prevents the media
-	 * buttons from also being hidden.
-	 *
-	 * @since	1.5
-	 * @access	public
-	 * @var		bool optional
-	 */
-	public $use_media_buttons = FALSE;
-
-	/**
-	 * Used to hide the meta box title, this option should be used when
-	 * instantiating the class.
-	 *
-	 * @since	1.3
-	 * @access	public
-	 * @var		bool optional
-	 * @see		$title
-	 */
-	public $hide_title = FALSE;
-
-	/**
-	 * Used to lock a meta box in place, possible values are: top, bottom,
-	 * before_post_title, after_post_title, this option should be used when
-	 * instantiating the class.
-	 *
-	 * @since		1.3.3
-	 * @access		public
-	 * @var			string optional possible values are: top, bottom, before_post_title, after_post_title
-	 */
-	public $lock;
-
-	/**
-	 * Used to lock a meta box at top (below the default content editor), this
-	 * option should be used when instantiating the class.
-	 *
-	 * @deprecated	deprecated since version 1.3.3
-	 * @since		1.3
-	 * @access		public
-	 * @var			bool optional
-	 * @see			$lock
-	 */
-	public $lock_on_top = FALSE;
-
-	/**
-	 * Used to lock a meta box at bottom, this option should be used when
-	 * instantiating the class.
-	 *
-	 * @deprecated	deprecated since version 1.3.3
-	 * @since		1.3
-	 * @access		public
-	 * @var			bool optional
-	 * @see			$lock
-	 */
-	public $lock_on_bottom = FALSE;
-
-	/**
-	 * Used to set the initial view state of the meta box, possible values are:
-	 * opened, closed, always_opened, this option should be used when
-	 * instantiating the class.
-	 *
-	 * @since	1.3.3
-	 * @access	public
-	 * @var		string optional possible values are: opened, closed, always_opened
-	 */
-	public $view;
-
-	/**
-	 * Used to hide the show/hide checkbox option from the screen options area,
-	 * this option should be used when instantiating the class.
-	 *
-	 * @since		1.3.4
-	 * @access		public
-	 * @var			bool optional
-	 */
-	public $hide_screen_option = FALSE;
-
-	// private
-
-	public $meta;
-	public $name;
-	public $subname;
-
-	/**
-	 * Used to provide field type hinting
-	 *
-	 * @since	1.3
-	 * @access	private
-	 * @var		string
-	 * @see		the_field()
-	 */
-	public $hint;
-
-	public $length = 0;
-	public $current = -1;
-	public $in_loop = FALSE;
-	public $in_template = FALSE;
-	public $group_tag;
-	public $current_post_id;
+	// Internal
+	protected $meta;
+	protected $name;
+	protected $subname;
+	protected $length = 0;
+	protected $current = -1;
+	protected $in_loop = false;
+	protected $in_template = false;
+	protected $group_tag;
+	protected $current_post_id;
+	protected static $_is_head_foot_done = false;
 
 	/**
 	 * Used to store current loop details, cleared after loop ends
@@ -515,52 +382,13 @@ class WPAlchemy_MetaBox
 			}
 		}
 
-		// convert depreciated variables
-		if ($this->lock_on_top) $this->lock = WPALCHEMY_LOCK_TOP;
-		elseif ($this->lock_on_bottom) $this->lock = WPALCHEMY_LOCK_BOTTOM;
+		if (!self::$_is_head_foot_done) {
+			add_action('admin_head', array('WPAlchemy_MetaBox', '_global_head'));
+			add_action('admin_footer', array('WPAlchemy_MetaBox', '_global_foot'));
+			self::$_is_head_foot_done = true;
+		}
 
 		add_action('admin_init', array($this,'_init'));
-
-		// uses the default wordpress-importer plugin hook
-		add_action('import_post_meta', array($this, '_import'), 10, 3);
-	}
-
-	/**
-	 * Used to correct double serialized data during post/page export/import,
-	 * additionally will try to fix corrupted serialized data by recalculating
-	 * string length values
-	 *
-	 * @since	1.3.16
-	 * @access	private
-	 */
-	public function _import($post_id, $key, $value)
-	{
-		if (WPALCHEMY_MODE_ARRAY == $this->mode AND $key == $this->id)
-		{
-			// using $wp_import to get access to the raw postmeta data prior to it getting passed
-			// through "maybe_unserialize()" in "plugins/wordpress-importer/wordpress-importer.php"
-			// the "import_post_meta" action is called after "maybe_unserialize()"
-
-			global $wp_import;
-
-			foreach ( $wp_import->posts as $post )
-			{
-				if ( $post_id == $post['post_id'] )
-				{
-					foreach( $post['postmeta'] as $meta )
-					{
-						if ( $key == $meta['key'] )
-						{
-							// try to fix corrupted serialized data, specifically "\r\n" being converted to "\n" during wordpress XML export (WXR)
-							// "maybe_unserialize()" fixes a wordpress bug which double serializes already serialized data during export/import
-							$value = maybe_unserialize( preg_replace( '!s:(\d+):"(.*?)";!es', "'s:'.strlen('$2').':\"$2\";'", stripslashes( $meta['value'] ) ) );
-
-							update_post_meta( $post_id, $key,  $value );
-						}
-					}
-				}
-			}
-		}
 	}
 
 	/**
@@ -659,27 +487,6 @@ class WPAlchemy_MetaBox
 	 */
 	public function _head()
 	{
-		$content = NULL;
-
-		ob_start();
-
-		?>
-		<style type="text/css">
-			<?php if ($this->hide_editor) { ?> #wp-content-editor-container, #post-status-info, <?php if ($this->use_media_buttons) { ?> #content-html, #content-tmce<?php } else { ?> #wp-content-wrap<?php } ?> { display:none; } <?php } ?>
-		</style>
-		<?php
-
-		$content = ob_get_contents();
-
-		ob_end_clean();
-
-		// filter: head
-		if ($this->has_filter('head'))
-		{
-			$content = $this->apply_filters('head', $content);
-		}
-
-		echo $content;
 
 		// action: head
 		if ($this->has_action('head'))
@@ -698,127 +505,6 @@ class WPAlchemy_MetaBox
 	 */
 	public function _foot()
 	{
-		$content = NULL;
-
-		if
-		(
-			$this->lock OR
-			$this->hide_title OR
-			$this->view OR
-			$this->hide_screen_option
-		)
-		{
-			ob_start();
-
-			?>
-			<script type="text/javascript">
-			(function($){ /* not using jQuery ondomready, code runs right away in footer */
-
-				var mb_id = '<?php echo $this->id; ?>';
-				var mb = $('#' + mb_id + '_metabox');
-
-				<?php if (WPALCHEMY_LOCK_TOP == $this->lock): ?>
-				<?php if ('side' == $this->context): ?>
-				var id = 'wpalchemy-side-top';
-				if ( ! $('#'+id).length)
-				{
-					$('<div></div>').attr('id',id).prependTo('#side-info-column');
-				}
-				<?php else: ?>
-				var id = 'wpalchemy-content-top';
-				if ( ! $('#'+id).length)
-				{
-					$('<div></div>').attr('id',id).insertAfter('#postdiv, #postdivrich');
-				}
-				<?php endif; ?>
-				$('#'+id).append(mb);
-				<?php elseif (WPALCHEMY_LOCK_BOTTOM == $this->lock): ?>
-				<?php if ('side' == $this->context): ?>
-				var id = 'wpalchemy-side-bottom';
-				if ( ! $('#'+id).length)
-				{
-					$('<div></div>').attr('id',id).appendTo('#side-info-column');
-				}
-				<?php else: ?>
-				if ( ! $('#advanced-sortables').children().length)
-				{
-					$('#advanced-sortables').css('display','none');
-				}
-
-				var id = 'wpalchemy-content-bottom';
-				if ( ! $('#'+id).length)
-				{
-					$('<div></div>').attr('id',id).insertAfter('#advanced-sortables');
-				}
-				<?php endif; ?>
-				$('#'+id).append(mb);
-				<?php elseif (WPALCHEMY_LOCK_BEFORE_POST_TITLE == $this->lock): ?>
-				<?php if ('side' != $this->context): ?>
-				var id = 'wpalchemy-content-bpt';
-				if ( ! $('#'+id).length)
-				{
-					$('<div></div>').attr('id',id).prependTo('#post-body-content');
-				}
-				$('#'+id).append(mb);
-				<?php endif; ?>
-				<?php elseif (WPALCHEMY_LOCK_AFTER_POST_TITLE == $this->lock): ?>
-				<?php if ('side' != $this->context): ?>
-				var id = 'wpalchemy-content-apt';
-				if ( ! $('#'+id).length)
-				{
-					$('<div></div>').attr('id',id).insertAfter('#titlediv');
-				}
-				$('#'+id).append(mb);
-				<?php endif; ?>
-				<?php endif; ?>
-
-				<?php if ( ! empty($this->lock)): ?>
-				$('.hndle', mb).css('cursor','pointer');
-				$('.handlediv', mb).remove();
-				<?php endif; ?>
-
-				<?php if ($this->hide_title): ?>
-				$('.hndle', mb).remove();
-				$('.handlediv', mb).remove();
-				mb.removeClass('closed'); /* start opened */
-				<?php endif; ?>
-
-				<?php if (WPALCHEMY_VIEW_START_OPENED == $this->view): ?>
-				mb.removeClass('closed');
-				<?php elseif (WPALCHEMY_VIEW_START_CLOSED == $this->view): ?>
-				mb.addClass('closed');
-				<?php elseif (WPALCHEMY_VIEW_ALWAYS_OPENED == $this->view): ?>
-				/* todo: need to find a way to add this script block below, load-scripts.php?... */
-				var h3 = mb.children('h3');
-				setTimeout(function(){ h3.unbind('click'); }, 1000);
-				$('.handlediv', mb).remove();
-				mb.removeClass('closed'); /* start opened */
-				$('.hndle', mb).css('cursor','auto');
-				<?php endif; ?>
-
-				<?php if ($this->hide_screen_option): ?>
-					$('.metabox-prefs label[for='+ mb_id +'_metabox-hide]').remove();
-				<?php endif; ?>
-
-				mb = null;
-
-			})(jQuery);
-			</script>
-			<?php
-
-			// LSJL CUSTOM: Removed CDATA above, slightly minify output
-			$content = ob_get_clean();
-			$content = str_replace( array( "\n", "\t" ), '', $content );
-			$content = preg_replace( '/[\s]+/', ' ', $content );
-		}
-
-		// filter: foot
-		if ($this->has_filter('foot'))
-		{
-			$content = $this->apply_filters('foot', $content);
-		}
-
-		echo $content;
 
 		// action: foot
 		if ($this->has_action('foot'))
