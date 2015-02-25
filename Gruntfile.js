@@ -16,19 +16,13 @@ module.exports = function(grunt) {
 						// Remove David badge
 						return src.replace(/\[!\[devDependency.+Dependencies\)/, '');
 					},
-					//highlight: function(code, lang) {
-					//	return code; // No code highlighting
-					//}
 				},
 				files: {'doc/index.html': ['README.md']}
 			},
 			doc: {
 				options: {
 					template: 'doc/assets/template.html',
-					gfm: false, // Github flavored markdown
-					//highlight: function(code, lang) {
-					//	return code; // No code highlighting
-					//}
+					gfm: false // Github flavored markdown
 				},
 				files: [{
 					expand: true,
