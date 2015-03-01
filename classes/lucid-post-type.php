@@ -20,6 +20,9 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *        ),
  *        'update_messages' => array(
  *           [...]
+ *        ),
+ *        'columns' => array(
+ *           [...]
  *        )
  *     ) );
  *
@@ -47,8 +50,11 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  *        'parent_item_colon' =>  __( 'Parent movie:', 'TEXTDOMAIN' )
  *     )
  *
+ * The columns argument makes use of Lucid_Admin_Column, see that class for
+ * the data to pass.
+ *
  * @package Lucid\Toolbox
- * @version 1.2.1
+ * @version 1.3.0
  */
 class Lucid_Post_Type {
 
@@ -67,6 +73,14 @@ class Lucid_Post_Type {
 	 * @var array
 	 */
 	public $args = array();
+
+	/**
+	 * The column class object, if the columns argument was used.
+	 *
+	 * @since 1.3.0
+	 * @var Lucid_Admin_Column
+	 */
+	public $columns = null;
 
 	/**
 	 * Constructor, pass post type.
@@ -96,8 +110,11 @@ class Lucid_Post_Type {
 	 *       the post isn't supposed to be viewed in itself (probably has
 	 *       'public' set to false), like a post type for gallery images. See
 	 *       _update_messages() for examples.
+	 *    @type array $columns Custom columns for the admin post list. See
+	 *       Lucid_Admin_Column for the arguments to use.
 	 * }
 	 * @see _update_messages() For message array structure.
+	 * @see Lucid_Admin_Column For the 'columns' argument structure.
 	 * @link http://codex.wordpress.org/Function_Reference/register_post_type
 	 * @link https://developer.wordpress.org/resource/dashicons/ The Dashicons
 	 *    icon font
@@ -114,12 +131,16 @@ class Lucid_Post_Type {
 			'icon' => '',
 			'post_type_args' => array(),
 			'update_messages' => array(),
-			'update_messages_no_links' => array()
+			'update_messages_no_links' => array(),
+			'columns' => array()
 		);
 		$this->args = array_merge( $defaults, $args );
 
 		$this->_add_post_type();
 		$this->_add_hooks();
+
+		if ( $this->args['columns'] )
+			$this->_add_columns();
 	}
 
 	/**
@@ -257,6 +278,19 @@ class Lucid_Post_Type {
 		endif;
 
 		return $messages;
+	}
+
+	/**
+	 * Add custom admin columns.
+	 *
+	 * @since 1.3.0
+	 * @see Lucid_Admin_Column
+	 */
+	protected function _add_columns() {
+		if ( ! class_exists( 'Lucid_Admin_Column' ) )
+			require LUCID_TOOLBOX_CLASS . 'lucid-admin-column.php';
+
+		$this->columns = new Lucid_Admin_Column( $this->name, $this->args['columns'] );
 	}
 
 	/**
