@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html class="no-touch">
+<head>
+<meta charset="utf-8">
+<title>Lucid Toolbox Readme</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="http://fonts.googleapis.com/css?family=Neuton:400,400italic,700|Source+Sans+Pro" rel="stylesheet">
+<link rel="stylesheet" href="../assets/doc.min.css">
+</head>
+<body id="intro">
+
+<h1 id="lucid-_admin-_column">Lucid_Admin_Column</h1>
+<p>Add custom columns to admin post lists.</p>
+<p>Can be used both as a standalone class and as an argument for <code>Lucid_Post_Type</code>. This covers the standalone use case; for the post type, just pass the same below <code>column_data</code> to the <code>columns</code> argument.</p>
+<h2 id="arguments">Arguments</h2>
+<p>The constructor takes two arguments:</p>
+<ul>
+<li><code>post_type</code> <strong>(string|array)</strong> Which post type(s) to add the columns to. Can be a single one like <code>&#39;page&#39;</code>, an array like <code>array( &#39;post&#39;, &#39;page&#39; )</code> or the special <code>&#39;all&#39;</code> to include all post types that has a screen (the type&#39;s <code>show_ui</code> is true).</li>
+<li><code>column_data</code> <strong>(array)</strong> Each item is an array with data for that column.</li>
+</ul>
+<h3 id="column-item-column_data-arguments">Column item (<code>column_data</code>) arguments</h3>
+<ul>
+<li><code>&#39;id&#39;</code> <strong>(string)</strong> A unique column ID.</li>
+<li><code>&#39;title&#39;</code> <strong>(string)</strong> The column title.</li>
+<li><code>&#39;position&#39;</code> <strong>(int)</strong> Optional. Zero-based position of the column relative to the existing WordPress ones; for example 1 to place it before the title column. Note that the position will depend on the current &#39;state&#39;; adding multiple columns with the same position will effectively add them in reverse order of the <code>column_data</code> array. Defaults to 2.</li>
+<li><code>&#39;width&#39;</code> <strong>(string)</strong> Optional. CSS width value, like &#39;5em&#39;.</li>
+<li><code>&#39;sorting&#39;</code> <strong>(string|callable)</strong> Optional. Turn on sorting for the column, either by passing one of the built-in orderby parameters, like <code>&#39;ID&#39;</code> or <code>&#39;date&#39;</code>, or by passing a callback. The callback will be passed the main <code>WP_Query</code> object on which custom parameters can be set. See examples below.</li>
+<li><code>&#39;output&#39;</code> <strong>(callable)</strong> Function that outputs the content for each post&#39;s cell in the column. The function is passed the $post_id.</li>
+</ul>
+<h2 id="example">Example</h2>
+<p>This simple example adds a column to pages with the ID.</p>
+<pre><code>$my_columns = new Lucid_Admin_Column( &#39;page&#39;, array(
+    array(
+        &#39;id&#39; =&gt; &#39;my_id_column&#39;,
+        &#39;title&#39; =&gt; __( &#39;Page ID&#39;, &#39;TEXTDOMAIN&#39; ),
+        &#39;position&#39; =&gt; 1,
+        &#39;width&#39; =&gt; &#39;4em&#39;,
+        &#39;output&#39; =&gt; &#39;my_id_column_output&#39;
+    ),
+    [...]
+) );
+
+function my_id_column_output( $post_id ) {
+    echo $post_id;
+}
+</code></pre><h3 id="sorting">Sorting</h3>
+<p>Sorting in the above example can easily be achieved with the built-in <code>orderby</code> value <code>&#39;ID&#39;</code>, which would be enabled by passing just that in the column array:</p>
+<pre><code>[...]
+&#39;sorting&#39; =&gt; &#39;ID&#39;,
+&#39;output&#39; =&gt; &#39;my_id_column_output&#39;
+[...]
+</code></pre><p>See the <a href="http://codex.wordpress.org/Class_Reference/WP_Query">Codex entry on WP_Query</a> for the available options.</p>
+<p>Sorting something more complex like a custom field value requires passing your own callback instead of the strings. The callback is called inside the <code>pre_get_posts</code> action and is passed the current <code>WP_Query</code> object. Below is an example with a custom date field on an event post type:</p>
+<pre><code>$date_column = new Lucid_Admin_Column( &#39;event&#39;, array(
+    array(
+        &#39;id&#39; =&gt; &#39;my_event_date&#39;,
+        &#39;title&#39; =&gt; __( &#39;Event date&#39;, &#39;TEXTDOMAIN&#39; ),
+        &#39;output&#39; =&gt; &#39;my_event_date_output&#39;,
+        &#39;sorting&#39; =&gt; &#39;my_event_date_sort&#39;
+    )
+) );
+
+function my_event_date_output( $post_id ) {
+    $date = get_post_meta( $post_id, &#39;_my_event_date&#39;, true );
+    echo ( $date ) ? $date : __( &#39;No date&#39;, &#39;TEXTDOMAIN&#39; );
+}
+
+function my_event_date_sort( $query ) {
+    $query-&gt;set( &#39;orderby&#39;, &#39;meta_value&#39; );
+    $query-&gt;set( &#39;meta_key&#39;, &#39;_my_event_date&#39; );
+    $query-&gt;set( &#39;meta_type&#39;, &#39;DATE&#39; );
+}
+</code></pre><p>A downside with sorting on custom fields is that the <code>meta_key</code> parameter will cause posts without the targeted field to be skipped from the result, instead of just appearing last like one would expect in the admin list. In the above example, posts without a date set would simply not be shown. Including those posts will require filtering the generated SQL with filters like <code>get_meta_sql</code> and <code>posts_orderby</code>.</p>
+<h2 id="changelog">Changelog</h2>
+<h3 id="1-0-0-mar-01-2015">1.0.0: Mar 01, 2015</h3>
+<ul>
+<li>Initial version.</li>
+</ul>
+
+
+<script src="../assets/doc.min.js"></script>
+</body>
+</html>

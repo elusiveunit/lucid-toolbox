@@ -12,6 +12,9 @@ The format is very similar to the standard way of registering, with some additio
 		),
 		'update_messages' => array(
 			[...]
+		),
+		'columns' => array(
+			[...]
 		)
 	) );
 
@@ -26,6 +29,7 @@ In addition to the standard `register_post_type` arguments, there are some addit
 * `'post_type_args'` **(array)** The standard arguments for `register_post_type`, like `'hierarchical'`, `'labels'`, `'supports'` etc. See WordPress Codex link above.
 * `'update_messages'` **(array)** Update messages to display instead of the standard `'post updated'` etc. See below for examples.
 * `'update_messages_no_links'` **(array)** Same as `update_messages`, but without show/preview links to the post. This can be appropriate if the post isn't supposed to be viewed in itself (probably has `'public'` set to false), like a post type for gallery images. See below for examples.
+* `'columns'` **(array)** Custom columns for the admin post list. See `Lucid_Admin_Column` for the arguments to use.
 
 ## Labels
 
@@ -128,6 +132,10 @@ To get an easier overview, here's a complete example.
 	) );
 
 ## Changelog
+
+### 1.3.0: Mar 01, 2015
+
+* New: Add `'columns'` argument for adding custom admin columns to the post type, using `Lucid_Admin_Column`.
 
 ### 1.2.1: Feb 23, 2015
 

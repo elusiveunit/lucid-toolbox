@@ -24,6 +24,17 @@ Lucid Toolbox is currently available in the following languages:
 
 ## Changelog
 
+### 1.2.0: Mar 01, 2015
+
+#### Lucid\_Admin\_Column 1.0.0
+
+A new class for adding custom columns to admin post lists. Can be used both as a standalone class and as a new argument for `Lucid_Post_Type`. See included docs for usage.
+
+#### Lucid\_Post\_Type 1.3.0
+
+* New: Add `'columns'` argument for adding custom admin columns to the post type, using `Lucid_Admin_Column`.
+
+
 ### 1.1.12: Feb 23, 2015
 
 #### Lucid\_Post\_Type 1.2.1
