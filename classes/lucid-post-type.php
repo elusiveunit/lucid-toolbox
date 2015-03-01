@@ -15,8 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  * additional arguments:
  *
  *     $post_type_name = new Lucid_Post_Type( 'NAME', array(
- *        'small_menu_icon_url' => [path_to_image_directory]/16x40_sprite.png',
- *        'large_menu_icon_url' => [path_to_image_directory]/32x32.png',
  *        'post_type_args' => array(
  *           [...]
  *        ),
@@ -68,7 +66,7 @@ class Lucid_Post_Type {
 	 * @since 1.0.0
 	 * @var array
 	 */
-	public $post_type_data = array();
+	public $args = array();
 
 	/**
 	 * Constructor, pass post type.
@@ -118,7 +116,7 @@ class Lucid_Post_Type {
 			'update_messages' => array(),
 			'update_messages_no_links' => array()
 		);
-		$this->post_type_data = array_merge( $defaults, $args );
+		$this->args = array_merge( $defaults, $args );
 
 		$this->_add_post_type();
 		$this->_add_hooks();
@@ -154,9 +152,9 @@ class Lucid_Post_Type {
 	 * @since 1.0.0
 	 */
 	protected function _add_hooks() {
-		if ( $this->post_type_data['small_menu_icon_url']
-		  || $this->post_type_data['large_menu_icon_url']
-		  || $this->post_type_data['icon'] ) :
+		if ( $this->args['small_menu_icon_url']
+		  || $this->args['large_menu_icon_url']
+		  || $this->args['icon'] ) :
 			add_action( 'admin_head', array( $this, '_admin_icons' ) );
 			add_action( 'admin_notices', array( $this, '_admin_icons_notice' ) );
 		endif;
@@ -169,10 +167,10 @@ class Lucid_Post_Type {
 	 *
 	 * @since 1.0.0
 	 */
-	public function _add_post_type() {
+	protected function _add_post_type() {
 		register_post_type(
 			$this->name,
-			$this->post_type_data['post_type_args']
+			$this->args['post_type_args']
 		);
 	}
 
@@ -220,8 +218,8 @@ class Lucid_Post_Type {
 		global $post;
 
 		// Regular messages
-		if ( ! empty( $this->post_type_data['update_messages'] ) ) :
-			$msg = $this->post_type_data['update_messages'];
+		if ( ! empty( $this->args['update_messages'] ) ) :
+			$msg = $this->args['update_messages'];
 
 			$messages[$this->name] = array(
 				0 => '', // Unused. Messages start at index 1.
@@ -239,8 +237,8 @@ class Lucid_Post_Type {
 			);
 
 		// Messages with no links
-		elseif ( ! empty( $this->post_type_data['update_messages_no_links'] ) ) :
-			$msg = $this->post_type_data['update_messages_no_links'];
+		elseif ( ! empty( $this->args['update_messages_no_links'] ) ) :
+			$msg = $this->args['update_messages_no_links'];
 
 			$messages[$this->name] = array(
 				0 => '', // Unused. Messages start at index 1.
@@ -272,15 +270,15 @@ class Lucid_Post_Type {
 	public function _admin_icons() {
 		$post_type = $this->name;
 
-		$small_icon = ( $this->post_type_data['small_menu_icon_url'] )
-			? $this->post_type_data['small_menu_icon_url']
+		$small_icon = ( $this->args['small_menu_icon_url'] )
+			? $this->args['small_menu_icon_url']
 			: '';
 
-		$large_icon = ( $this->post_type_data['large_menu_icon_url'] )
-			? $this->post_type_data['large_menu_icon_url']
+		$large_icon = ( $this->args['large_menu_icon_url'] )
+			? $this->args['large_menu_icon_url']
 			: '';
 
-		$font_icon = ( $this->post_type_data['icon'] ) ? $this->post_type_data['icon'] : '';
+		$font_icon = ( $this->args['icon'] ) ? $this->args['icon'] : '';
 
 		$css = '';
 
