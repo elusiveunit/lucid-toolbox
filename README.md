@@ -4,6 +4,7 @@
 
 A set of classes used to speed up and automate common tasks.
 
+* `Lucid_Admin_Column` for adding custom admin columns.
 * `Lucid_Post_Type` for creating custom post types.
 * `Lucid_Taxonomy` for creating custom taxonomies.
 * `Lucid_Settings` for creating settings pages using the Settings API.
