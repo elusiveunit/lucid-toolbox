@@ -1,0 +1,14 @@
+{
+	"bitwise": true,
+  "camelcase": true,
+  "eqeqeq": true,
+  "latedef": true,
+  "quotmark": "single",
+  "undef": true,
+  "unused": true,
+  "strict": true,
+  "browser": true,
+  "jquery": true,
+  "indent": false,
+  "validthis": true
+}

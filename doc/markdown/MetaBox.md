@@ -1,6 +1,6 @@
-# WPAlchemy\_MetaBox
+# Lucid\_WPAlchemy
 
-For metaboxes, this easy to use class by Dimas Begunoff is included. Since the original inclusion, the code has been modified enough that it's now a complete fork with some different features to the original.
+A class for handling custom meta boxes, forked from the original `WPAlchemy_MetaBox` by Dimas Begunoff. The usage is mostly the same, but some differences exist.
 
 * `area` argument for adding fields inline `after_title` or `after_editor`.
 * The display options from the original are removed, as they didn't use standard WordPress ways of doing stuff.

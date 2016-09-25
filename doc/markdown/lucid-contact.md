@@ -22,6 +22,8 @@ There are quite a few properties to set. The first three are not forced requirem
 
 * `from_name` **(string)** Sender's name. Set to a field name like 'name' to use the data from that field.
 * `from_address` **(string)** Sender's email address. Set to a field name like 'email' to use the data from that field.
+* `reply_to_name` **(string)** 'Reply-To' name, if different from the `from_name`.
+* `reply_to_address` **(string)** 'Reply-To' address, if different from the `from_address`.
 * `to_address` **(string)** Recipient's email address.
 * `subject_label` **(string)** A label in square brackets to add in front of the message subject. If the string is a form field name, the value of that field will be used (with a three word limit). Otherwise, the string will be used as is. Takes the form of: '[Label] Subject goes after'.
 * `subject_text` **(string)** The subject text. If the string is a form field name, the value of that field will be used. Otherwise, the string will be used as is. The value of a field will be a maximum of six words long and if shortened will have '...' appended to it.
@@ -56,6 +58,8 @@ Concerning multiple recipients:
 * `extra_recipients`
 * `extras_from_name`
 * `extras_from_address`
+* `extras_reply_to_name`
+* `extras_reply_to_address`
 
 ## Form messages
 
@@ -261,8 +265,9 @@ Extra headers aren't limited to carbon copies of course, anything can be added.
 Sometimes you don't want to send copies though, for example when the form is used for ordering and both you and the customer should get a copy of the order confirmation. It probably looks more professional for the client to receive a confirmation sent to him/her only. They should possibly also have different 'from' and/or 'reply-to' data. This is done with these properties:
 
 * `extra_recipients` **(array)** One email address per array item. Each will get a separate mail sent with `wp_mail()`.
-* `extras_from_name` **(string)** The 'from' name to use when sending to the extra recipients.
+* `extras_from_name` **(string)** The 'from' name to use when sending to the extra recipients. Defaults to the regular `from_name`
 * `extras_from_address` **(string)** The 'from' email address to use when sending to the extra recipients.
+* `extras_reply_to_name` and `extras_reply_to_address` **(string)** 'Reply-To' for the extra recipients. Defaults to the regular `reply_to_name` and `reply_to_address`.
 
 The only difference between the extra messages and the regular ones will be the 'from' headers (unless set to the same of course).
 
@@ -378,6 +383,12 @@ An example setup with name, email, honeypot and message.
 	$form->render_form();
 
 ## Changelog
+
+### 1.8.0: Sep 25, 2016
+
+* New: Set separate Reply-To addresses with `$[extras_]reply_to_name` and `$[extras_]reply_to_address`. The extra recipient properties are also no longer required, falling back to the regular ones if not set.
+* New: Setting the `value` on textual fields now pre-fills instead of ignoring.
+* New: `get_subject` and `get_message` are now public, because anything else doesn't make any sense.
 
 ### 1.7.0: Apr 13, 2014
 

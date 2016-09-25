@@ -9,7 +9,7 @@ A set of classes used to speed up and automate common tasks.
 * `Lucid_Taxonomy` for creating custom taxonomies.
 * `Lucid_Settings` for creating settings pages using the Settings API.
 * `Lucid_Contact` for creating contact forms.
-* `WPAlchemy_Metabox` for creating metaboxes.
+* `Lucid_WPAlchemy` (forked from `WPAlchemy_MetaBox`) for creating metaboxes.
 
 The plugin doesn't do anything by itself, apart from loading language files. It simply allows usage of the classes through something like:
 
@@ -24,6 +24,15 @@ Lucid Toolbox is currently available in the following languages:
 * Swedish
 
 ## Changelog
+
+### 1.2.1: Sep 25, 2016
+
+#### Lucid\_Contact 1.8.0
+
+* New: Set separate Reply-To addresses with `$[extras_]reply_to_name` and `$[extras_]reply_to_address`. The extra recipient properties are also no longer required, falling back to the regular ones if not set.
+* New: Setting the `value` on textual fields now pre-fills instead of ignoring.
+* New: `get_subject` and `get_message` are now public, because anything else doesn't make any sense.
+
 
 ### 1.2.0: Mar 01, 2015
 

@@ -1,6 +1,16 @@
 module.exports = function(grunt) {
 	'use strict';
 
+	var tasks_css = [
+		'sass:dist',
+		'cssmin:dist'
+	],
+
+	tasks_js = [
+		'jshint:dist',
+		'uglify:dist'
+	];
+
 	grunt.initConfig({
 
 		// Data from package.json
@@ -10,7 +20,7 @@ module.exports = function(grunt) {
 		markdown: {
 			docIndex: {
 				options: {
-					template: 'doc/assets/index-template.html',
+					template: 'assets/html/doc-index-template.html',
 					gfm: false, // Github flavored markdown
 					preCompile: function (src, context) {
 						// Remove David badge
@@ -21,7 +31,7 @@ module.exports = function(grunt) {
 			},
 			doc: {
 				options: {
-					template: 'doc/assets/template.html',
+					template: 'assets/html/doc-template.html',
 					gfm: false // Github flavored markdown
 				},
 				files: [{
@@ -40,63 +50,89 @@ module.exports = function(grunt) {
 		// JSHint
 		jshint: {
 			options: {
-				'bitwise'  : true,
-				'browser'  : true,
-				'curly  '  : true,
-				'eqeqeq'   : true,
-				'eqnull'   : true,
-				'es3'      : true,
-				'forin'    : true,
-				'immed'    : true,
-				'indent'   : false,
-				'jquery'   : true,
-				'latedef'  : true,
-				'newcap'   : true,
-				'noarg'    : true,
-				'noempty'  : true,
-				'nonew'    : true,
-				'node'     : true,
-				'smarttabs': true,
-				'strict'   : true,
-				'trailing' : true,
-				'undef'    : true,
-				'unused'   : true,
-
-				'globals': {
-					'jQuery': true,
-					'alert': true
-				},
-
+				jshintrc: 'assets/.jshintrc',
 				reporter: require('jshint-stylish')
+			},
+			dist: {
+				src: [
+					'assets/js/*.js',
+					'!assets/js/*.min.js',
+					'!assets/js/doc.js'
+				]
 			},
 			doc: {
 				src: [
-					'doc/assets/doc.js'
+					'assets/js/doc.js'
 				]
-			},
-			grunt: {
-				src: ['Gruntfile.js']
 			}
 		},
 
 		// JavaScript concatenation and minification
 		uglify: {
+			dist: {
+				options: { report: 'min' },
+				files: [{
+					expand: true,
+					cwd: 'assets/js',
+					src: ['*.js', '!doc.js', '!*.min.js'],
+					dest: 'assets/js',
+					ext: '.min.js'
+				}]
+			},
 			doc: {
-				options: {
-					report: 'min',
-					banner: '/*! <%= pkg.title %> - Readme script */\n'
-				},
-				files: [{src: ['doc/assets/doc.js'], dest: 'doc/assets/doc.min.js'}]
+				options: { report: 'min' },
+				src: ['assets/js/doc.js'],
+				dest: 'doc/assets/doc.min.js'
+			}
+		},
+
+		// Sass compilation
+		sass: {
+			dist: {
+				options: { outputStyle: 'expanded' },
+				files: [{
+					expand: true,
+					cwd: 'assets/css',
+					src: ['*.scss', '!doc.scss'],
+					dest: 'assets/css',
+					ext: '.css'
+				}]
+			},
+			doc: {
+				src: ['assets/css/doc.scss'],
+				dest: 'doc/assets/doc.css'
 			}
 		},
 
 		// CSS concatenation and minification
 		cssmin: {
+			dist: {
+				files: [{
+					expand: true,
+					cwd: 'assets/css',
+					src: ['*.css', '!doc.css', '!*.min.css'],
+					dest: 'assets/css',
+					ext: '.min.css'
+				}]
+			},
 			doc: {
-				options: {
-					banner: '/*! <%= pkg.title %> - Readme style */'
-				},
-				files: [{src: ['doc/assets/doc.css'], dest: 'doc/assets/doc.min.css'}]
+				src: ['doc/assets/doc.css'],
+				dest: 'doc/assets/doc.min.css'
+			}
+		},
+
+		// Watch for file changes
+		watch: {
+			options: {
+				spawn: false
+			},
+			css: {
+				files: ['assets/css/*.scss'],
+				tasks: tasks_css
+			},
+			js: {
+				files: ['assets/js/*.js'],
+				tasks: tasks_js
 			}
 		}
 
@@ -106,12 +142,24 @@ module.exports = function(grunt) {
 	require('load-grunt-tasks')(grunt);
 
 	// Register tasks.
-	// Default, documentation: 'grunt'
+	// Default: 'grunt'
 	grunt.registerTask('default', [
+		'watch'
+	]);
+
+	// CSS: 'grunt css'
+	grunt.registerTask('css', tasks_css);
+
+	// JavaScript: 'grunt js'
+	grunt.registerTask('js', tasks_js);
+
+	// Documentation: 'grunt doc'
+	grunt.registerTask('doc', [
 		'markdown:docIndex',
 		'markdown:doc',
 		'jshint:doc',
 		'uglify:doc',
+		'sass',
 		'cssmin:doc'
 	]);
 

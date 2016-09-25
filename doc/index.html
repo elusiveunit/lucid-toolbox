@@ -15,7 +15,7 @@
 	<li><a href="html/lucid-taxonomy.html">Lucid_Taxonomy</a></li>
 	<li><a href="html/lucid-settings.html">Lucid_Settings</a></li>
 	<li><a href="html/lucid-contact.html">Lucid_Contact</a></li>
-	<li><a href="html/MetaBox.html">WPAlchemy_MetaBox</a></li>
+	<li><a href="html/MetaBox.html">Lucid_WPAlchemy</a></li>
 </ul>
 
 <p class="pointer">&larr; Choose a section</p>
@@ -23,11 +23,12 @@
 <h1 id="lucid-toolbox">Lucid Toolbox</h1>
 <p>A set of classes used to speed up and automate common tasks.</p>
 <ul>
+<li><code>Lucid_Admin_Column</code> for adding custom admin columns.</li>
 <li><code>Lucid_Post_Type</code> for creating custom post types.</li>
 <li><code>Lucid_Taxonomy</code> for creating custom taxonomies.</li>
 <li><code>Lucid_Settings</code> for creating settings pages using the Settings API.</li>
 <li><code>Lucid_Contact</code> for creating contact forms.</li>
-<li><code>WPAlchemy_Metabox</code> for creating metaboxes.</li>
+<li><code>Lucid_WPAlchemy</code> (forked from <code>WPAlchemy_MetaBox</code>) for creating metaboxes.</li>
 </ul>
 <p>The plugin doesn&#39;t do anything by itself, apart from loading language files. It simply allows usage of the classes through something like:</p>
 <pre><code>if ( defined( &#39;LUCID_TOOLBOX_CLASS&#39; ) &amp;&amp; ! class_exists( &#39;Lucid_Settings&#39; ) )
@@ -39,6 +40,13 @@
 <li>Swedish</li>
 </ul>
 <h2 id="changelog">Changelog</h2>
+<h3 id="1-2-1-sep-25-2016">1.2.1: Sep 25, 2016</h3>
+<h4 id="lucid-_contact-1-8-0">Lucid_Contact 1.8.0</h4>
+<ul>
+<li>New: Set separate Reply-To addresses with <code>$[extras_]reply_to_name</code> and <code>$[extras_]reply_to_address</code>. The extra recipient properties are also no longer required, falling back to the regular ones if not set.</li>
+<li>New: Setting the <code>value</code> on textual fields now pre-fills instead of ignoring.</li>
+<li>New: <code>get_subject</code> and <code>get_message</code> are now public, because anything else doesn&#39;t make any sense.</li>
+</ul>
 <h3 id="1-2-0-mar-01-2015">1.2.0: Mar 01, 2015</h3>
 <h4 id="lucid-_admin-_column-1-0-0">Lucid_Admin_Column 1.0.0</h4>
 <p>A new class for adding custom columns to admin post lists. Can be used both as a standalone class and as a new argument for <code>Lucid_Post_Type</code>. See included docs for usage.</p>

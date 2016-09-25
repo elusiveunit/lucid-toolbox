@@ -26,6 +26,8 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name
 <ul>
 <li><code>from_name</code> <strong>(string)</strong> Sender&#39;s name. Set to a field name like &#39;name&#39; to use the data from that field.</li>
 <li><code>from_address</code> <strong>(string)</strong> Sender&#39;s email address. Set to a field name like &#39;email&#39; to use the data from that field.</li>
+<li><code>reply_to_name</code> <strong>(string)</strong> &#39;Reply-To&#39; name, if different from the <code>from_name</code>.</li>
+<li><code>reply_to_address</code> <strong>(string)</strong> &#39;Reply-To&#39; address, if different from the <code>from_address</code>.</li>
 <li><code>to_address</code> <strong>(string)</strong> Recipient&#39;s email address.</li>
 <li><code>subject_label</code> <strong>(string)</strong> A label in square brackets to add in front of the message subject. If the string is a form field name, the value of that field will be used (with a three word limit). Otherwise, the string will be used as is. Takes the form of: &#39;[Label] Subject goes after&#39;.</li>
 <li><code>subject_text</code> <strong>(string)</strong> The subject text. If the string is a form field name, the value of that field will be used. Otherwise, the string will be used as is. The value of a field will be a maximum of six words long and if shortened will have &#39;...&#39; appended to it.</li>
@@ -59,6 +61,8 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name
 <li><code>extra_recipients</code></li>
 <li><code>extras_from_name</code></li>
 <li><code>extras_from_address</code></li>
+<li><code>extras_reply_to_name</code></li>
+<li><code>extras_reply_to_address</code></li>
 </ul>
 <h2 id="form-messages">Form messages</h2>
 <p>Messages appear above the form on submission, to inform the user of the current state. There are set with <code>set_form_messages()</code> and <code>set_file_form_messages</code> (for file uploads). The default regular messages are:</p>
@@ -219,8 +223,9 @@ Use if_block for whole and/or multiple lines.
 <p>Sometimes you don&#39;t want to send copies though, for example when the form is used for ordering and both you and the customer should get a copy of the order confirmation. It probably looks more professional for the client to receive a confirmation sent to him/her only. They should possibly also have different &#39;from&#39; and/or &#39;reply-to&#39; data. This is done with these properties:</p>
 <ul>
 <li><code>extra_recipients</code> <strong>(array)</strong> One email address per array item. Each will get a separate mail sent with <code>wp_mail()</code>.</li>
-<li><code>extras_from_name</code> <strong>(string)</strong> The &#39;from&#39; name to use when sending to the extra recipients.</li>
+<li><code>extras_from_name</code> <strong>(string)</strong> The &#39;from&#39; name to use when sending to the extra recipients. Defaults to the regular <code>from_name</code></li>
 <li><code>extras_from_address</code> <strong>(string)</strong> The &#39;from&#39; email address to use when sending to the extra recipients.</li>
+<li><code>extras_reply_to_name</code> and <code>extras_reply_to_address</code> <strong>(string)</strong> &#39;Reply-To&#39; for the extra recipients. Defaults to the regular <code>reply_to_name</code> and <code>reply_to_address</code>.</li>
 </ul>
 <p>The only difference between the extra messages and the regular ones will be the &#39;from&#39; headers (unless set to the same of course).</p>
 <h2 id="finishing-touches">Finishing touches</h2>
@@ -320,6 +325,12 @@ $form-&gt;add_submit( __( &#39;Send message&#39;, &#39;TEXTDOMAIN&#39; ) );
 
 $form-&gt;render_form();
 </code></pre><h2 id="changelog">Changelog</h2>
+<h3 id="1-8-0-sep-25-2016">1.8.0: Sep 25, 2016</h3>
+<ul>
+<li>New: Set separate Reply-To addresses with <code>$[extras_]reply_to_name</code> and <code>$[extras_]reply_to_address</code>. The extra recipient properties are also no longer required, falling back to the regular ones if not set.</li>
+<li>New: Setting the <code>value</code> on textual fields now pre-fills instead of ignoring.</li>
+<li>New: <code>get_subject</code> and <code>get_message</code> are now public, because anything else doesn&#39;t make any sense.</li>
+</ul>
 <h3 id="1-7-0-apr-13-2014">1.7.0: Apr 13, 2014</h3>
 <ul>
 <li>New: Add <code>reverse_validation</code> argument to <code>add_field</code>, which reverses any custom regex validation result. True by default due to initially stupid thinking and thus backwards compatibility.</li>

@@ -20,7 +20,7 @@
 	 *
 	 * @return {Boolean}
 	 */
-	function is_touch() {
+	function isTouch() {
 		// ontouchstart for most browsers, onmsgesturechange for IE10
 		return !!( 'ontouchstart' in window ) || !!( 'onmsgesturechange' in window );
 	}
@@ -67,7 +67,7 @@
 		}
 	}
 
-	if ( is_touch() ) {
+	if ( isTouch() ) {
 		doc.documentElement.className = doc.documentElement.className.replace( /(\s|^)no-touch(\s|$)/, '$1touch$2' );
 	}
 

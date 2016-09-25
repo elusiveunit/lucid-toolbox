@@ -43,6 +43,8 @@ class Lucid_Contact {
 	| $_form_id
 	| $from_name
 	| $from_address
+	| $reply_to_name
+	| $reply_to_address
 	| $to_address
 	| $message_format
 	| $message_format_separator
@@ -57,6 +59,8 @@ class Lucid_Contact {
 	| $extra_recipients
 	| $extras_from_name
 	| $extras_from_address
+	| $extras_reply_to_name
+	| $extras_reply_to_address
 	| $_fields
 	| $field_wrap
 	| $_ignore_field_attrs
@@ -192,7 +196,7 @@ class Lucid_Contact {
 
 	/**
 	 * 'Reply-To' name. Set to a field name like 'name' to use the data from that
-	 * field.
+	 * field. Defaults to `from_name`.
 	 *
 	 * @since 1.8.0
 	 * @var string
@@ -201,7 +205,7 @@ class Lucid_Contact {
 
 	/**
 	 * 'Reply-To' email address. Set to a field name like 'email' to use the data
-	 * from that field.
+	 * from that field. Defaults to `from_address`.
 	 *
 	 * @since 1.8.0
 	 * @var string
@@ -396,7 +400,7 @@ class Lucid_Contact {
 
 	/**
 	 * 'Reply-To' name for extra recipients. Set to a field name like 'name' to
-	 * use the data from that field.
+	 * use the data from that field. Defaults to `reply_to_name`.
 	 *
 	 * @var string
 	 * @since 1.8.0
@@ -405,7 +409,7 @@ class Lucid_Contact {
 
 	/**
 	 * 'Reply-To' address for extra recipients. Set to a field name like 'email'
-	 * to use the data from that field.
+	 * to use the data from that field. Defaults to `reply_to_address`.
 	 *
 	 * @var string
 	 * @since 1.8.0
