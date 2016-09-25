@@ -798,7 +798,7 @@ class Lucid_Contact {
 	 *   format attr => value. Ignores 'for' attribute.
 	 * - 'rows' (string) Textarea rows attribute.
 	 * - 'cols' (string) Textarea cols attribute.
-	 * - 'value' (string) Value attribute, only used for radio buttons.
+	 * - 'value' (string) Value attribute, required for radio buttons.
 	 * - 'field_attributes' (array) Additional HTML attributes for the field,
 	 *   format attr => value. Some attributes like id and value are ignored
 	 *   due to usage in the class. See $this->_ignore_field_attrs.
@@ -2397,6 +2397,8 @@ class Lucid_Contact {
 
 		$field = '';
 		$include_parts = false;
+		$type = $this->_fields[$id]['type'];
+		$value = ( ! empty( $this->_fields[$id]['value'] ) ) ? $this->_fields[$id]['value'] : '';
 
 		// Only add stuff between opening and closing tags, so stuff like
 		// validation data is skipped.
@@ -2410,6 +2412,20 @@ class Lucid_Contact {
 			if ( $include_parts ) :
 				$field .= $val;
 				$field .= ( ! in_array( $part, array( 'post', 'tag_open' ) ) ) ? "\n" : '';
+			endif;
+
+			// Initially unsupported and therefore even more hacky than the rest of
+			// this class: default value.
+			// If there is a value set, the field has a 'value supported' type, we
+			// just opened the tag and there is no posted value, add the set value
+			// to the field output.
+			if (
+				$value &&
+				! in_array( $type, array( 'select', 'radio', 'checkbox' ) ) &&
+				$part == 'tag_open' &&
+				! isset( $this->_fields[$id]['post'] )
+			) :
+				$field .= ( $type == 'textarea' ) ? $value : sprintf( ' value="%s"', $value );
 			endif;
 
 			if ( $part == 'close' )
