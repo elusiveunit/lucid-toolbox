@@ -104,14 +104,15 @@ class Lucid_Contact {
 	| [=Validation and sending]
 	| is_valid_post
 	| validate
-	| _get_subject
+	| get_subject
 	| _get_message_from_format
 	| _get_message_conditionals
 	| _get_message_tags
 	| _filter_conditional_tag
 	| _filter_tag
-	| _get_message
+	| _get_template_message
 	| _get_html_message
+	| get_message
 	| _get_field_post
 	| _get_headers
 	| _get_attachments
@@ -1455,7 +1456,7 @@ class Lucid_Contact {
 	 * @since 1.1.0
 	 * @return string The assembled subject line.
 	 */
-	protected function _get_subject() {
+	public function get_subject() {
 		$subject = '';
 
 		// Label, within square brackets
@@ -1729,7 +1730,7 @@ class Lucid_Contact {
 	 * @see $message_template For how templates work.
 	 * @return string The message.
 	 */
-	protected function _get_message() {
+	protected function _get_template_message() {
 		if ( empty( $this->message_template ) ) return '';
 
 		$message = $this->normalize_line_break( $this->message_template );
@@ -1782,6 +1783,23 @@ class Lucid_Contact {
 		$message = preg_replace( '/\R+/u', "\n", $message );
 
 		return trim( $message );
+	}
+
+	/**
+	 * Get the email message.
+	 *
+	 * @since 1.8.0
+	 * @return string
+	 */
+	public function get_message() {
+		if ( ! empty( $this->html_template ) )
+			$message = $this->_get_html_message();
+		elseif ( ! empty( $this->message_template ) )
+			$message = $this->_get_template_message();
+		else
+			$message = implode( $this->message_format_separator, $this->_get_message_from_format() );
+
+		return $message;
 	}
 
 	/**
@@ -2054,7 +2072,7 @@ class Lucid_Contact {
 
 		// Get form data
 		$to = $this->to_address;
-		$subject = $this->_get_subject();
+		$subject = $this->get_subject();
 		$headers = $this->_get_headers();
 		$attachments = $this->_get_attachments();
 
@@ -2063,13 +2081,7 @@ class Lucid_Contact {
 		if ( ! is_array( $attachments ) )
 			return false;
 
-		// Keep old message_format for compatibility
-		if ( ! empty( $this->html_template ) )
-			$message = $this->_get_html_message();
-		elseif ( ! empty( $this->message_template ) )
-			$message = $this->_get_message();
-		else
-			$message = implode( $this->message_format_separator, $this->_get_message_from_format() );
+		$message = $this->get_message();
 
 		// RFC 5322 states lines should be delimited by a carriage return
 		// character, followed immediately by a line feed character. [Page 5]
