@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  * that will hopefully be remedied someday in the future.
  *
  * @package Lucid\Toolbox
- * @version 1.7.0
+ * @version 1.8.0
  */
 class Lucid_Contact {
 
@@ -188,6 +188,24 @@ class Lucid_Contact {
 	 * @var string
 	 */
 	public $from_address = '';
+
+	/**
+	 * 'Reply-To' name. Set to a field name like 'name' to use the data from that
+	 * field.
+	 *
+	 * @since 1.8.0
+	 * @var string
+	 */
+	public $reply_to_name = '';
+
+	/**
+	 * 'Reply-To' email address. Set to a field name like 'email' to use the data
+	 * from that field.
+	 *
+	 * @since 1.8.0
+	 * @var string
+	 */
+	public $reply_to_address = '';
 
 	/**
 	 * Recipient's email address.
@@ -374,6 +392,24 @@ class Lucid_Contact {
 	 * @since 1.5.0
 	 */
 	public $extras_from_address = '';
+
+	/**
+	 * 'Reply-To' name for extra recipients. Set to a field name like 'name' to
+	 * use the data from that field.
+	 *
+	 * @var string
+	 * @since 1.8.0
+	 */
+	public $extras_reply_to_name = '';
+
+	/**
+	 * 'Reply-To' address for extra recipients. Set to a field name like 'email'
+	 * to use the data from that field.
+	 *
+	 * @var string
+	 * @since 1.8.0
+	 */
+	public $extras_reply_to_address = '';
 
 	/**
 	 * The form fields.
@@ -1817,16 +1853,49 @@ class Lucid_Contact {
 			$address = $this->_get_field_post( $this->from_address, 'email' );
 
 			$headers[] = "From: {$name} <{$address}>";
-			if ( $include['reply_to'] ) $headers[] = "Reply-To: {$name} <{$address}>";
+
+			if ( $include['reply_to'] ) :
+				if ( $this->reply_to_name && $this->reply_to_address ) :
+					$reply_name = $this->_get_field_post( $this->reply_to_name, 'name' );
+					$reply_address = $this->_get_field_post( $this->reply_to_address, 'email' );
+				else :
+					$reply_name = $name;
+					$reply_address = $address;
+				endif;
+
+				$headers[] = "Reply-To: {$reply_name} <{$reply_address}>";
+			endif;
 		endif;
 
 		// From and Reply-To for extra recipients
-		if ( $include['extra'] && $this->extras_from_name && $this->extras_from_address ) :
-			$extra_name = $this->_get_field_post( $this->extras_from_name, 'name' );
-			$extra_address = $this->_get_field_post( $this->extras_from_address, 'email' );
+		if ( $include['extra'] ) :
+			if ( $this->extras_from_name && $this->extras_from_address ) :
+				$extra_name = $this->extras_from_name;
+				$extra_address = $this->extras_from_address;
+			else :
+				$extra_name = $this->from_name;
+				$extra_address = $this->from_address;
+			endif;
+
+			$extra_name = $this->_get_field_post( $extra_name, 'name' );
+			$extra_address = $this->_get_field_post( $extra_address, 'email' );
 
 			$headers[] = "From: {$extra_name} <{$extra_address}>";
-			if ( $include['reply_to'] ) $headers[] = "Reply-To: {$extra_name} <{$extra_address}>";
+
+			if ( $include['reply_to'] ) :
+				if ( $this->extras_reply_to_name && $this->extras_reply_to_address ) :
+					$extra_reply_name = $this->_get_field_post( $this->extras_reply_to_name, 'name' );
+					$extra_reply_address = $this->_get_field_post( $this->extras_reply_to_address, 'email' );
+				elseif ( $this->reply_to_name && $this->reply_to_address ) :
+					$extra_reply_name = $this->_get_field_post( $this->reply_to_name, 'name' );
+					$extra_reply_address = $this->_get_field_post( $this->reply_to_address, 'email' );
+				else :
+					$extra_reply_name = $extra_name;
+					$extra_reply_address = $extra_address;
+				endif;
+
+				$headers[] = "Reply-To: {$extra_reply_name} <{$extra_reply_address}>";
+			endif;
 		endif;
 
 		// Custom headers
@@ -2024,9 +2093,7 @@ class Lucid_Contact {
 		if ( ! empty( $message ) && ! $this->debug_mode ) :
 			$sent = wp_mail( $to, $subject, $message, $headers, $attachments );
 
-			$send_extra = ( ! empty( $this->extra_recipients )
-			  && ! empty( $this->extras_from_name )
-			  && ! empty( $this->extras_from_address ) );
+			$send_extra = ( ! empty( $this->extra_recipients ) );
 
 			// If sending extra, default to true and overwrite in loop below.
 			// Otherwise match regular sent status.
