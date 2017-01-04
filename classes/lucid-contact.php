@@ -2231,6 +2231,9 @@ class Lucid_Contact {
 		if ( ! empty( $message ) && ! $this->debug_mode ) :
 			$sent = wp_mail( $to, $subject, $message, $headers, $attachments );
 
+			if ( $sent )
+				do_action( 'lucid_contact_sent', $to, $subject, $message );
+
 			$send_extra = ( ! empty( $this->extra_recipients ) );
 
 			// If sending extra, default to true and overwrite in loop below.
@@ -2247,7 +2250,11 @@ class Lucid_Contact {
 
 					// Can't just set $extra_sent = wp_mail(), in case there is a
 					// successful send after a failed one.
-					if ( ! $extra_mail ) $extra_sent = false;
+					if ( ! $extra_mail ) :
+						$extra_sent = false;
+					else :
+						do_action( 'lucid_contact_sent', $to, $subject, $message );
+					endif;
 				endforeach;
 			endif;
 
