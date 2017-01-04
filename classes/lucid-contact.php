@@ -627,7 +627,7 @@ class Lucid_Contact {
 	 * @var bool
 	 * @see is_valid_email()
 	 */
-	public $do_email_dns_check = true;
+	public $do_email_dns_check = false;
 
 	/**
 	 * Primitive debug mode.
