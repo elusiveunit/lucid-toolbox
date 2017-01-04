@@ -57,10 +57,7 @@ class Lucid_Toolbox {
 		if ( plugin_basename( self::$plugin_file ) == $basename ) :
 			$url = esc_attr( LUCID_TOOLBOX_URL . 'doc' );
 
-			// Generally bad practice to rely on core strings, but I feel it's
-			// unlikely this is ever untranslated. If it happens, it's a simple
-			// update.
-			$text = __( 'Documentation' );
+			$text = __( 'Documentation', 'lucid-toolbox' );
 
 			$links['documentation'] = "<a href=\"{$url}\">{$text}</a>";
 		endif;
