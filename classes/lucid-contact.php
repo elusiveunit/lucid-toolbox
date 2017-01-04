@@ -648,6 +648,9 @@ class Lucid_Contact {
 	 * @param bool $debug_mode Whether to display form and POST contents.
 	 */
 	public function __construct( $debug_mode = false ) {
+		self::$_form_count++;
+
+		$this->_form_id = ( $this->use_nonce ) ? 'lucid-form-' . self::$_form_count : self::$_form_count;
 		$this->form_action = esc_attr( get_permalink( get_queried_object_id() ) );
 		$this->form_location = get_permalink( get_queried_object_id() );
 		$this->subject_text = sprintf( __( 'From form at %s', 'lucid-toolbox' ), get_bloginfo( 'name' ) );
@@ -2406,7 +2409,6 @@ class Lucid_Contact {
 	 * @return string
 	 */
 	public function get_form_start( $include_status = true ) {
-		self::$_form_count++;
 
 		// --Debug--
 		// Print the $_fields array
@@ -2417,8 +2419,6 @@ class Lucid_Contact {
 			print_r( $debug_fields );
 			$this->_debug_close();
 		endif;
-
-		$this->_form_id = ( $this->use_nonce ) ? 'lucid-form-' . self::$_form_count : self::$_form_count;
 
 		if ( $this->handle_post )
 			$this->_form_sent = $this->send();
