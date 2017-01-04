@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) die( 'Nope' );
  * that will hopefully be remedied someday in the future.
  *
  * @package Lucid\Toolbox
- * @version 1.8.0
+ * @version 1.9.0
  */
 class Lucid_Contact {
 
@@ -196,7 +196,7 @@ class Lucid_Contact {
 
 	/**
 	 * 'Reply-To' name. Set to a field name like 'name' to use the data from that
-	 * field. Defaults to `from_name`.
+	 * field.
 	 *
 	 * @since 1.8.0
 	 * @var string
@@ -205,7 +205,7 @@ class Lucid_Contact {
 
 	/**
 	 * 'Reply-To' email address. Set to a field name like 'email' to use the data
-	 * from that field. Defaults to `from_address`.
+	 * from that field.
 	 *
 	 * @since 1.8.0
 	 * @var string
@@ -367,16 +367,16 @@ class Lucid_Contact {
 	/**
 	 * Extra headers to use, one full header per item.
 	 *
-	 * @var array
 	 * @since 1.5.0
+	 * @var array
 	 */
 	public $extra_headers = array();
 
 	/**
 	 * Extra recipients to send to, in addition to the to_address.
 	 *
-	 * @var array
 	 * @since 1.5.0
+	 * @var array
 	 */
 	public $extra_recipients = array();
 
@@ -384,8 +384,8 @@ class Lucid_Contact {
 	 * Sender's name for extra recipients. Set to a field name like 'name' to
 	 * use the data from that field.
 	 *
-	 * @var string
 	 * @since 1.5.0
+	 * @var string
 	 */
 	public $extras_from_name = '';
 
@@ -393,26 +393,26 @@ class Lucid_Contact {
 	 * Sender's address for extra recipients. Set to a field name like 'email'
 	 * to use the data from that field.
 	 *
-	 * @var string
 	 * @since 1.5.0
+	 * @var string
 	 */
 	public $extras_from_address = '';
 
 	/**
 	 * 'Reply-To' name for extra recipients. Set to a field name like 'name' to
-	 * use the data from that field. Defaults to `reply_to_name`.
+	 * use the data from that field.
 	 *
-	 * @var string
 	 * @since 1.8.0
+	 * @var string
 	 */
 	public $extras_reply_to_name = '';
 
 	/**
 	 * 'Reply-To' address for extra recipients. Set to a field name like 'email'
-	 * to use the data from that field. Defaults to `reply_to_address`.
+	 * to use the data from that field.
 	 *
-	 * @var string
 	 * @since 1.8.0
+	 * @var string
 	 */
 	public $extras_reply_to_address = '';
 
@@ -1354,22 +1354,23 @@ class Lucid_Contact {
 	public function is_valid_post() {
 
 		// Check POST request and correct referer
-		$posted = ( 'POST' == $_SERVER['REQUEST_METHOD']
-			&& ! empty( $_POST ) );
+		$is_posted = ( 'POST' == $_SERVER['REQUEST_METHOD'] && ! empty( $_POST ) );
 
 		// Check that the correct form is processed
 		if ( $this->use_nonce )
-			$verified = ( $posted && wp_verify_nonce( $_POST[$this->_form_id], $this->_form_id ) );
+			$is_verified = ( $is_posted && wp_verify_nonce( $_POST[$this->_form_id], $this->_form_id ) );
 		else
-			$verified = ( $posted
+			$is_verified = (
+				$is_posted
 				&& isset( $_POST['lucid-form-id'] )
-				&& $_POST['lucid-form-id'] == $this->_form_id );
+				&& $_POST['lucid-form-id'] == $this->_form_id
+			);
 
 		// Posted but invalid nonce
-		if ( $this->use_nonce && $posted && ! $verified )
-			$this->_form_status = '<div class="error form-error">' . $this->_form_messages['invalid_post'] . '</div>';
+		if ( $this->use_nonce && $is_posted && ! $is_verified )
+			$this->set_form_error( $this->_form_messages['invalid_post'] );
 
-		return ( $posted && $verified );
+		return ( $is_posted && $is_verified );
 	}
 
 	/**
@@ -1465,8 +1466,8 @@ class Lucid_Contact {
 		foreach ( $this->_fields as $name => $data ) :
 
 			// Skip submit fields
-			if ( isset( $data['type'] )
-			  && 'submit' == $data['type'] ) continue;
+			if ( isset( $data['type'] ) && 'submit' == $data['type'] )
+				continue;
 
 			$error_msg = '';
 			$validation = isset( $data['validation'] ) ? $data['validation'] : '';
@@ -2160,6 +2161,7 @@ class Lucid_Contact {
 	/**
 	 * Data validation before constructing a message.
 	 *
+	 * @since 1.7.0
 	 * @return bool
 	 */
 	public function is_valid_send() {
