@@ -1540,6 +1540,14 @@ class Lucid_Contact {
 						$honeypot_error = true;
 				endif;
 
+			// If a file input has an invalid file
+			elseif ( 'file' == $data['type'] ) :
+				$file_error = $this->get_file_error( $name );
+				if ( $file_error ) :
+					$error_msg = $file_error;
+					$error_count++;
+				endif;
+
 			// If an error has been added externally
 			elseif ( ! empty( $data['error'] ) ) :
 				$all_is_well = false;
@@ -2060,8 +2068,6 @@ class Lucid_Contact {
 	/**
 	 * Get an array of attachments.
 	 *
-	 * TODO: Change $_FILES[$field]['type'] to something more secure, like finfo.
-	 *
 	 * @since 1.3.0
 	 * @return array|bool wp_mail checks for empty array, so return that if
 	 *   there are no attachments. False if there is a problem with a file.
@@ -2070,60 +2076,48 @@ class Lucid_Contact {
 		$attachments = array();
 
 		// Bail early if applicable
-		if ( ! $this->handle_attachments ) return $attachments;
+		if ( ! $this->handle_attachments )
+			return $attachments;
+
+		$has_errors = false;
 
 		// Check every file field and add file paths to the $_attachments array.
 		foreach ( $this->_fields as $field => $data ) :
-			if ( 'file' != $data['type'] ) continue;
+			if ( 'file' != $data['type'] )
+				continue;
 
+			$file_info = pathinfo( $_FILES[$field]['name'] );
+			$extension = strtolower( $file_info['extension'] );
 			$tmp_file = $_FILES[$field]['tmp_name']; // Temp uploaded file
-			$file = pathinfo( $_FILES[$field]['name'] ); // File info
-			$extension = $file['extension']; // File extension
-			$error_code = $_FILES[$field]['error']; // Upload error code
-			$uploads = wp_upload_dir(); // WordPress uploads directory
+			$error_code = (int) $_FILES[$field]['error']; // Upload error code
 
-			// Get MIME type. The type in $_FILES[$field]['type'] is sent
-			// from the browser, which makes it kind of unreliable...
-			$mime_type = $_FILES[$field]['type'];
-
-			// The file name. Keep extra dots away, so image.php.jpg =>
-			// image-php.jpg.
-			$target_name = str_replace( '.', '-', $file['filename'] );
-			$target_file = $target_name . '.' . $extension;
-
-			// Where to move the uploaded file. Remove trailing slash.
+			// Where to move the uploaded file, without trailing slash.
+			$uploads = wp_upload_dir();
 			$target_dir = rtrim( $uploads['basedir'], '/' );
 
-			// Check file extension and MIME type, add error message if
-			// either of them is not on the whitelist.
-			if ( ! in_array( $extension, $this->_allowed_extensions )
-			  || ! in_array( $mime_type, $this->_allowed_mime_types ) ) :
-				$this->_form_status = '<div class="error form-error">' . $this->_file_form_messages['invalid_file_type'] . '</div>';
-				$attachments = false;
-				break;
+			// Clean file name
+			$target_name = str_replace( '.', '-', remove_accents( basename( $file_info['filename'] ) ) );
 
-			// Files okay, proceed with moving them
+			// Complete target path, with a unique file name
+			$target_path = $this->_get_unique_file_path( $target_dir, $target_name, $extension );
+
+			// move_uploaded_file also checks if file was uploaded via HTTP POST
+			if ( move_uploaded_file( $tmp_file, $target_path ) ) :
+				$attachments[] = $target_path;
+
+			// Upload error message
 			else :
-
-				// Complete target path, with a unique file name
-				$target_path = $this->_get_unique_file_path( $target_dir, $target_name, $extension );
-
-				// move_uploaded_file checks to ensure that the file was
-				// uploaded via HTTP POST.
-				if ( move_uploaded_file( $tmp_file, $target_path ) ) :
-
-					$attachments[] = $target_path;
-
-				// Upload error message
-				else :
-					$this->_form_status = '<div class="error form-error">' . $this->_file_form_messages[$error_code] . '</div>';
-					$attachments = false;
-					break;
-				endif;
-
+				$this->set_field_error( $data['name'], $this->_file_form_messages[$error_code] );
+				$has_errors = true;
 			endif;
-
 		endforeach;
+
+		// Remove any successfully uploaded files
+		if ( $has_errors ) :
+			$this->_remove_files( $attachments );
+			$this->set_form_error( $this->_form_messages['error'] );
+			return false;
+		endif;
 
 		// Keep the paths for possible file removal.
 		$this->_attachments = $attachments;
@@ -2307,6 +2301,21 @@ class Lucid_Contact {
 	}
 
 	/**
+	 * Remove files from the server.
+	 *
+	 * @since 1.9.0
+	 * @param array $paths Absolute file paths to delete.
+	 */
+	protected function _remove_files( array $paths ) {
+		foreach ( $paths as $path ) :
+			if ( is_file( $path ) ) :
+				// Prevent error if file isn't removed successfully
+				@unlink( $path );
+			endif;
+		endforeach;
+	}
+
+	/**
 	 * Clear the form after message is sent.
 	 *
 	 * @since 1.0.0
@@ -2331,14 +2340,8 @@ class Lucid_Contact {
 		endforeach;
 
 		// Delete attachment files from the server
-		if ( $this->delete_sent_files ) :
-			foreach ( (array) $this->_attachments as $path ) :
-				if ( is_file( $path ) ) :
-					// Prevent error if file isn't removed successfully
-					@unlink( $path );
-				endif;
-			endforeach;
-		endif;
+		if ( $this->delete_sent_files )
+			$this->_remove_files( (array) $this->_attachments );
 	}
 
 
@@ -2804,6 +2807,78 @@ class Lucid_Contact {
 			$is_valid = false;
 
 		return $is_valid;
+	}
+
+	/**
+	 * Get a file's MIME type
+	 *
+	 * @since 1.9.0
+	 * @param string $file_path Full file path.
+	 * @param string $fallback MIME type to use if the file can't be checked with
+	 *   finfo, probably the file's 'type' field from the $_FILES array.
+	 * @return string
+	 */
+	protected function _get_file_mime_type( $file_path, $fallback = false ) {
+		if ( ! function_exists( 'finfo_open' ) || ! defined( 'FILEINFO_MIME_TYPE' ) )
+			return $fallback;
+
+		$finfo = finfo_open( FILEINFO_MIME_TYPE );
+		$mime = finfo_file( $finfo, $file_path );
+
+		if ( ! $mime )
+			$mime = $fallback;
+
+		finfo_close( $finfo );
+
+		return $mime;
+	}
+
+	/**
+	 * Get an error message for a file field, if there is one.
+	 *
+	 * @since 1.9.0
+	 * @param string $field_name File field name to check.
+	 * @return string|bool Error message or false.
+	 */
+	public function get_file_error( $field_name ) {
+		if ( empty( $_FILES[$field_name] ) ) :
+			trigger_error( 'There is no file for field ' . $field_name, E_USER_WARNING );
+			return false;
+		endif;
+
+		$file = $_FILES[$field_name];
+
+		// Upload error code
+		$error_code = $file['error'];
+
+		// Temp uploaded file
+		$tmp_file = $file['tmp_name'];
+
+		if ( $error_code && ! empty( $this->_file_form_messages[$error_code] ) )
+			return $this->_file_form_messages[$error_code];
+		elseif ( $this->max_file_size && $file['size'] && $file['size'] > $this->max_file_size )
+			return $this->_file_form_messages[UPLOAD_ERR_FORM_SIZE];
+		elseif ( ! $tmp_file && ! empty( $this->_fields[$field_name]['error_empty'] ) )
+			return $this->_fields[$field_name]['error_empty'];
+
+		$file_info = pathinfo( $file['name'] );
+		$extension = strtolower( $file_info['extension'] );
+
+		// Using $file['type'] as a fallback; better to validate
+		// something than nothing, even if it's sent from the browser and
+		// therefore unreliable.
+		$mime_type = $this->_get_file_mime_type( $tmp_file, $file['type'] );
+
+		// Check file extension and MIME type against the whitelist.
+		if (
+			! in_array( $extension, $this->_allowed_extensions ) ||
+			! in_array( $mime_type, $this->_allowed_mime_types )
+		)
+			return $this->_file_form_messages['invalid_file_type'];
+		elseif ( $error_code && ! empty( $this->_file_form_messages[$error_code] ) )
+			return $this->_file_form_messages[$error_code];
+
+		return false;
 	}
 
 	/**
