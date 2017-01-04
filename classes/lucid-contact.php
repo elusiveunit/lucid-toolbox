@@ -691,7 +691,7 @@ class Lucid_Contact {
 			'success'      => __( 'Thank you for your message!', 'lucid-toolbox' ),
 			'error'        => __( 'There seems to be a problem with your information.', 'lucid-toolbox' ),
 			'honeypot'     => __( 'To send the message, the last field must be empty. Maybe it was filled by mistake, delete the text and try again.', 'lucid-toolbox' ),
-			'not_sent'     => __( 'Due to a technical issue, the message could not be sent, we apologize.', 'lucid-toolbox' ),
+			'not_sent'     => __( 'The message could not be sent due to a technical issue.', 'lucid-toolbox' ),
 			'some_sent'    => __( 'There was an isuue sending the message, some recipients may not receive it properly.', 'lucid-toolbox' ),
 			'invalid_post' => __( 'The request could not be verified, please try again.', 'lucid-toolbox' )
 		);
@@ -713,18 +713,30 @@ class Lucid_Contact {
 			UPLOAD_ERR_OK         => __( 'The file was uploaded successfully.', 'lucid-toolbox' ),
 
 			// User errors
-			UPLOAD_ERR_INI_SIZE   => __( 'The attached file is too large.', 'lucid-toolbox' ),
-			UPLOAD_ERR_FORM_SIZE  => __( 'The attached file is too large.', 'lucid-toolbox' ),
-			UPLOAD_ERR_NO_FILE    => __( 'No attachment found.', 'lucid-toolbox' ),
+			UPLOAD_ERR_INI_SIZE   => __( 'The file is too large.', 'lucid-toolbox' ),
+			UPLOAD_ERR_FORM_SIZE  => __( 'The file is too large.', 'lucid-toolbox' ),
+			UPLOAD_ERR_NO_FILE    => __( 'No file found.', 'lucid-toolbox' ),
 
-			// Users don't need exact technical information
-			UPLOAD_ERR_PARTIAL    => __( 'There was a technical problem with the attached file, we apologize.', 'lucid-toolbox' ),
-			UPLOAD_ERR_NO_TMP_DIR => __( 'There was a technical problem with the attached file, we apologize.', 'lucid-toolbox' ),
-			UPLOAD_ERR_CANT_WRITE => __( 'There was a technical problem with the attached file, we apologize.', 'lucid-toolbox' ),
-			UPLOAD_ERR_EXTENSION  => __( 'There was a technical problem with the attached file, we apologize.', 'lucid-toolbox' ),
+			// Keep the technical details vague
+			UPLOAD_ERR_PARTIAL    => sprintf(
+				__( 'There was a technical problem with the file (%s).', 'lucid-toolbox' ),
+				__( 'partial file', 'lucid-toolbox' )
+			),
+			UPLOAD_ERR_NO_TMP_DIR => sprintf(
+				__( 'There was a technical problem with the file (%s).', 'lucid-toolbox' ),
+				__( 'missing temporary folder', 'lucid-toolbox' )
+			),
+			UPLOAD_ERR_CANT_WRITE => sprintf(
+				__( 'There was a technical problem with the file (%s).', 'lucid-toolbox' ),
+				__( 'failed to write', 'lucid-toolbox' )
+			),
+			UPLOAD_ERR_EXTENSION  => sprintf(
+				__( 'There was a technical problem with the file (%s).', 'lucid-toolbox' ),
+				__( 'stopped by extension', 'lucid-toolbox' )
+			),
 
 			// Additional custom
-			'invalid_file_type' => __( 'The file seems to have an invalid format.', 'lucid-toolbox' )
+			'invalid_file_type' => __( 'The file format is invalid.', 'lucid-toolbox' )
 		);
 
 		$this->_file_form_messages = array_merge( $defaults, $messages );

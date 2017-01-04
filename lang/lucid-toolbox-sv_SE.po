@@ -2,197 +2,175 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lucid Toolbox v1.1.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-08-25 12:22:56+0000\n"
+"POT-Creation-Date: 2017-01-04 19:47+0100\n"
+"PO-Revision-Date: 2017-01-04 19:47+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: sv_SE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: CSL v1.x\n"
-"X-Poedit-Language: Swedish\n"
-"X-Poedit-Country: SWEDEN\n"
-"X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;\n"
-"X-Poedit-Basepath: ../\n"
-"X-Poedit-Bookmarks: \n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Textdomain-Support: yes"
+"X-Generator: Poedit 1.8.11\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: ..\n"
+"X-Textdomain-Support: yes\n"
+"X-Poedit-SearchPath-0: classes\n"
+"X-Poedit-SearchPath-1: inc\n"
 
-#: classes/MetaBox.php:1386
-#@ lucid-toolbox
+#: classes/MetaBox.php:977
 msgid "This action can not be undone, are you sure?"
 msgstr "Detta kan inte ångras, är du säker?"
 
-#. translators: Publish box date format, see http://php.net/date
-#: classes/lucid-post-type.php:222
-#: classes/lucid-post-type.php:240
-#@ lucid-toolbox
-msgid "M j, Y @ G:i"
-msgstr "j M, Y H:i"
+#: classes/lucid-admin-fields.php:475 classes/lucid-admin-fields.php:496
+#: classes/lucid-admin-fields.php:512 classes/lucid-settings.php:1324
+#: classes/lucid-settings.php:1345 classes/lucid-settings.php:1361
+msgid "None"
+msgstr "Inget"
 
-#: classes/lucid-settings.php:670
-#@ lucid-toolbox
-msgid "You do not have sufficient permissions to access this page."
-msgstr "Du har inte tillräcklig behörighet för att få tillgång till denna sida."
-
-#: classes/lucid-settings.php:1249
-#@ lucid-toolbox
-msgid "The email address seems to be invalid."
-msgstr "E-postadressen verkar inte vara giltig."
-
-#: classes/lucid-settings.php:1255
-#@ lucid-toolbox
-msgid "The URL seems to be invalid."
-msgstr "URL:en verkar inte vara giltig."
-
-#: classes/lucid-settings.php:1277
-#@ lucid-toolbox
-msgid "The hex color seems to have an invalid format."
-msgstr "Färgkoden verkar inte ha ett korrekt format."
-
-#: classes/lucid-settings.php:1308
-#@ lucid-toolbox
-msgid "There were settings with invalid values."
-msgstr "Det fanns inställningar med ogiltiga värden."
-
-#: classes/lucid-taxonomy.php:217
+#: classes/lucid-contact.php:656
 #, php-format
-#@ lucid-toolbox
-msgid "Show all %s"
-msgstr "Visa alla %s"
-
-#: classes/lucid-contact.php:562
-#, php-format
-#@ lucid-toolbox
 msgid "From form at %s"
 msgstr "Från formulär på %s"
 
-#: classes/lucid-contact.php:601
-#@ lucid-toolbox
+#: classes/lucid-contact.php:694
 msgid "Thank you for your message!"
 msgstr "Tack för ditt meddelande!"
 
-#: classes/lucid-contact.php:602
-#@ lucid-toolbox
+#: classes/lucid-contact.php:695
 msgid "There seems to be a problem with your information."
 msgstr "Det verkar finnas problem med din information."
 
-#: classes/lucid-contact.php:603
-#@ lucid-toolbox
-msgid "To send the message, the last field must be empty. Maybe it was filled by mistake, delete the text and try again."
-msgstr "För att skicka meddelandet måste det sista fältet lämnas tomt. Det kanske blev ifyllt av misstag, radera texten och försök igen."
+#: classes/lucid-contact.php:696
+msgid ""
+"To send the message, the last field must be empty. Maybe it was filled by "
+"mistake, delete the text and try again."
+msgstr ""
+"För att skicka meddelandet måste det sista fältet lämnas tomt. Det kanske "
+"blev ifyllt av misstag, radera texten och försök igen."
 
-#: classes/lucid-contact.php:604
-#@ lucid-toolbox
-msgid "Due to a technical issue, the message could not be sent, we apologize."
-msgstr "P.g.a. ett tekniskt fel kunde meddelandet inte skickas, vi ber om ursäkt."
+#: classes/lucid-contact.php:697
+msgid "The message could not be sent due to a technical issue."
+msgstr "Meddelandet kunde inte skickas p.g.a. ett tekniskt fel."
 
-#: classes/lucid-contact.php:623
-#@ lucid-toolbox
+#: classes/lucid-contact.php:698
+msgid ""
+"There was an isuue sending the message, some recipients may not receive it "
+"properly."
+msgstr ""
+"Det uppstod ett problem när meddelandet skickades, vissa mottagare kanske "
+"inte kan ta emot det."
+
+#: classes/lucid-contact.php:699
+msgid "The request could not be verified, please try again."
+msgstr "Förfrågan kunde inte verifieras, vänligen försök igen."
+
+#: classes/lucid-contact.php:716
 msgid "The file was uploaded successfully."
 msgstr "Filen laddades upp utan problem."
 
-#: classes/lucid-contact.php:626
-#: classes/lucid-contact.php:627
-#@ lucid-toolbox
-msgid "The attached file is too large."
-msgstr "Den bifogade filen är för stor."
+#: classes/lucid-contact.php:719 classes/lucid-contact.php:720
+msgid "The file is too large."
+msgstr "Filen är för stor."
 
-#: classes/lucid-contact.php:628
-#@ lucid-toolbox
-msgid "No attachment found."
-msgstr "Ingen bifogad fil hittades."
+#: classes/lucid-contact.php:721
+msgid "No file found."
+msgstr "Ingen fil hittades"
 
-#: classes/lucid-contact.php:631
-#: classes/lucid-contact.php:632
-#: classes/lucid-contact.php:633
-#: classes/lucid-contact.php:634
-#@ lucid-toolbox
-msgid "There was a technical problem with the attached file, we apologize."
-msgstr "Det uppstod ett tekniskt problem med den bifogade filen, vi ber om ursäkt."
+#: classes/lucid-contact.php:725 classes/lucid-contact.php:729
+#: classes/lucid-contact.php:733 classes/lucid-contact.php:737
+#, php-format
+msgid "There was a technical problem with the file (%s)."
+msgstr "Det uppstod ett tekniskt problem med filen (%s)."
 
-#: classes/lucid-contact.php:637
-#@ lucid-toolbox
-msgid "The file seems to have an invalid format."
-msgstr "Filen verkar ha ett otillåtet format."
+#: classes/lucid-contact.php:726
+msgid "partially uploaded"
+msgstr "delvis uppladdad"
 
-#: classes/lucid-contact.php:773
-#@ lucid-toolbox
+#: classes/lucid-contact.php:730
+msgid "missing temporary folder"
+msgstr "temporär mapp saknas"
+
+#: classes/lucid-contact.php:734
+msgid "failed to write"
+msgstr "kunde inte skriva"
+
+#: classes/lucid-contact.php:738
+msgid "stopped by extension"
+msgstr "stoppad av tillägg"
+
+#: classes/lucid-contact.php:742
+msgid "The file format is invalid."
+msgstr "Filformatet är inte giltigt."
+
+#: classes/lucid-contact.php:923
 msgid "The field is required"
 msgstr "Fältet är obligatoriskt"
 
-#: classes/lucid-contact.php:774
-#@ lucid-toolbox
+#: classes/lucid-contact.php:924
 msgid "The provided information is invalid"
 msgstr "Den angivna informationen är inte giltig"
 
-#: classes/lucid-contact.php:1417
-#: classes/lucid-contact.php:1549
-#: classes/lucid-contact.php:1600
-#@ lucid-toolbox
+#: classes/lucid-contact.php:1645 classes/lucid-contact.php:1777
+#: classes/lucid-contact.php:1828
 msgctxt "checkbox yes"
 msgid "yes"
 msgstr "ja"
 
-#: classes/lucid-contact.php:1438
-#: classes/lucid-contact.php:1562
-#: classes/lucid-contact.php:1621
-#@ lucid-toolbox
+#: classes/lucid-contact.php:1666 classes/lucid-contact.php:1790
+#: classes/lucid-contact.php:1849
 msgctxt "checkbox no"
 msgid "no"
 msgstr "nej"
 
-#: classes/lucid-contact.php:605
-#@ lucid-toolbox
-msgid "There was an isuue sending the message, some recipients may not receive it properly."
-msgstr "Det uppstod ett problem när meddelandet skickades, vissa mottagare kanske inte kan ta emot det."
+#: classes/lucid-post-type.php:256 classes/lucid-post-type.php:274
+msgid "M j, Y @ G:i"
+msgstr "j M, Y H:i"
 
-#: classes/lucid-contact.php:606
-#@ lucid-toolbox
-msgid "The request could not be verified, please try again."
-msgstr "Förfrågan kunde inte verifieras, vänligen försök igen."
+#: classes/lucid-settings.php:871
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+"Du har inte tillräcklig behörighet för att få tillgång till denna sida."
 
-#: inc/core.php:65
-#@ default
+#: classes/lucid-settings.php:1101
+msgid "Drag to order"
+msgstr ""
+
+#: classes/lucid-settings.php:1105
+msgid "Remove"
+msgstr ""
+
+#: classes/lucid-settings.php:1105
+msgid "Remove previous field"
+msgstr ""
+
+#: classes/lucid-settings.php:1113
+msgid "Add"
+msgstr ""
+
+#: classes/lucid-settings.php:1644
+msgid "The email address seems to be invalid."
+msgstr "E-postadressen verkar inte vara giltig."
+
+#: classes/lucid-settings.php:1650
+msgid "The URL seems to be invalid."
+msgstr "URL:en verkar inte vara giltig."
+
+#: classes/lucid-settings.php:1674
+msgid "The hex color seems to have an invalid format."
+msgstr "Färgkoden verkar inte ha ett korrekt format."
+
+#: classes/lucid-settings.php:1705
+msgid "There were settings with invalid values."
+msgstr "Det fanns inställningar med ogiltiga värden."
+
+#: classes/lucid-taxonomy.php:187
+#, php-format
+msgid "Show all %s"
+msgstr "Visa alla %s"
+
+#: inc/core.php:60
 msgid "Documentation"
-msgstr ""
-
-#. translators: plugin header field 'Name'
-#: lucid-toolbox.php:0
-#@ lucid-toolbox
-msgid "Lucid Toolbox"
-msgstr ""
-
-#. translators: plugin header field 'PluginURI'
-#: lucid-toolbox.php:0
-#@ lucid-toolbox
-msgid "https://github.com/elusiveunit/lucid-toolbox"
-msgstr ""
-
-#. translators: plugin header field 'Description'
-#: lucid-toolbox.php:0
-#@ lucid-toolbox
-msgid "A small library of commonly needed functionality."
-msgstr ""
-
-#. translators: plugin header field 'Author'
-#: lucid-toolbox.php:0
-#@ lucid-toolbox
-msgid "Jens Lindberg"
-msgstr ""
-
-#: classes/lucid-settings.php:1023
-#: classes/lucid-settings.php:1044
-#: classes/lucid-settings.php:1060
-#@ lucid-toolbox
-msgid "None"
-msgstr "Inget"
-
-#. translators: plugin header field 'Version'
-#: lucid-toolbox.php:0
-#@ lucid-toolbox
-msgid "1.1.5"
-msgstr ""
-
+msgstr "Dokumentation"
