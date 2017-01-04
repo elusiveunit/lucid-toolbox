@@ -720,7 +720,7 @@ class Lucid_Contact {
 			// Keep the technical details vague
 			UPLOAD_ERR_PARTIAL    => sprintf(
 				__( 'There was a technical problem with the file (%s).', 'lucid-toolbox' ),
-				__( 'partial file', 'lucid-toolbox' )
+				__( 'partially uploaded', 'lucid-toolbox' )
 			),
 			UPLOAD_ERR_NO_TMP_DIR => sprintf(
 				__( 'There was a technical problem with the file (%s).', 'lucid-toolbox' ),
