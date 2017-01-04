@@ -736,36 +736,89 @@ class Lucid_Contact {
 	 * @since 1.3.0
 	 * @param array $extensions Array of file extensions.
 	 * @param array $mime_types Array of file MIME types.
+	 * @param bool $merge Add to existing values instead of overwriting.
 	 * @link http://www.webmaster-toolkit.com/mime-types.shtml MIME types list.
 	 * @link http://filext.com/faq/office_mime_types.php Office MIME types list.
 	 */
-	public function set_allowed_files( array $extensions = array(), array $mime_types = array() ) {
+	public function set_allowed_files( array $extensions = array(), array $mime_types = array(), $merge = false ) {
 
 		// Extensions
 		$default_extensions = array(
-			'jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx'
+			'csv',
+
+			// Images
+			'jpg',
+			'jpeg',
+			'png',
+			'gif',
+			'bmp',
+			'tif',
+			'tiff',
+
+			// Documents
+			'txt',
+			'pdf',
+			'rtf',
+
+			// MS Office, limit to Word/Excel/PowerPoint, grabbed from wp_get_mime_types
+			'doc',
+			'pot',
+			'pps',
+			'ppt',
+			'xla',
+			'xls',
+			'xlt',
+			'xlw',
+			'docx',
+			'xlsx',
+			'pptx',
+
+			// OpenOffice, like above
+			'odt',
+			'odp',
+			'ods',
 		);
 
-		if ( empty( $extensions ) )
-			$extensions = $default_extensions;
-
-		$this->_allowed_extensions = $extensions;
+		if ( $merge )
+			$this->_allowed_extensions = array_merge( $default_extensions, $extensions );
+		else
+			$this->_allowed_extensions = ( empty( $extensions ) ) ? $default_extensions : $extensions;
 
 		// MIME types
 		$default_mime_types = array(
-			'image/jpeg', // .jpg/.jpeg
-			'image/pjpeg', // .jpg/.jpeg
-			'image/png', // .png
-			'image/gif', // .gif
-			'application/pdf', // .pdf
-			'application/msword', // .doc
-			'application/vnd.openxmlformats-officedocument.wordprocessingml.document' // .docx
+			'text/csv',
+
+			// Images
+			'image/jpeg',
+			'image/pjpeg',
+			'image/png',
+			'image/gif',
+			'image/bmp',
+			'image/tiff',
+
+			// Documents
+			'text/plain',
+			'application/pdf',
+			'application/rtf',
+
+			// MS Office, limit to Word/Excel/PowerPoint, grabbed from wp_get_mime_types
+			'application/msword',
+			'application/vnd.ms-powerpoint',
+			'application/vnd.ms-excel',
+			'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+			'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+
+			// OpenOffice, like above
+			'application/vnd.oasis.opendocument.text',
+			'application/vnd.oasis.opendocument.presentation',
+			'application/vnd.oasis.opendocument.spreadsheet',
 		);
 
-		if ( empty( $mime_types ) )
-			$mime_types = $default_mime_types;
-
-		$this->_allowed_mime_types = $mime_types;
+		if ( $merge )
+			$this->_allowed_mime_types = array_merge( $default_mime_types, $mime_types );
+		else
+			$this->_allowed_mime_types = ( empty( $mime_types ) ) ? $default_mime_types : $mime_types;
 	}
 
 
