@@ -1370,6 +1370,55 @@ class Lucid_Contact {
 
 
 	/**
+	 * Set a field's error message.
+	 *
+	 * @since 1.9.0
+	 * @param string $field_name The field name.
+	 * @param string $error_msg Error message to display.
+	 * @param string $field_class Optional. Input field class name.
+	 * @param string $msg_class Optional. Error message class name.
+	 */
+	public function set_field_error( $field_name, $error_msg, $field_class = null, $msg_class = null ) {
+		$data = $this->_fields[$field_name];
+
+		if ( null === $field_class )
+			$field_class = 'error input-error';
+		if ( null === $msg_class )
+			$msg_class = 'error field-error';
+
+		$field_class_attr = ( $field_class ) ? " class=\"{$field_class}\"" : '';
+		$msg_class_attr = ( $msg_class ) ? " class=\"{$msg_class}\"" : '';
+
+		$error_msg_html = sprintf( '<span%s>%s</span>', $msg_class_attr, $error_msg );
+
+		// Add error span before closing wrap tag if it exists in $fields
+		if ( isset( $data['close'] ) ) :
+			$this->_fields[$field_name] = $this->_array_insert(
+				'after',
+				'tag_close',
+				$this->_fields[$field_name],
+				'error',
+				$error_msg_html
+			);
+
+		// Otherwise just add it last
+		else :
+			$this->_fields[$field_name]['error'] = $error_msg_html;
+		endif;
+
+		$tag = $data['tag_open'];
+
+		// Update form tag with error classes and aria-invalid. If there is
+		// a class attribute, add to it. Otherwise, add a class attribute
+		// with the regex: |<tag|> => |<tag class="[...]"|>
+		if ( strpos( $tag, 'class="' ) ) :
+			$this->_fields[$field_name]['tag_open'] = str_replace( 'class="', sprintf( 'aria-invalid="true" class="%s ', $field_class ), $tag );
+		else :
+			$this->_fields[$field_name]['tag_open'] = preg_replace( '/<[\w\-]+(?=\s|>)/', sprintf( '$0%s aria-invalid="true"', $field_class_attr ), $tag );
+		endif;
+	}
+
+	/**
 	 * Validate POST data and set error messages.
 	 *
 	 * TODO: Break apart this monster of a method.
@@ -1462,43 +1511,23 @@ class Lucid_Contact {
 					if ( 'honeypot' == $validation )
 						$honeypot_error = true;
 				endif;
+
+			// If an error has been added externally
+			elseif ( ! empty( $data['error'] ) ) :
+				$all_is_well = false;
+				$error_count++;
 			endif;
 
 			// Add error indications
 			if ( $error_msg ) :
 				$all_is_well = false;
-
-				// Add error span before closing wrap tag if it exists in $fields
-				if ( isset( $data['close'] ) ) :
-					$this->_fields[$name] = $this->_array_insert(
-						'after',
-						'tag_close',
-						$this->_fields[$name],
-						'error',
-						'<span class="error field-error">' . $error_msg . '</span>'
-					);
-
-				// Otherwise just add it last
-				else :
-					$this->_fields[$name]['error'] = '<span class="error field-error">' . $error_msg . '</span>';
-				endif;
-
-				$tag = $data['tag_open'];
-
-				// Update form tag with error classes and aria-invalid. If there is
-				// a class attribute, add to it. Otherwise, add a class attribute
-				// with the regex: |<tag|> => |<tag class="[...]"|>
-				if ( strpos( $tag, 'class="' ) ) :
-					$this->_fields[$name]['tag_open'] = str_replace( 'class="', 'aria-invalid="true" class="error input-error ', $tag );
-				else :
-					$this->_fields[$name]['tag_open'] = preg_replace( '/<[\w\-]+(?=\s|>)/', '$0 class="error input-error" aria-invalid="true"', $tag );
-				endif;
+				$this->set_field_error( $name, $error_msg );
 			endif;
 		endforeach; // Field loop
 
 		// Set success/error message
 		if ( $all_is_well ) :
-			$this->_form_status = '<div class="success form-success">' . $this->_form_messages['success'] . '</div>';
+			$this->set_form_success( $this->_form_messages['success'] );
 
 		// If the honeypot is the only problem, an extra CSS class is available
 		// for potentially showing the honeypot field if it's hidden (a general
@@ -1506,10 +1535,10 @@ class Lucid_Contact {
 		// IE7+). This may be needed if some sort of auto form filler is used
 		// by a human.
 		elseif ( 1 === $error_count && $honeypot_error ) :
-			$this->_form_status = '<div class="error form-error error-honeypot">' . $this->_form_messages['honeypot'] . '</div>';
+			$this->set_form_error( $this->_form_messages['honeypot'], 'error form-error error-honeypot' );
 
 		else :
-			$this->_form_status = '<div class="error form-error">' . $this->_form_messages['error'] . '</div>';
+			$this->set_form_error( $this->_form_messages['error'] );
 		endif;
 
 		return $all_is_well;
@@ -2201,18 +2230,18 @@ class Lucid_Contact {
 
 			// None sent
 			elseif ( ! $sent && ! $extra_sent ) :
-				$this->_form_status = '<div class="error form-error">' . $this->_form_messages['not_sent'] . '</div>';
+				$this->set_form_error( $this->_form_messages['not_sent'] );
 				return false;
 
 			// Some sent
 			else :
-				$this->_form_status = '<div class="error form-error">' . $this->_form_messages['some_sent'] . '</div>';
+				$this->set_form_error( $this->_form_messages['some_sent'] );
 				return false;
 			endif;
 
 		// No message or debug mode on
 		else :
-			$this->_form_status = '<div class="error form-error">' . $this->_form_messages['not_sent'] . '</div>';
+			$this->set_form_error( $this->_form_messages['not_sent'] );
 			return false;
 		endif;
 	}
@@ -2306,6 +2335,43 @@ class Lucid_Contact {
 			$field = '<input type="hidden" name="lucid-form-id" value="' . $this->_form_id . '">';
 
 		return $field;
+	}
+
+	/**
+	 * Set the form's status message.
+	 *
+	 * @since 1.9.0
+	 */
+	public function set_form_status( $msg, $class_name ) {
+		$class_attr = ( $class_name ) ? sprintf( ' class="%s"', $class_name ) : '';
+		$this->_form_status = sprintf( '<div%s>%s</div>', $class_attr, $msg );
+	}
+
+	/**
+	 * Set form error message.
+	 *
+	 * @since 1.9.0
+	 */
+	public function set_form_error( $msg, $class_name = 'error form-error' ) {
+		$this->set_form_status( $msg, $class_name );
+	}
+
+	/**
+	 * Set form warning message.
+	 *
+	 * @since 1.9.0
+	 */
+	public function set_form_warning( $msg, $class_name = 'warning form-warning' ) {
+		$this->set_form_status( $msg, $class_name );
+	}
+
+	/**
+	 * Set form success message.
+	 *
+	 * @since 1.9.0
+	 */
+	public function set_form_success( $msg, $class_name = 'success form-success' ) {
+		$this->set_form_status( $msg, $class_name );
 	}
 
 	/**
