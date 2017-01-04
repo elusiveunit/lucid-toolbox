@@ -1488,7 +1488,7 @@ class Lucid_Contact {
 				&& ( empty( $value ) && ! in_array( $value, array( 0, 0.0, '0' ), true ) ) // Allow zeroes
 			) || (
 				   'file' == $data['type']
-				&& 4 == $_FILES[$name]['error']
+				&& UPLOAD_ERR_NO_FILE == $_FILES[$name]['error']
 				&& ! empty( $data['required'] )
 			) ) :
 				$error_count++;
