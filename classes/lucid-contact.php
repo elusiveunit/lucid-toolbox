@@ -1114,7 +1114,8 @@ class Lucid_Contact {
 
 		// POST data as separate item, for easier cleaning.
 		// Textareas keep the text between the tags.
-		if ( isset( $_POST[$name] ) ) $field['post'] = esc_textarea( $_POST[$name] );
+		if ( $this->is_valid_field_post( $name ) )
+			$field['post'] = esc_textarea( $_POST[$name] );
 
 		// Close field tag
 		$field_part = '</textarea>';
@@ -1155,7 +1156,7 @@ class Lucid_Contact {
 			$field_part .= "<option value=\"{$val}\"";
 
 			// Check selected state
-			if ( isset( $_POST[$name] ) && $_POST[$name] == $val )
+			if ( $this->is_valid_field_post( $name ) && $_POST[$name] == $val )
 				$field_part .= ' selected="selected"';
 
 			$field_part .= ">{$text}</option>";
@@ -1196,7 +1197,7 @@ class Lucid_Contact {
 
 		// POST data as separate item, for easier cleaning.
 		// Radio buttons keep the checked state.
-		if ( isset( $_POST[$name] ) && $args['value'] )
+		if ( $this->is_valid_field_post( $name ) && $args['value'] )
 			$field['post'] = ( $_POST[$name] == $args['value'] ) ? ' checked="checked"' : '';
 
 		// Close field tag
@@ -1266,7 +1267,7 @@ class Lucid_Contact {
 
 		// POST data as separate item, for easier cleaning.
 		// Checkboxes keep checked state, other inputs have the value attribute.
-		if ( isset( $_POST[$name] ) ) :
+		if ( $this->is_valid_field_post( $name ) ) :
 			if ( 'checkbox' == $type ) :
 				$field['post'] = ( (string) $checkbox_value === (string) $_POST[$name] ) ? ' checked="checked"' : '';
 			else :
@@ -1371,6 +1372,19 @@ class Lucid_Contact {
 		return ( $posted && $verified );
 	}
 
+	/**
+	 * Check if a field has been posted.
+	 *
+	 * Verifies that the field has a posted value and that the value belongs to
+	 * the current form.
+	 *
+	 * @since 1.9.0
+	 * @param string $field_name The field name.
+	 * @return bool
+	 */
+	public function is_valid_field_post( $field_name ) {
+		return ( $this->is_valid_post() && isset( $_POST[$field_name] ) );
+	}
 
 	/**
 	 * Set a field's error message.
