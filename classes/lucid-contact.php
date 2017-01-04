@@ -1436,6 +1436,17 @@ class Lucid_Contact {
 	}
 
 	/**
+	 * Check if a field has an error set.
+	 *
+	 * @since 1.9.0
+	 * @param string $field_name The field name.
+	 * @return bool
+	 */
+	public function field_has_error( $field_name ) {
+		return ( ! empty( $this->_fields[$field_name]['error'] ) );
+	}
+
+	/**
 	 * Validate POST data and set error messages.
 	 *
 	 * TODO: Break apart this monster of a method.
