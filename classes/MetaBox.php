@@ -1002,51 +1002,55 @@ class Lucid_WPAlchemy {
 				var $self = $( this ),
 				    $wrap = $self.parents( '.wpalchemy_metabox' ),
 				    name = $self.attr( 'class' ).match( /docopy-([a-zA-Z0-9_-]*)/i )[1],
-				    $group = $wrap.find( '.wpa_group-' + name + '.tocopy' ).first(),
-				    $clone = $group.clone().removeClass( 'tocopy last' ),
+				    $groups = $wrap.find( '.wpa_group-' + name + '.tocopy' ),
 				    props = ['name', 'id', 'for', 'class'];
 
-				$group.find('*').each(function (i, elem) {
-					var j = 0,
-					    len = props.length,
-					    $elem = $( elem ),
-					    prop, match;
+				$groups.each(function () {
+					var $group = $(this),
+					    $clone = $group.clone().removeClass( 'tocopy last' );
 
-					for ( j; j < len; j++ ) {
-						prop = $elem.attr( props[j] );
+					$group.find('*').each(function (i, elem) {
+						var j = 0,
+						    len = props.length,
+						    $elem = $( elem ),
+						    prop, match;
 
-						if ( prop ) {
-							match = prop.match( /\[(\d+)\]/i );
+						for ( j; j < len; j++ ) {
+							prop = $elem.attr( props[j] );
 
-							if ( match ) {
-								prop = prop.replace( match[0], '[' + ( +match[1] + 1 ) + ']' );
+							if ( prop ) {
+								match = prop.match( /\[(\d+)\]/i );
 
-								$elem.attr( props[j], prop );
-							}
+								if ( match ) {
+									prop = prop.replace( match[0], '[' + ( +match[1] + 1 ) + ']' );
 
-							match = null;
+									$elem.attr( props[j], prop );
+								}
 
-							/* todo: this may prove to be too broad of a search */
-							match = prop.match( /n(\d+)/i );
+								match = null;
 
-							if ( match ) {
-								prop = prop.replace( match[0], 'n' + ( +match[1] + 1 ) );
+								/* todo: this may prove to be too broad of a search */
+								match = prop.match( /n(\d+)/i );
 
-								$elem.attr( props[j], prop );
+								if ( match ) {
+									prop = prop.replace( match[0], 'n' + ( +match[1] + 1 ) );
+
+									$elem.attr( props[j], prop );
+								}
 							}
 						}
-					}
-				} );
+					} );
 
-				if ( $self.hasClass( 'ontop' ) ) {
-					$wrap.find( '.wpa_group-' + name ).first().before( $clone );
-				} else {
-					$group.before( $clone );
-				}
+					if ( $self.hasClass( 'ontop' ) ) {
+						$wrap.find( '.wpa_group-' + name ).first().before( $clone );
+					} else {
+						$group.before( $clone );
+					}
+
+					$.wpalchemy.trigger( 'wpa_copy', [$clone] );
+				});
 
 				checkLoopLimit( name );
-
-				$.wpalchemy.trigger( 'wpa_copy', [$clone] );
 			} );
 
 			function checkLoopLimit( name ) {
