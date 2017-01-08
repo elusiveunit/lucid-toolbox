@@ -1480,19 +1480,22 @@ class Lucid_WPAlchemy {
 	/**
 	 * @since	1.1
 	 */
-	public function the_group_open( $t = 'div' ) {
-		echo $this->get_the_group_open( $t );
+	public function the_group_open( $t = null, $extra_class = null ) {
+		echo $this->get_the_group_open( $t, $extra_class );
 	}
 
 	/**
 	 * @since	1.1
 	 */
-	public function get_the_group_open( $t = 'div' ) {
+	public function get_the_group_open( $t = null, $extra_class = null ) {
+		if ( ! $t )
+			$t = 'div';
+
 		$this->group_tag = $t;
 
 		$loop_open = null;
 		$loop_open_classes = array( 'wpa_loop', 'wpa_loop-' . $this->name );
-		$css_class = array( 'wpa_group', 'wpa_group-'. $this->name );
+		$css_class = array( 'wpa_group', 'wpa_group-'. $this->name, $extra_class );
 
 		if ( $this->is_first() ) {
 			array_push( $css_class, 'first' );
