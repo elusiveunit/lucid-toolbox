@@ -63,18 +63,7 @@ Concerning multiple recipients:
 
 ## Form messages
 
-Messages appear above the form on submission, to inform the user of the current state. There are set with `set_form_messages()` and `set_file_form_messages` (for file uploads). The default regular messages are:
-
-	$defaults = array(
-		'success'      => __( 'Thank you for your message!', 'lucid-toolbox' ),
-		'error'        => __( 'There seems to be a problem with your information.', 'lucid-toolbox' ),
-		'honeypot'     => __( 'To send the message, the last field must be empty. Maybe it was filled by mistake, delete the text and try again.', 'lucid-toolbox' ),
-		'not_sent'     => __( 'Due to a technical issue, the message could not be sent, we apologize.', 'lucid-toolbox' ),
-		'some_sent'    => __( 'There was an isuue sending the message, some recipients may not receive it properly.', 'lucid-toolbox' ),
-		'invalid_post' => __( 'The request could not be verified, please try again.', 'lucid-toolbox' )
-	);
-
-To clarify:
+Messages appear above the form on submission, to inform the user of the current state. There are set with `set_form_messages()` and `set_file_form_messages` (for file uploads). There are default messages in place in case custom ones aren't set. Each message has a specific key:
 
 * `'success'` If the message was successfully sent.
 * `'error'` Some problem with the information provided by the user, like missing fields and validation errors.
@@ -83,29 +72,7 @@ To clarify:
 * `'some_sent'` If sending to multiple recipients and there was a problem with some, but not all, during the sending process. Not something the user can do anything about.
 * `'invalid_post'` If the nonce verification failed. This could be due to an expired nonce because of a long peroid of inactivity, or a malicious attempt of something.
 
-Information about the file upload errors can be found on the [PHP manual page](http://www.php.net/manual/en/features.file-upload.errors.php). The defaults:
-
-	$defaults = array(
-
-		// Probably unused
-		UPLOAD_ERR_OK         => __( 'The file was uploaded successfully.', 'lucid-toolbox' ),
-
-		// User errors
-		UPLOAD_ERR_INI_SIZE   => __( 'The attached file is too large.', 'lucid-toolbox' ),
-		UPLOAD_ERR_FORM_SIZE  => __( 'The attached file is too large.', 'lucid-toolbox' ),
-		UPLOAD_ERR_NO_FILE    => __( 'No attachment found.', 'lucid-toolbox' ),
-
-		// Users don't need exact technical information
-		UPLOAD_ERR_PARTIAL    => __( 'There was a technical problem with the attached file, we apologize.', 'lucid-toolbox' ),
-		UPLOAD_ERR_NO_TMP_DIR => __( 'There was a technical problem with the attached file, we apologize.', 'lucid-toolbox' ),
-		UPLOAD_ERR_CANT_WRITE => __( 'There was a technical problem with the attached file, we apologize.', 'lucid-toolbox' ),
-		UPLOAD_ERR_EXTENSION  => __( 'There was a technical problem with the attached file, we apologize.', 'lucid-toolbox' ),
-
-		// Additional custom
-		'invalid_file_type' => __( 'The file seems to have an invalid format.', 'lucid-toolbox' )
-	);
-
-More about files in its own section.
+Information about the file upload errors can be found on the [PHP manual page](http://www.php.net/manual/en/features.file-upload.errors.php). More about files in its own section.
 
 ## Adding fields
 
@@ -166,21 +133,15 @@ Getting attachments working only requires adding a file input with `add_field()`
 
 * `handle_attachments` **(bool)** If email attachments should be handled. Defaults to false and is automatically set to true if there is a file input added.
 * `delete_sent_files` **(bool)** Remove uploaded attachment files from the server when they've been sent. Defaults to true.
-* `max_file_size` **(int)** Maximum file size for attachments, in bytes. Is available for potential convenience, rather than security.
+* `max_file_size` **(int)** Maximum file size for attachments, in bytes.
 
-Additionally, there is the `set_allowed_files()` method for settings allowed file extensions and MIME types. First argument is an array of extensions, second is MIME types.
+Additionally, there is the `set_allowed_files()` method for settings allowed file extensions and MIME types. It takes three arguments:
 
-The defaults extensions are jpg, jpeg, png, gif, pdf, doc and docx. The default MIME types match the extensions:
+1. An array of extensions
+2. An array of MIME types.
+3. A boolean; true to merge additions with existing ones instead of overwriting. Defaults to false.
 
-* image/jpeg = .jpg/.jpeg
-* image/pjpeg = .jpg/.jpeg
-* image/png = .png
-* image/gif = .gif
-* application/pdf = .pdf
-* application/msword = .doc
-* application/vnd.openxmlformats-officedocument.wordprocessingml.document = .docx
-
-Defaults are only set if the `set_allowed_files()` parameters are empty (the default values), so adding .bmp with `set_allowed_files( array( '.bmp' ) )` would get rid of jpg and all the others, only allowing bmp. Same is true for MIME types, so be sure to set everything explicitly when going custom.
+Check the source for which values are used by default. They should cover most, if not all, of the commonly used formats for documents and images.
 
 ## The message
 
@@ -383,6 +344,18 @@ An example setup with name, email, honeypot and message.
 	$form->render_form();
 
 ## Changelog
+
+### 1.9.0: Jan 08, 2017
+
+* New: Public setters for form and field messages, `set_field_error` and `set_form_status` (with `set_form_error`, `set_form_warning` and `set_form_success` helpers for using the correct class names). Should probably add the same three 'levels' for field messages.
+* New: Run the `lucid_contact_sent` action when a message is sent.
+* Tweak: Improve file fields, primarily the error handling
+    * Improve inline error messages
+    * Remove successfully uploaded files when there are errors
+    * Improve validation, including stricter checking of file size and MIME types
+* Tweak: More default allowed extensions and MIME types should now cover most of the commonly used document and image formats. Allow merging with defaults when adding custom ones via new parameter, instead of just overwriting.
+* Tweak: Disable the email DNS check by default.
+* Fix: Ensure POST values belong to the current form, in case of multiple forms with the same field names on the same page.
 
 ### 1.8.0: Sep 25, 2016
 

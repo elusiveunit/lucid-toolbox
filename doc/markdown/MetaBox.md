@@ -13,6 +13,13 @@ A note outside the documentation that I tend to forget myself: prefix metabox ID
 
 ## Fork changelog
 
+### 1.6.0: Jan 08, 2017
+
+Start adhering to semantic versioning.
+
+* New: Handle cloning of multiple 'roots' for repeatable groups, instead of just the first one.
+* New: Add a second parameter to `[get_]the_group_open` for adding extra classes to the group warpping element.
+
 ### 1.5.2.lucid-2, now Lucid\_WPAlchemy: Feb 23, 2015
 
 With this version it's a complete fork and will not fully match the original class.

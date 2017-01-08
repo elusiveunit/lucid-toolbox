@@ -40,6 +40,30 @@
 <li>Swedish</li>
 </ul>
 <h2 id="changelog">Changelog</h2>
+<h3 id="1-2-2-jan-08-2017">1.2.2: Jan 08, 2017</h3>
+<h4 id="lucid-_contact-1-9-0">Lucid_Contact 1.9.0</h4>
+<ul>
+<li>New: Public setters for form and field messages, <code>set_field_error</code> and <code>set_form_status</code> (with <code>set_form_error</code>, <code>set_form_warning</code> and <code>set_form_success</code> helpers for using the correct class names). Should probably add the same three &#39;levels&#39; for field messages.</li>
+<li>New: Run the <code>lucid_contact_sent</code> action when a message is sent.</li>
+<li>Tweak: Improve file fields, primarily the error handling<ul>
+<li>Improve inline error messages</li>
+<li>Remove successfully uploaded files when there are errors</li>
+<li>Improve validation, including stricter checking of file size and MIME types</li>
+</ul>
+</li>
+<li>Tweak: More default allowed extensions and MIME types should now cover most of the commonly used document and image formats. Allow merging with defaults when adding custom ones via new parameter, instead of just overwriting.</li>
+<li>Tweak: Disable the email DNS check by default.</li>
+<li>Fix: Ensure POST values belong to the current form, in case of multiple forms with the same field names on the same page.</li>
+</ul>
+<h4 id="lucid-_wpalchemy-1-6-0">Lucid_WPAlchemy 1.6.0</h4>
+<ul>
+<li>New: Handle cloning of multiple &#39;roots&#39; for repeatable groups, instead of just the first one.</li>
+<li>New: Add a second parameter to <code>[get_]the_group_open</code> for adding extra classes to the group warpping element.</li>
+</ul>
+<h4 id="lucid-_admin-_column-1-0-1">Lucid_Admin_Column 1.0.1</h4>
+<ul>
+<li>Fix: Use <code>call_user_func</code> PHP 5.3 compatibility.</li>
+</ul>
 <h3 id="1-2-1-sep-25-2016">1.2.1: Sep 25, 2016</h3>
 <h4 id="lucid-_contact-1-8-0">Lucid_Contact 1.8.0</h4>
 <ul>

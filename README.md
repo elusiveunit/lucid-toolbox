@@ -13,8 +13,8 @@ A set of classes used to speed up and automate common tasks.
 
 The plugin doesn't do anything by itself, apart from loading language files. It simply allows usage of the classes through something like:
 
-	if ( defined( 'LUCID_TOOLBOX_CLASS' ) && ! class_exists( 'Lucid_Settings' ) )
-		require LUCID_TOOLBOX_CLASS . 'lucid-settings.php';
+    if ( defined( 'LUCID_TOOLBOX_CLASS' ) && ! class_exists( 'Lucid_Settings' ) )
+        require LUCID_TOOLBOX_CLASS . 'lucid-settings.php';
 
 Read more about each class in the included documentation, located in the 'doc' directory.
 
@@ -24,6 +24,30 @@ Lucid Toolbox is currently available in the following languages:
 * Swedish
 
 ## Changelog
+
+### 1.2.2: Jan 08, 2017
+
+#### Lucid\_Contact 1.9.0
+
+* New: Public setters for form and field messages, `set_field_error` and `set_form_status` (with `set_form_error`, `set_form_warning` and `set_form_success` helpers for using the correct class names). Should probably add the same three 'levels' for field messages.
+* New: Run the `lucid_contact_sent` action when a message is sent.
+* Tweak: Improve file fields, primarily the error handling
+    * Improve inline error messages
+    * Remove successfully uploaded files when there are errors
+    * Improve validation, including stricter checking of file size and MIME types
+* Tweak: More default allowed extensions and MIME types should now cover most of the commonly used document and image formats. Allow merging with defaults when adding custom ones via new parameter, instead of just overwriting.
+* Tweak: Disable the email DNS check by default.
+* Fix: Ensure POST values belong to the current form, in case of multiple forms with the same field names on the same page.
+
+#### Lucid\_WPAlchemy 1.6.0
+
+* New: Handle cloning of multiple 'roots' for repeatable groups, instead of just the first one.
+* New: Add a second parameter to `[get_]the_group_open` for adding extra classes to the group warpping element.
+
+#### Lucid\_Admin\_Column 1.0.1
+
+* Fix: Use `call_user_func` PHP 5.3 compatibility.
+
 
 ### 1.2.1: Sep 25, 2016
 

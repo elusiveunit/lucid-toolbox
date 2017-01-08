@@ -141,20 +141,15 @@ module.exports = function(grunt) {
 	// Load tasks
 	require('load-grunt-tasks')(grunt);
 
-	// Register tasks.
-	// Default: 'grunt'
-	grunt.registerTask('default', [
-		'watch'
-	]);
+	// Register task aliases
+	// Set default to just watch
+	grunt.registerTask('default', ['watch']);
 
-	// CSS: 'grunt css'
-	grunt.registerTask('css', tasks_css);
+	grunt.registerTask('css', 'Build CSS', tasks_css);
 
-	// JavaScript: 'grunt js'
-	grunt.registerTask('js', tasks_js);
+	grunt.registerTask('js', 'Build JavaScript', tasks_js);
 
-	// Documentation: 'grunt doc'
-	grunt.registerTask('doc', [
+	grunt.registerTask('doc', 'Build Documentation', [
 		'markdown:docIndex',
 		'markdown:doc',
 		'jshint:doc',

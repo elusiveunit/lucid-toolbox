@@ -72,6 +72,10 @@ function my_event_date_sort( $query ) {
 }
 </code></pre><p>A downside with sorting on custom fields is that the <code>meta_key</code> parameter will cause posts without the targeted field to be skipped from the result, instead of just appearing last like one would expect in the admin list. In the above example, posts without a date set would simply not be shown. Including those posts will require filtering the generated SQL with filters like <code>get_meta_sql</code> and <code>posts_orderby</code>.</p>
 <h2 id="changelog">Changelog</h2>
+<h3 id="1-0-1-jan-08-2017">1.0.1: Jan 08, 2017</h3>
+<ul>
+<li>Fix: Use <code>call_user_func</code> PHP 5.3 compatibility.</li>
+</ul>
 <h3 id="1-0-0-mar-01-2015">1.0.0: Mar 01, 2015</h3>
 <ul>
 <li>Initial version.</li>

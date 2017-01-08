@@ -6,7 +6,7 @@
  * @copyright Copyright (c) 2009, Dimas Begunoff, http://farinspace.com
  * @license   http://en.wikipedia.org/wiki/MIT_License The MIT License
  * @package   WPAlchemy
- * @version   1.5.2.lucid-2
+ * @version   1.6.0
  * @link      http://github.com/farinspace/wpalchemy
  * @link      http://farinspace.com
  */

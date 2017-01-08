@@ -76,6 +76,10 @@ A downside with sorting on custom fields is that the `meta_key` parameter will c
 
 ## Changelog
 
+### 1.0.1: Jan 08, 2017
+
+* Fix: Use `call_user_func` PHP 5.3 compatibility.
+
 ### 1.0.0: Mar 01, 2015
 
 * Initial version.

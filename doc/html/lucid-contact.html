@@ -65,16 +65,7 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name
 <li><code>extras_reply_to_address</code></li>
 </ul>
 <h2 id="form-messages">Form messages</h2>
-<p>Messages appear above the form on submission, to inform the user of the current state. There are set with <code>set_form_messages()</code> and <code>set_file_form_messages</code> (for file uploads). The default regular messages are:</p>
-<pre><code>$defaults = array(
-    &#39;success&#39;      =&gt; __( &#39;Thank you for your message!&#39;, &#39;lucid-toolbox&#39; ),
-    &#39;error&#39;        =&gt; __( &#39;There seems to be a problem with your information.&#39;, &#39;lucid-toolbox&#39; ),
-    &#39;honeypot&#39;     =&gt; __( &#39;To send the message, the last field must be empty. Maybe it was filled by mistake, delete the text and try again.&#39;, &#39;lucid-toolbox&#39; ),
-    &#39;not_sent&#39;     =&gt; __( &#39;Due to a technical issue, the message could not be sent, we apologize.&#39;, &#39;lucid-toolbox&#39; ),
-    &#39;some_sent&#39;    =&gt; __( &#39;There was an isuue sending the message, some recipients may not receive it properly.&#39;, &#39;lucid-toolbox&#39; ),
-    &#39;invalid_post&#39; =&gt; __( &#39;The request could not be verified, please try again.&#39;, &#39;lucid-toolbox&#39; )
-);
-</code></pre><p>To clarify:</p>
+<p>Messages appear above the form on submission, to inform the user of the current state. There are set with <code>set_form_messages()</code> and <code>set_file_form_messages</code> (for file uploads). There are default messages in place in case custom ones aren&#39;t set. Each message has a specific key:</p>
 <ul>
 <li><code>&#39;success&#39;</code> If the message was successfully sent.</li>
 <li><code>&#39;error&#39;</code> Some problem with the information provided by the user, like missing fields and validation errors.</li>
@@ -83,27 +74,7 @@ $form-&gt;from_name = &#39;from_name&#39;; // Field name
 <li><code>&#39;some_sent&#39;</code> If sending to multiple recipients and there was a problem with some, but not all, during the sending process. Not something the user can do anything about.</li>
 <li><code>&#39;invalid_post&#39;</code> If the nonce verification failed. This could be due to an expired nonce because of a long peroid of inactivity, or a malicious attempt of something.</li>
 </ul>
-<p>Information about the file upload errors can be found on the <a href="http://www.php.net/manual/en/features.file-upload.errors.php">PHP manual page</a>. The defaults:</p>
-<pre><code>$defaults = array(
-
-    // Probably unused
-    UPLOAD_ERR_OK         =&gt; __( &#39;The file was uploaded successfully.&#39;, &#39;lucid-toolbox&#39; ),
-
-    // User errors
-    UPLOAD_ERR_INI_SIZE   =&gt; __( &#39;The attached file is too large.&#39;, &#39;lucid-toolbox&#39; ),
-    UPLOAD_ERR_FORM_SIZE  =&gt; __( &#39;The attached file is too large.&#39;, &#39;lucid-toolbox&#39; ),
-    UPLOAD_ERR_NO_FILE    =&gt; __( &#39;No attachment found.&#39;, &#39;lucid-toolbox&#39; ),
-
-    // Users don&#39;t need exact technical information
-    UPLOAD_ERR_PARTIAL    =&gt; __( &#39;There was a technical problem with the attached file, we apologize.&#39;, &#39;lucid-toolbox&#39; ),
-    UPLOAD_ERR_NO_TMP_DIR =&gt; __( &#39;There was a technical problem with the attached file, we apologize.&#39;, &#39;lucid-toolbox&#39; ),
-    UPLOAD_ERR_CANT_WRITE =&gt; __( &#39;There was a technical problem with the attached file, we apologize.&#39;, &#39;lucid-toolbox&#39; ),
-    UPLOAD_ERR_EXTENSION  =&gt; __( &#39;There was a technical problem with the attached file, we apologize.&#39;, &#39;lucid-toolbox&#39; ),
-
-    // Additional custom
-    &#39;invalid_file_type&#39; =&gt; __( &#39;The file seems to have an invalid format.&#39;, &#39;lucid-toolbox&#39; )
-);
-</code></pre><p>More about files in its own section.</p>
+<p>Information about the file upload errors can be found on the <a href="http://www.php.net/manual/en/features.file-upload.errors.php">PHP manual page</a>. More about files in its own section.</p>
 <h2 id="adding-fields">Adding fields</h2>
 <p>Fields are added with the <code>field()</code> method, which requires a type and a name. A majority of the regular field types are handled and for unknown or future stuff, it falls back to an input with <code>type=&quot;&lt;type&gt;&quot;</code>.</p>
 <p>In addition to the type and name, an array of optional arguments can be passed:</p>
@@ -150,20 +121,15 @@ $form-&gt;add_to_field_list( &#39;&lt;/fieldset&gt;&#39; );
 <ul>
 <li><code>handle_attachments</code> <strong>(bool)</strong> If email attachments should be handled. Defaults to false and is automatically set to true if there is a file input added.</li>
 <li><code>delete_sent_files</code> <strong>(bool)</strong> Remove uploaded attachment files from the server when they&#39;ve been sent. Defaults to true.</li>
-<li><code>max_file_size</code> <strong>(int)</strong> Maximum file size for attachments, in bytes. Is available for potential convenience, rather than security.</li>
+<li><code>max_file_size</code> <strong>(int)</strong> Maximum file size for attachments, in bytes.</li>
 </ul>
-<p>Additionally, there is the <code>set_allowed_files()</code> method for settings allowed file extensions and MIME types. First argument is an array of extensions, second is MIME types.</p>
-<p>The defaults extensions are jpg, jpeg, png, gif, pdf, doc and docx. The default MIME types match the extensions:</p>
-<ul>
-<li>image/jpeg = .jpg/.jpeg</li>
-<li>image/pjpeg = .jpg/.jpeg</li>
-<li>image/png = .png</li>
-<li>image/gif = .gif</li>
-<li>application/pdf = .pdf</li>
-<li>application/msword = .doc</li>
-<li>application/vnd.openxmlformats-officedocument.wordprocessingml.document = .docx</li>
-</ul>
-<p>Defaults are only set if the <code>set_allowed_files()</code> parameters are empty (the default values), so adding .bmp with <code>set_allowed_files( array( &#39;.bmp&#39; ) )</code> would get rid of jpg and all the others, only allowing bmp. Same is true for MIME types, so be sure to set everything explicitly when going custom.</p>
+<p>Additionally, there is the <code>set_allowed_files()</code> method for settings allowed file extensions and MIME types. It takes three arguments:</p>
+<ol>
+<li>An array of extensions</li>
+<li>An array of MIME types.</li>
+<li>A boolean; true to merge additions with existing ones instead of overwriting. Defaults to false.</li>
+</ol>
+<p>Check the source for which values are used by default. They should cover most, if not all, of the commonly used formats for documents and images.</p>
 <h2 id="the-message">The message</h2>
 <p>There are two ways to specify the format of the message, an old way and a new way.</p>
 <h3 id="message-format">Message format</h3>
@@ -325,6 +291,20 @@ $form-&gt;add_submit( __( &#39;Send message&#39;, &#39;TEXTDOMAIN&#39; ) );
 
 $form-&gt;render_form();
 </code></pre><h2 id="changelog">Changelog</h2>
+<h3 id="1-9-0-jan-08-2017">1.9.0: Jan 08, 2017</h3>
+<ul>
+<li>New: Public setters for form and field messages, <code>set_field_error</code> and <code>set_form_status</code> (with <code>set_form_error</code>, <code>set_form_warning</code> and <code>set_form_success</code> helpers for using the correct class names). Should probably add the same three &#39;levels&#39; for field messages.</li>
+<li>New: Run the <code>lucid_contact_sent</code> action when a message is sent.</li>
+<li>Tweak: Improve file fields, primarily the error handling<ul>
+<li>Improve inline error messages</li>
+<li>Remove successfully uploaded files when there are errors</li>
+<li>Improve validation, including stricter checking of file size and MIME types</li>
+</ul>
+</li>
+<li>Tweak: More default allowed extensions and MIME types should now cover most of the commonly used document and image formats. Allow merging with defaults when adding custom ones via new parameter, instead of just overwriting.</li>
+<li>Tweak: Disable the email DNS check by default.</li>
+<li>Fix: Ensure POST values belong to the current form, in case of multiple forms with the same field names on the same page.</li>
+</ul>
 <h3 id="1-8-0-sep-25-2016">1.8.0: Sep 25, 2016</h3>
 <ul>
 <li>New: Set separate Reply-To addresses with <code>$[extras_]reply_to_name</code> and <code>$[extras_]reply_to_address</code>. The extra recipient properties are also no longer required, falling back to the regular ones if not set.</li>
