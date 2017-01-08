@@ -231,7 +231,7 @@ class Lucid_Admin_Column {
 	public function _populate_columns( $current_column, $post_id ) {
 		foreach ( $this->_data as $column ) :
 			if ( $column['is_valid'] && $column['id'] == $current_column ) :
-				$column['output']( $post_id );
+				call_user_func( $column['output'], $post_id );
 			endif;
 		endforeach;
 	}
