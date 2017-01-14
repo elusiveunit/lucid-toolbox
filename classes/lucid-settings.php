@@ -1097,8 +1097,10 @@ class Lucid_Settings {
 	 */
 	protected function _add_editor( $args ) {
 
-		// Editor ID can only contain lowercase letters and underscores
-		$id = preg_replace( '/[^a-z_]/', '', strtolower( $args['id'] ) );
+		// Editor ID can only contain lowercase letters and underscores. Though
+		// numbers apparently aren't allowed, they seem to work fine and would be
+		// annoying to work around in cases where they're used.
+		$id = preg_replace( '/[^a-z\d_]/', '', strtolower( $args['id'] ) );
 
 		// Force textarea_name so saving works properly
 		$settings = array_merge( $args['editor_settings'], array(
