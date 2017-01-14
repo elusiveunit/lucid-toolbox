@@ -742,7 +742,11 @@ class Lucid_Contact {
 			'invalid_file_type' => __( 'The file format is invalid.', 'lucid-toolbox' )
 		);
 
-		$this->_file_form_messages = array_merge( $defaults, $messages );
+		// The UPLOAD_ERR constants are numeric; using array_merge will re-index the
+		// result and thus ruin it. Using union operator instead prevents that,
+		// instead adding keys from the right operand to the left only if they're
+		// missing.
+		$this->_file_form_messages = $messages + $defaults;
 	}
 
 	/**
