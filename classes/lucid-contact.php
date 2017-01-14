@@ -2853,6 +2853,10 @@ class Lucid_Contact {
 		// Upload error code
 		$error_code = $file['error'];
 
+		// Optional, empty field
+		if ( ! $this->_fields[$field_name]['required'] && ! $file['size'] && $error_code == UPLOAD_ERR_NO_FILE )
+			return false;
+
 		// Temp uploaded file
 		$tmp_file = $file['tmp_name'];
 
