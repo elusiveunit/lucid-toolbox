@@ -822,7 +822,6 @@ class Lucid_Settings {
 				$this->_settings_tabs();
 			else :
 				$settings = $this->id;
-				screen_icon();
 				echo "<h2>{$this->page_heading}</h2>";
 			endif;
 
@@ -870,9 +869,7 @@ class Lucid_Settings {
 
 		// Get first tab if none is set
 		reset( $this->_tabs );
-		$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : key( $this->_tabs );
-
-		screen_icon(); ?>
+		$current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : key( $this->_tabs ); ?>
 
 		<h2 class="nav-tab-wrapper">
 		<?php // echo $this->page_heading;
