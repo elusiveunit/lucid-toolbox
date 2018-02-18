@@ -1591,7 +1591,7 @@ class Lucid_WPAlchemy {
 			$this->in_loop = true;
 
 		$this->name = $n;
-		$cnt = count( ! empty( $this->meta[$n] )?$this->meta[$n]:null );
+		$cnt = ! empty( $this->meta[$n] ) ? count( $this->meta[$n] ) : 0;
 		$length = is_null( $length ) ? $cnt : $length;
 
 		if ( $this->in_loop == 'multi' && $cnt > $length )
