@@ -13,6 +13,10 @@ A note outside the documentation that I tend to forget myself: prefix metabox ID
 
 ## Fork changelog
 
+### 1.6.1: Feb 18, 2018
+
+* Fix: Don't count `null`, fixes PHP 7.2 warning.
+
 ### 1.6.0: Jan 08, 2017
 
 Start adhering to semantic versioning.

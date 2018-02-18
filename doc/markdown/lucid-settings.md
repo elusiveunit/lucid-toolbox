@@ -277,6 +277,11 @@ Since there are quite a few options, here are some examples to get the gist of i
 
 ## Changelog
 
+### 1.8.1: Feb 18, 2018
+
+* Tweak: Allow numbers in editor IDs.
+* Fix: Remove deprecated `screen_icon` calls.
+
 ### 1.8.0: Feb 23, 2015
 
 * New: Add `menu` method to create top level menu items.

@@ -25,6 +25,18 @@ Lucid Toolbox is currently available in the following languages:
 
 ## Changelog
 
+### 1.2.3: Feb 18, 2018
+
+#### Lucid\_Settings 1.8.1
+
+* Tweak: Allow numbers in editor IDs.
+* Fix: Remove deprecated `screen_icon` calls.
+
+#### Lucid\_WPAlchemy 1.6.1
+
+* Fix: Don't count `null`, fixes PHP 7.2 warning.
+
+
 ### 1.2.2: Jan 08, 2017
 
 #### Lucid\_Contact 1.9.0
